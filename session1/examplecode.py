@@ -3,7 +3,8 @@ Some example code
 """
 
 import gym
-from session1.datastructures.fringe import *
+import gym_ai_lab
+from datastructures.fringe import *
 
 # Create and render the environment
 env = gym.make("SmallMaze-v0")
