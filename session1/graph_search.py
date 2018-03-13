@@ -16,8 +16,7 @@ env.render()
 # Suggestion: test the depth-limited search by itself before IDS
 
 # IDS
-#solution, stats = search.ids(env, search.dls_gs)
-solution = None
+solution, stats = search.ids(env, search.dls_gs)
 if solution is not None:
     solution = [env.state_to_pos(s) for s in solution]
 print("\n\nIDS:\n----------------------------------------------------------------"
