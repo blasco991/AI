@@ -1,6 +1,5 @@
 import gym
-import gym_ai_lab
-import search.algorithms as search
+import session1.search.algorithms as search
 
 
 envname = "SmallMaze-v0"
