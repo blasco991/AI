@@ -15,7 +15,7 @@ class FringeNode:
         """
         Creates a representation of a node in the fringe
         :param state: the state embedded in the node
-        :param pathcost: path cost
+        :param pathcost: path cost from the root node to this one
         :param value: value of a node
         :param parent: parent node
         """
