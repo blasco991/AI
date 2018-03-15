@@ -1,4 +1,5 @@
 import gym
+import gym_ai_lab
 import search.algorithms as search
 
 

@@ -1,4 +1,5 @@
 import gym
+import gym_ai_lab
 import search.algorithms as search
 
 
@@ -15,7 +16,8 @@ env.render()
 # Suggestion: test the depth-limited search by itself before IDS
 
 # IDS
-solution, stats = search.ids(env, search.dls_gs)
+#solution, stats = search.ids(env, search.dls_gs)
+solution = None
 if solution is not None:
     solution = [env.state_to_pos(s) for s in solution]
 print("\n\nIDS:\n----------------------------------------------------------------"
