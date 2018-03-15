@@ -3,7 +3,7 @@ Search algorithms: IDS, BFS, UC, GREEDY, A*
 """
 
 from timeit import default_timer as timer
-from session1.datastructures.fringe import *
+from datastructures.fringe import *
 
 
 def ids(problem, stype):
