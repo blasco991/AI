@@ -92,7 +92,7 @@ class Fringe(ABC):
         Returns the current length of the fringe
         :return: current length of the fringe
         """
-        return len(self.frdict)
+        return self.frlen
 
     def __contains__(self, item):
         """
