@@ -12,7 +12,7 @@
 
 IDS:
 ----------------------------------------------------------------
-Execution time: 4.8557s
+Execution time: 4.8195s
 N° of states expanded: 138298
 Max n° of states in memory: 10
 Solution: [(0, 1), (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
@@ -20,25 +20,25 @@ Solution: [(0, 1), (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3
 
 BFS:
 ----------------------------------------------------------------
-Execution time: 16.0773s
+Execution time: 15.9505s
 N° of states expanded: 103723
-Max n° of states in memory: 16
+Max n° of states in memory: 311167
 Solution: [(0, 1), (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
 
 
 UC:
 ----------------------------------------------------------------
-Execution time: 46.8236s
+Execution time: 44.9718s
 N° of states expanded: 277348
-Max n° of states in memory: 16
+Max n° of states in memory: 832042
 Solution: [(0, 1), (1, 1), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
 
 
 A*:
 ----------------------------------------------------------------
-Execution time: 0.7022s
+Execution time: 0.4701s
 N° of states expanded: 2091
-Max n° of states in memory: 16
+Max n° of states in memory: 6271
 Solution: [(0, 1), (1, 1), (2, 1), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
 
 
@@ -56,7 +56,7 @@ Solution: [(0, 1), (1, 1), (2, 1), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3
 
 IDS:
 ----------------------------------------------------------------
-Execution time: 16.9776s
+Execution time: 17.3215s
 N° of states expanded: 487824
 Max n° of states in memory: 11
 Solution: [(0, 2), (0, 1), (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
@@ -64,25 +64,25 @@ Solution: [(0, 2), (0, 1), (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2
 
 BFS:
 ----------------------------------------------------------------
-Execution time: 54.1816s
+Execution time: 55.2187s
 N° of states expanded: 365867
-Max n° of states in memory: 16
+Max n° of states in memory: 1097599
 Solution: [(0, 2), (0, 1), (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
 
 
 UC:
 ----------------------------------------------------------------
-Execution time: 88.2146s
+Execution time: 90.8071s
 N° of states expanded: 544994
-Max n° of states in memory: 16
+Max n° of states in memory: 1634980
 Solution: [(0, 2), (0, 1), (1, 1), (2, 1), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
 
 
 A*:
 ----------------------------------------------------------------
-Execution time: 3.418s
+Execution time: 3.2192s
 N° of states expanded: 13787
-Max n° of states in memory: 16
+Max n° of states in memory: 41359
 Solution: [(1, 3), (2, 3), (2, 2), (2, 1), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
 
 

@@ -12,7 +12,7 @@
 
 IDS:
 ----------------------------------------------------------------
-Execution time: 0.0139s
+Execution time: 0.0135s
 N° of states expanded: 132
 Max n° of states in memory: 12
 Solution: [(0, 1), (0, 0), (1, 0), (1, 1), (2, 1), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
@@ -20,7 +20,7 @@ Solution: [(0, 1), (0, 0), (1, 0), (1, 1), (2, 1), (2, 0), (3, 0), (4, 0), (4, 1
 
 BFS:
 ----------------------------------------------------------------
-Execution time: 0.0023s
+Execution time: 0.0025s
 N° of states expanded: 16
 Max n° of states in memory: 18
 Solution: [(0, 1), (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
@@ -36,7 +36,7 @@ Solution: [(0, 1), (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3
 
 GREEDY:
 ----------------------------------------------------------------
-Execution time: 0.0026s
+Execution time: 0.0024s
 N° of states expanded: 12
 Max n° of states in memory: 15
 Solution: [(0, 3), (1, 3), (2, 3), (2, 2), (2, 1), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
@@ -64,7 +64,7 @@ Solution: [(0, 1), (1, 1), (2, 1), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3
 
 IDS:
 ----------------------------------------------------------------
-Execution time: 0.0174s
+Execution time: 0.0159s
 N° of states expanded: 141
 Max n° of states in memory: 13
 Solution: [(0, 2), (0, 1), (0, 0), (1, 0), (1, 1), (2, 1), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
@@ -72,7 +72,7 @@ Solution: [(0, 2), (0, 1), (0, 0), (1, 0), (1, 1), (2, 1), (2, 0), (3, 0), (4, 0
 
 BFS:
 ----------------------------------------------------------------
-Execution time: 0.0026s
+Execution time: 0.0024s
 N° of states expanded: 16
 Max n° of states in memory: 18
 Solution: [(0, 2), (0, 1), (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
@@ -80,7 +80,7 @@ Solution: [(0, 2), (0, 1), (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2
 
 UC:
 ----------------------------------------------------------------
-Execution time: 0.0027s
+Execution time: 0.0025s
 N° of states expanded: 16
 Max n° of states in memory: 18
 Solution: [(0, 2), (0, 1), (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
@@ -88,7 +88,7 @@ Solution: [(0, 2), (0, 1), (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2
 
 GREEDY:
 ----------------------------------------------------------------
-Execution time: 0.0026s
+Execution time: 0.0025s
 N° of states expanded: 12
 Max n° of states in memory: 15
 Solution: [(1, 3), (2, 3), (2, 2), (2, 1), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
@@ -96,7 +96,7 @@ Solution: [(1, 3), (2, 3), (2, 2), (2, 1), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2
 
 A*:
 ----------------------------------------------------------------
-Execution time: 0.0037s
+Execution time: 0.0035s
 N° of states expanded: 16
 Max n° of states in memory: 18
 Solution: [(1, 3), (2, 3), (2, 2), (2, 1), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3)]
@@ -116,15 +116,15 @@ Solution: [(1, 3), (2, 3), (2, 2), (2, 1), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2
 
 IDS:
 ----------------------------------------------------------------
-Execution time: 0.0165s
+Execution time: 0.0148s
 N° of states expanded: 148
-Max n° of states in memory: 11
+Max n° of states in memory: 12
 Solution: None
 
 
 BFS:
 ----------------------------------------------------------------
-Execution time: 0.0024s
+Execution time: 0.0023s
 N° of states expanded: 15
 Max n° of states in memory: 19
 Solution: None
@@ -132,7 +132,7 @@ Solution: None
 
 UC:
 ----------------------------------------------------------------
-Execution time: 0.0025s
+Execution time: 0.0022s
 N° of states expanded: 15
 Max n° of states in memory: 19
 Solution: None
@@ -140,7 +140,7 @@ Solution: None
 
 GREEDY:
 ----------------------------------------------------------------
-Execution time: 0.0034s
+Execution time: 0.0031s
 N° of states expanded: 15
 Max n° of states in memory: 20
 Solution: None
@@ -148,7 +148,7 @@ Solution: None
 
 A*:
 ----------------------------------------------------------------
-Execution time: 0.0036s
+Execution time: 0.0033s
 N° of states expanded: 15
 Max n° of states in memory: 20
 Solution: None
