@@ -13,23 +13,24 @@ env.render()
 # Start and goal state identifiers and (x, y) coordinates
 start = env.startstate
 goal = env.goalstate
-print("Start: {0} - {1}\nGoal: {2} - {3}".format(start, env.state_to_pos(start), goal, env.state_to_pos(goal)))
+print("\nStart: {0} - {1}\nGoal: {2} - {3}\n".format(start, env.state_to_pos(start), goal, env.state_to_pos(goal)))
 
 # Available actions
-print("Available actions: ", env.actions)
+print("Available actions: ", env.actions, "\n")
 
 # Children of the start state (actions are deterministic in this environment)
 for action in range(env.action_space.n):  # Loop over the available actions
-    print("From state {0} with action {1} -> state {2}".format(env.state_to_pos(start), action,
-                                                               env.state_to_pos(env.sample(start, action))))
+    print("From state {0} with action {1} -> state {2}"
+          .format(env.state_to_pos(start), action, env.state_to_pos(env.sample(start, action))))
 
 # How to use the fringe
 fringe = PriorityFringe()
+"""
 # FringeNode constructor takes 4 parameters:
 # 1 - the state embedded in the node
 # 2 - path cost (from the root node to the current one)
 # 3 - the value of the node (used for ordering within PriorityFringe)
-# 4 - parent node (None if we are building the root)
+# 4 - parent node (None if we are building the root) """
 node = FringeNode(start, 0, 0, None)  # Node of the start state
 fringe.add(node)
 
