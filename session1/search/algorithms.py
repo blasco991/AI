@@ -18,8 +18,8 @@ def ids(problem, stype):
     t, depth, stats, cutoff, solution = timer(), 0, (), True, None
 
     while cutoff:
-        depth += 1
         solution, cutoff, stats = stype(problem, depth)
+        depth += 1
     return solution, (timer() - t, stats[1], stats[2])
 
 
@@ -59,7 +59,7 @@ def rdls_ts(problem, node, limit):
         depth += temp_max
 
         if isinstance(result, tuple):
-            return result, cutoff, exp_nodes, depth
+            return result, False, exp_nodes, depth
 
     if cutoff:
         return "cutoff", True, exp_nodes, node.pathcost + limit
@@ -255,10 +255,10 @@ def tree_search(problem, fringe, f=lambda n, c: 0):
         if node.state == problem.goalstate:
             return build_path(node), [i, max_states]
 
+        i += 1
         for action in range(problem.action_space.n):
-            i += 1
-            fringe.add(FringeNode(problem.sample(node.state, action), node.pathcost + 1,
-                                  f(node, problem.sample(node.state, action)), node))
+            child_state = problem.sample(node.state, action)
+            fringe.add(FringeNode(child_state, node.pathcost + 1, f(node, child_state), node))
 
 
 def tree_search_plus(problem, fringe, f=lambda n, c: 0):

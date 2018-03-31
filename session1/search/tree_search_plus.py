@@ -28,29 +28,36 @@ for envname in envs:
           .format(round(stats[0], 4), stats[1], stats[2], solution))
 
     # BFS
-    solution, stats = search.bfs(env, search.tree_search)
+    solution, stats = search.bfs(env, search.tree_search_plus)
     if solution is not None:
         solution = [env.state_to_pos(s) for s in solution]
-    print("\n\nBFS:\n----------------------------------------------------------------"
+    print("\n\nBFS TS+:\n----------------------------------------------------------------"
           "\nExecution time: {0}s\nN° of states expanded: {1}\nMax n° of states in memory: {2}\nSolution: {3}"
           .format(round(stats[0], 4), stats[1], stats[2], solution))
 
     # UCS
-    solution, stats = search.ucs(env, search.tree_search)
+    solution, stats = search.ucs(env, search.tree_search_plus)
     if solution is not None:
         solution = [env.state_to_pos(s) for s in solution]
-    print("\n\nUCS:\n----------------------------------------------------------------"
+    print("\n\nUCS TS+:\n----------------------------------------------------------------"
           "\nExecution time: {0}s\nN° of states expanded: {1}\nMax n° of states in memory: {2}\nSolution: {3}"
           .format(round(stats[0], 4), stats[1], stats[2], solution))
 
     # A*
-    solution, stats = search.astar(env, search.tree_search)
+    solution, stats = search.astar(env, search.tree_search_plus)
     if solution is not None:
         solution = [env.state_to_pos(s) for s in solution]
-    print("\n\nA*:\n----------------------------------------------------------------"
+    print("\n\nA* TS+:\n----------------------------------------------------------------"
           "\nExecution time: {0}s\nN° of states expanded: {1}\nMax n° of states in memory: {2}\nSolution: {3}"
           .format(round(stats[0], 4), stats[1], stats[2], solution))
 
+    # Greedy
+    solution, stats = search.greedy(env, search.tree_search_plus)
+    if solution is not None:
+        solution = [env.state_to_pos(s) for s in solution]
+    print("\n\nGreedy TS+:\n----------------------------------------------------------------"
+          "\nExecution time: {0}s\nN° of states expanded: {1}\nMax n° of states in memory: {2}\nSolution: {3}"
+          .format(round(stats[0], 4), stats[1], stats[2], solution))
     """
     # Greedy
     solution, stats = search.greedy(env, search.tree_search)
