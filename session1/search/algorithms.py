@@ -17,10 +17,11 @@ def ids(problem, stype):
     """
     t, depth, stats, cutoff, solution = timer(), 0, (), True, None
 
-    while cutoff:
+    while True:
         solution, cutoff, stats = stype(problem, depth)
         depth += 1
-    return solution, (timer() - t, stats[1], stats[2])
+        if not cutoff:
+            return solution, (timer() - t, stats[1], stats[2])
 
 
 def dls_ts(problem, limit):
@@ -34,37 +35,6 @@ def dls_ts(problem, limit):
     t = timer()
     path, cutoff, expc, maxdepth = rdls_ts(problem, FringeNode(problem.startstate, 0, 0, None), limit)
     return path, cutoff, (timer() - t, expc, maxdepth)
-
-
-def rdls_ts(problem, node, limit):
-    """
-    Recursive depth-limited search (tree search version)
-    :param problem: problem
-    :param node: node to expand
-    :param limit: depth limit budget
-    :return: (path, cutoff, expc, maxdepth): path, cutoff flag, expanded nodes, max depth reached
-    """
-    exp_nodes, cutoff = 0, False
-    depth = 1
-
-    if problem.goalstate == node.state:
-        return build_path(node), False, exp_nodes, node.pathcost
-    elif limit == 0:
-        return "cutoff", True, exp_nodes, node.pathcost
-
-    for action in range(problem.action_space.n):
-        child_node = FringeNode(problem.sample(node.state, action), node.pathcost + 1, 0, node)
-        result, cutoff, temp_expc, temp_max = rdls_ts(problem, child_node, limit - 1)
-        exp_nodes += temp_expc + 1
-        depth += temp_max
-
-        if isinstance(result, tuple):
-            return result, False, exp_nodes, depth
-
-    if cutoff:
-        return "cutoff", True, exp_nodes, node.pathcost + limit
-
-    return None, False, exp_nodes, node.pathcost + limit
 
 
 def dls_gs(problem, limit):
@@ -81,6 +51,39 @@ def dls_gs(problem, limit):
     return path, cutoff, (timer() - t, expc, maxdepth)
 
 
+def rdls_ts(problem, node, limit):
+    """
+    Recursive depth-limited search (tree search version)
+    :param problem: problem
+    :param node: node to expand
+    :param limit: depth limit budget
+    :return: (path, cutoff, expc, maxdepth): path, cutoff flag, expanded nodes, max depth reached
+    """
+
+    if problem.goalstate == node.state:
+        return build_path(node), False, 0, node.pathcost
+    if limit == 0:
+        return None, True, 0, node.pathcost
+
+    exp_nodes, cutoff = 1, False
+    depth = 1
+    depth_max = 0
+
+    for action in range(problem.action_space.n):
+        child_node = FringeNode(problem.sample(node.state, action), node.pathcost + 1, 0, node)
+        result, cutoff, temp_expc, depth_max = rdls_ts(problem, child_node, limit - 1)
+        depth = depth_max if depth_max > depth else depth
+        exp_nodes += temp_expc
+
+        if result is not None:
+            return result, False, exp_nodes, depth
+
+    if cutoff:
+        return None, True, exp_nodes, depth_max
+
+    return None, False, exp_nodes, node.pathcost + limit
+
+
 def rdls_gs(problem, node, limit, closed):
     """
     Recursive depth-limited search (graph search version)
@@ -94,9 +97,9 @@ def rdls_gs(problem, node, limit, closed):
     depth = 1
 
     if problem.goalstate == node.state:
-        return build_path(node), cutoff, exp_nodes, node.pathcost
-    elif limit == 0:
-        return "cutoff", True, exp_nodes, node.pathcost
+        return build_path(node), False, exp_nodes, node.pathcost
+    if limit == 0:
+        return None, True, exp_nodes, node.pathcost
 
     if node.state not in closed:
         closed.add(node.state)
@@ -104,16 +107,16 @@ def rdls_gs(problem, node, limit, closed):
         for action in range(problem.action_space.n):
             child_node = FringeNode(problem.sample(node.state, action), node.pathcost + 1, 0, node)
             result, cutoff, temp_exp_nodes, temp_max = rdls_gs(problem, child_node, limit - 1, closed)
-            exp_nodes += temp_exp_nodes + 1
+            exp_nodes += temp_exp_nodes
             depth += temp_max
 
-            if isinstance(result, tuple):
+            if result is not None:
                 return result, cutoff, exp_nodes, depth
 
     if cutoff:
-        return "cutoff", True, exp_nodes, node.pathcost + limit
+        return None, True, exp_nodes, node.pathcost + limit
 
-    return None, cutoff, exp_nodes, node.pathcost + limit
+    return None, False, exp_nodes, node.pathcost + limit
 
 
 def bfs(problem, stype):
@@ -145,9 +148,7 @@ def ucs(problem, stype):
         :param c: child state of 'n'
         :return: path cost from root to 'c'
         """
-        if n is None:
-            return 0
-        return n.pathcost + 1
+        return (n.pathcost + 1) if n is not None else 0
 
     t = timer()
     path, stats = stype(problem, PriorityFringe(), g)
@@ -170,7 +171,8 @@ def greedy(problem, stype):
         :param c:
         :return: L1 norm distance value
         """
-        return heuristics.l1_norm(problem.state_to_pos(n.state), problem.state_to_pos(problem.goalstate))
+        return heuristics.l1_norm(problem.state_to_pos(n.state), problem.state_to_pos(problem.goalstate)) \
+            if n is not None else 0
 
     t = timer()
     path, stats = stype(problem, PriorityFringe(), h)
@@ -193,7 +195,8 @@ def astar(problem, stype):
         :param c:
         :return: L1 norm distance value
         """
-        return n.pathcost + heuristics.l1_norm(problem.state_to_pos(n.state), problem.state_to_pos(problem.goalstate))
+        return n.pathcost + heuristics.l1_norm(problem.state_to_pos(n.state), problem.state_to_pos(problem.goalstate)) \
+            if n is not None else 0
 
     t = timer()
     path, stats = stype(problem, PriorityFringe(), f)
@@ -211,7 +214,7 @@ def graph_search(problem, fringe, f=lambda n, c: 0):
     """
     closed = set()
     i, max_states = 1, 0
-    fringe.add(FringeNode(problem.startstate, 0, 0, None))
+    fringe.add(FringeNode(problem.startstate, 0, f(None, 0), None))
 
     while i > 0:
         tmp = len(fringe.fringe) + len(closed)
@@ -228,7 +231,7 @@ def graph_search(problem, fringe, f=lambda n, c: 0):
             closed.add(node.state)
             for action in range(problem.action_space.n):
                 state = problem.sample(node.state, action)
-                if state not in fringe:
+                if state not in fringe and state not in closed:
                     i += 1
                     fringe.add(FringeNode(state, node.pathcost + 1, f(node, state), node))
 
@@ -242,7 +245,7 @@ def tree_search(problem, fringe, f=lambda n, c: 0):
     :return: (path, stats): solution as a path and stats
     The stats are a tuple of (expc, maxstates): number of expansions, max states in memory
     """
-    i, max_states = 1, 0
+    i, max_states = 0, 0
     fringe.add(FringeNode(problem.startstate, 0, 0, None))
 
     while True:
@@ -283,11 +286,11 @@ def tree_search_plus(problem, fringe, f=lambda n, c: 0):
         if node.state == problem.goalstate:
             return build_path(node), [i, max_states]
 
+        i += 1
         for action in range(problem.action_space.n):
             child_state = problem.sample(node.state, action)
             child_node = FringeNode(child_state, node.pathcost + 1, f(node, child_state), node)
             if child_state not in build_path(node) and child_state not in fringe:
-                i += 1
                 fringe.add(child_node)
 
 
