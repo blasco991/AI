@@ -15,7 +15,7 @@ def ids(problem, stype):
     :return: (path, stats): solution as a path and stats
     The stats are a tuple of (time, npexp, maxdepth): elapsed time, number of expansions, max depth reached
     """
-    t, depth, stats, cutoff, solution = timer(), 0, (), True, None
+    t, depth = timer(), 0
 
     while True:
         solution, cutoff, stats = stype(problem, depth)
@@ -46,7 +46,7 @@ def dls_gs(problem, limit):
     The stats are a tuple of (time, npexp, maxdepth): elapsed time, number node from expansions, max depth reached
     """
     t = timer()
-    closed = set()
+    closed = {problem.startstate}
     path, cutoff, expc, maxdepth = rdls_gs(problem, FringeNode(problem.startstate, 0, 0, None), limit, closed)
     return path, cutoff, (timer() - t, expc, maxdepth)
 
@@ -59,7 +59,6 @@ def rdls_ts(problem, node, limit):
     :param limit: depth limit budget
     :return: (path, cutoff, expc, maxdepth): path, cutoff flag, expanded nodes, max depth reached
     """
-
     if problem.goalstate == node.state:
         return build_path(node), False, 0, node.pathcost
     if limit == 0:
@@ -81,7 +80,7 @@ def rdls_ts(problem, node, limit):
     if cutoff:
         return None, True, exp_nodes, depth_max
 
-    return None, False, exp_nodes, node.pathcost + limit
+    return None, False, exp_nodes, node.pathcost
 
 
 def rdls_gs(problem, node, limit, closed):
@@ -93,30 +92,30 @@ def rdls_gs(problem, node, limit, closed):
     :param closed: completely explored nodes
     :return: (path, cutoff, expc, maxdepth): path, cutoff flag, expanded nodes, max depth reached
     """
-    exp_nodes, cutoff = 0, False
-    depth = 1
-
     if problem.goalstate == node.state:
-        return build_path(node), False, exp_nodes, node.pathcost
+        return build_path(node), False, 0, node.pathcost
     if limit == 0:
-        return None, True, exp_nodes, node.pathcost
+        return None, True, 0, node.pathcost
 
-    if node.state not in closed:
-        closed.add(node.state)
-        exp_nodes += 1
-        for action in range(problem.action_space.n):
-            child_node = FringeNode(problem.sample(node.state, action), node.pathcost + 1, 0, node)
-            result, cutoff, temp_exp_nodes, temp_max = rdls_gs(problem, child_node, limit - 1, closed)
+    exp_nodes, cutoff = 1, False
+    depth = 0
+
+    for action in range(problem.action_space.n):
+        child_node = FringeNode(problem.sample(node.state, action), node.pathcost + 1, 0, node)
+
+        if child_node.state not in closed:
+            closed.add(child_node.state)
+            result, cutoff, temp_exp_nodes, depth_max = rdls_gs(problem, child_node, limit - 1, closed)
+            depth = depth_max if depth_max > depth else depth
             exp_nodes += temp_exp_nodes
-            depth += temp_max
 
             if result is not None:
                 return result, cutoff, exp_nodes, depth
 
     if cutoff:
-        return None, True, exp_nodes, node.pathcost + limit
+        return None, True, exp_nodes, depth
 
-    return None, False, exp_nodes, node.pathcost + limit
+    return None, False, exp_nodes, depth
 
 
 def bfs(problem, stype):
@@ -217,7 +216,7 @@ def graph_search(problem, fringe, f=lambda n, c: 0):
     fringe.add(FringeNode(problem.startstate, 0, f(None, 0), None))
 
     while i > 0:
-        tmp = len(fringe.fringe) + len(closed)
+        tmp = len(fringe) + len(closed)
         max_states = tmp if tmp > max_states else max_states
 
         if fringe.is_empty():
@@ -249,7 +248,7 @@ def tree_search(problem, fringe, f=lambda n, c: 0):
     fringe.add(FringeNode(problem.startstate, 0, 0, None))
 
     while True:
-        max_states = len(fringe.fringe) if len(fringe.fringe) > max_states else max_states
+        max_states = len(fringe) if len(fringe) > max_states else max_states
 
         if fringe.is_empty():
             return None, [i, max_states]
@@ -277,7 +276,7 @@ def tree_search_plus(problem, fringe, f=lambda n, c: 0):
     fringe.add(FringeNode(problem.startstate, 0, 0, None))
 
     while True:
-        max_states = len(fringe.fringe) if len(fringe.fringe) > max_states else max_states
+        max_states = len(fringe) if len(fringe) > max_states else max_states
 
         if fringe.is_empty():
             return None, [i, max_states]

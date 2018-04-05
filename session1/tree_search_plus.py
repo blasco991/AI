@@ -2,7 +2,7 @@ import gym
 import gym_ai_lab
 import search.algorithms as search
 
-envs = ["SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0"]
+envs = ["SmallMaze-v0", "GrdMaze-v0"]  # , "BlockedMaze-v0"]
 
 for envname in envs:
     print("\n----------------------------------------------------------------")
