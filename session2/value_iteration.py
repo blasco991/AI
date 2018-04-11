@@ -2,6 +2,7 @@ import numpy as np
 import gym
 import gym_ai_lab
 import mdps.passive as mdp
+from timeit import default_timer as timer
 
 
 # Learning parameters
@@ -18,6 +19,9 @@ print("----------------------------------------------------------------\n")
 env = gym.make(envname)
 env.render()
 
+t = timer()
+policy = mdp.value_iteration(env, maxiters, gamma, delta)
+
 print("\n\nValue Iteration:\n----------------------------------------------------------------"
-      "\n{0}".format(np.vectorize(env.actions.get)(mdp.value_iteration(env, maxiters, gamma, delta).reshape(
-                                                                       env.rows, env.cols))))
+      "\nExecution time: {0}s\nPolicy:\n{1}".format(round(timer() - t, 4), np.vectorize(env.actions.get)(policy.reshape(
+                                                                                        env.rows, env.cols))))

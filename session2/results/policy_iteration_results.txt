@@ -9,6 +9,8 @@
 
 Policy Iteration:
 ----------------------------------------------------------------
+Execution time: 0.0005s
+Policy:
 [['D' 'L' 'L' 'L']
  ['D' 'L' 'D' 'L']
  ['R' 'R' 'R' 'L']]
@@ -25,6 +27,8 @@ Policy Iteration:
 
 Policy Iteration:
 ----------------------------------------------------------------
+Execution time: 0.0005s
+Policy:
 [['R' 'R' 'R' 'D']
  ['D' 'L' 'R' 'L']
  ['R' 'R' 'R' 'L']]
@@ -41,6 +45,8 @@ Policy Iteration:
 
 Policy Iteration:
 ----------------------------------------------------------------
-[['L' 'L' 'L' 'U']
- ['L' 'L' 'L' 'L']
- ['L' 'L' 'L' 'L']]
+Execution time: 0.0004s
+Policy:
+[['D' 'L' 'L' 'U']
+ ['D' 'L' 'L' 'L']
+ ['D' 'L' 'L' 'L']]

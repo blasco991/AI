@@ -9,6 +9,8 @@
 
 Value Iteration:
 ----------------------------------------------------------------
+Execution time: 0.0004s
+Policy:
 [['D' 'L' 'L' 'L']
  ['D' 'L' 'D' 'L']
  ['R' 'R' 'R' 'L']]
@@ -25,6 +27,8 @@ Value Iteration:
 
 Value Iteration:
 ----------------------------------------------------------------
+Execution time: 0.0004s
+Policy:
 [['R' 'R' 'R' 'D']
  ['D' 'L' 'R' 'L']
  ['R' 'R' 'R' 'L']]
@@ -41,6 +45,8 @@ Value Iteration:
 
 Value Iteration:
 ----------------------------------------------------------------
+Execution time: 0.001s
+Policy:
 [['L' 'L' 'L' 'U']
  ['L' 'L' 'L' 'L']
  ['L' 'L' 'L' 'L']]
