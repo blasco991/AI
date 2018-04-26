@@ -1,7 +1,7 @@
 import numpy as np
 import gym
 import gym_ai_lab
-import mdps.passive as mdp
+import mdps.planning as mdp
 from timeit import default_timer as timer
 
 

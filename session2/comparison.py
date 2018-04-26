@@ -1,7 +1,7 @@
 import numpy as np
 import gym
 import gym_ai_lab
-import mdps.passive as mdp
+import mdps.planning as mdp
 import mdps.utils as utils
 
 
