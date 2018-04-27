@@ -1,7 +1,7 @@
 import numpy as np
 import gym
 import gym_ai_lab
-import mdps.passive as mdp
+import mdps.planning as mdp
 import mdps.utils as utils
 
 
@@ -42,7 +42,7 @@ series.append({"x": liters, "y": rewards, "ls": "-", "label": "Value Iteration"}
 
 print()
 
-vmaxiters = 10  # Max number of iterations to perform while evaluating a policy
+vmaxiters = 5  # Max number of iterations to perform while evaluating a policy
 rewards = np.zeros(len(liters))  # Rewards array
 c = 0
 
