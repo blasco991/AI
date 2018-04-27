@@ -14,8 +14,6 @@ for envname in envs:
     env = gym.make(envname)
     env.render()
 
-    # Suggestion: test the depth-limited search by itself before IDS
-
     # IDS
     solution, stats = search.ids(env, search.dls_gs)
     if solution is not None:

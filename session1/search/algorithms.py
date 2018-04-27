@@ -46,7 +46,7 @@ def dls_gs(problem, limit):
     The stats are a tuple of (time, npexp, maxdepth): elapsed time, number node from expansions, max depth reached
     """
     t = timer()
-    closed = {problem.startstate}
+    closed = set()
     path, cutoff, expc, maxdepth = rdls_gs(problem, FringeNode(problem.startstate, 0, 0, None), limit, closed)
     return path, cutoff, (timer() - t, expc, maxdepth)
 
@@ -100,20 +100,20 @@ def rdls_gs(problem, node, limit, closed):
     exp_nodes, cutoff = 1, False
     depth = 0
 
-    for action in range(problem.action_space.n):
-        child_node = FringeNode(problem.sample(node.state, action), node.pathcost + 1, 0, node)
-
-        if child_node.state not in closed:
-            closed.add(child_node.state)
-            result, cutoff, temp_exp_nodes, depth_max = rdls_gs(problem, child_node, limit - 1, closed)
+    if node.state not in closed:
+        closed.add(node.state)
+        for action in range(problem.action_space.n):
+            child_node = FringeNode(problem.sample(node.state, action), node.pathcost + 1, 0, node)
+            result, temp_cutoff, temp_exp_nodes, depth_max = rdls_gs(problem, child_node, limit - 1, closed)
             depth = depth_max if depth_max > depth else depth
             exp_nodes += temp_exp_nodes
+            cutoff = cutoff or temp_cutoff
 
             if result is not None:
                 return result, cutoff, exp_nodes, depth
 
-    if cutoff:
-        return None, True, exp_nodes, depth
+        if cutoff:
+            return None, True, exp_nodes, depth
 
     return None, False, exp_nodes, depth
 
