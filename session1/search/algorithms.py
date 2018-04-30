@@ -16,7 +16,7 @@ def print_env(problem):
 def get_color(state, problem):
     color_map = plt.get_cmap('rainbow')
     colors = color_map(np.linspace(0, 1, len(problem.staterange) + 5))
-    return '"{}"'.format(str(colors[state])[1:-1])
+    return '"{}"'.format(str(colors[state+1])[1:-1])
 
 
 def close_dot(dot_string, expanded):
@@ -24,7 +24,7 @@ def close_dot(dot_string, expanded):
 
 
 def dot_init(problem, shape='circle', strict=False):
-    return "{}digraph {} {{\nnodesep=1\nnode [shape={}]\nedge [arrowsize=0.7]\n/*\n{}\n*/\n" \
+    return "{}digraph {} {{\nnodesep=1.5 ranksep=1\nnode [shape={}]\nedge [arrowsize=0.7]\n/*\n{}\n*/\n" \
         .format('strict ' if strict else '', problem.spec._env_name, shape, print_env(problem))
 
 
@@ -35,8 +35,10 @@ def gen_code(node):
 def gen_label(child_node, problem, dotted=False):
     color = get_color(child_node.state, problem)
 
-    return '\n{} [label={} style="filled{}", fillcolor={}]' \
-        .format(gen_code(child_node), child_node.state, ',dotted' if dotted else '', color)
+    return '\n{} [label={} style="filled{}", {} fillcolor={}]' \
+        .format(gen_code(child_node), child_node.state,
+                ',dotted' if dotted else '',
+                'peripheries=2' if problem.goalstate == child_node.state else '', color)
 
 
 def gen_trans(node, child_node, action, problem, accumulator, gl):
