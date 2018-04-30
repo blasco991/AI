@@ -10,6 +10,8 @@ from datastructures.fringe import *
 env = gym.make("SmallMaze-v0")
 env.render()
 
+print(len(env.staterange))
+
 # Start and goal state identifiers and (x, y) coordinates
 start = env.startstate
 goal = env.goalstate

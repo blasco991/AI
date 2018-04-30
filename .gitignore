@@ -102,3 +102,4 @@ ENV/
 
 .idea/workspace.xml
 .idea/inspectionProfiles/
+/session1/artifacts/
