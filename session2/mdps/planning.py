@@ -14,7 +14,8 @@ def value_iteration(problem, maxiters, gamma, delta):
     :param delta: delta value
     :return: policy
     """
-    pass
+    p = np.zeros(problem.observation_space.n, dtype="int8")  # Initial policy
+    return np.asarray(p)
 
 
 def policy_iteration(problem, pmaxiters, vmaxiters, gamma, delta):
@@ -27,4 +28,5 @@ def policy_iteration(problem, pmaxiters, vmaxiters, gamma, delta):
     :param delta: delta value
     :return: policy
     """
-    pass
+    p = np.zeros(problem.observation_space.n, dtype="int8")  # Initial policy
+    return np.asarray(p)
