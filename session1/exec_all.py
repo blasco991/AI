@@ -51,6 +51,6 @@ for stg in ["ts", "tsp", "gs"]:
 
     for filename in os.listdir('{}/dot'.format(path)):
         p = subprocess.Popen(
-            ["/usr/local/bin/dot", "{}/dot/{}".format(path, filename), "-Tpng",
+            ["dot", "{}/dot/{}".format(path, filename), "-Tpng",
              "-o{}/png/{}.png".format(path, filename)])
         print("Generated:\t" + "{}/png/{}.png".format(path, filename))
