@@ -1,11 +1,10 @@
 import os
-import subprocess
-
 import gym
+import subprocess
 import gym_ai_lab
-from urllib.parse import quote
 import search.algorithms as search
 
+path = "artifacts/ts"
 envs = ["SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0"]
 
 for envname in envs:
@@ -23,6 +22,7 @@ for envname in envs:
           "\nExecution time: {0}s\nN° of states expanded: {1}\nMax n° of states in memory: {2}\nSolution: {3}"
           .format(round(stats[0], 4), stats[1], stats[2], solution))
     """
+
     # IDS
     solution, stats, graph = search.ids(env, search.dls_ts)
     if solution is not None:
@@ -30,9 +30,9 @@ for envname in envs:
     print("\n\nIDS:\n----------------------------------------------------------------"
           "\nExecution time: {0}s\nN° of states expanded: {1}\nMax n° of states in memory: {2}\nSolution: {3}"
           .format(round(stats[0], 4), stats[1], stats[2], solution))
-    with open("artifacts/ts/{}_{}.md".format("ids", envname), "w") as text_file:
+    with open("{}/md/{}_{}.md".format(path, envname, "ids"), "w") as text_file:
         print("```plantuml\n{}```".format(graph), file=text_file)
-    with open("artifacts/ts/dot/{}_{}.dot".format("ids", envname), "w") as text_file:
+    with open("{}/dot/{}_{}.dot".format(path, envname, "ids"), "w") as text_file:
         print(graph, file=text_file)
 
     for alg in ["bfs", "ucs", "greedy", "astar"]:
@@ -42,14 +42,12 @@ for envname in envs:
         print("\n\n{}:\n----------------------------------------------------------------"
               "\nExecution time: {}s\nN° of states expanded: {}\nMax n° of states in memory: {}\nSolution: {}"
               .format(alg.upper(), round(stats[0], 4), stats[1], stats[2], solution))
-        with open("artifacts/ts/{}_{}.md".format(alg, envname), "w") as text_file:
+        with open("{}/md/{}_{}.md".format(path, envname, alg), "w") as text_file:
             print("```plantuml\n{}```".format(graph), file=text_file)
-        with open("artifacts/ts/dot/{}_{}.dot".format(alg, envname), "w") as text_file:
+        with open("{}/dot/{}_{}.dot".format(path, envname, alg), "w") as text_file:
             print(graph, file=text_file)
 
-print()
-for filename in os.listdir('artifacts/ts/dot'):
-    p = subprocess.Popen(["/usr/local/bin/dot",
-                          "artifacts/ts/dot/{}".format(filename), "-Tpng",
-                          "-oartifacts/ts/png/{}.png".format(filename)])
-    print("Generated:\t" + "artifacts/ts/png/{}.png".format(filename))
+for filename in os.listdir('{}/dot'.format(path)):
+    p = subprocess.Popen(
+        ["/usr/local/bin/dot", "{}/dot/{}".format(path, filename), "-Tpng", "-o{}/png/{}.png".format(path, filename)])
+    print("Generated:\t" + "{}/png/{}.png".format(path, filename))

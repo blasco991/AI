@@ -14,8 +14,8 @@ def print_env(problem):
 
 
 def get_color(state, problem):
-    cmap = plt.get_cmap('rainbow')
-    colors = cmap(np.linspace(0, 1, len(problem.staterange) + 5))
+    color_map = plt.get_cmap('rainbow')
+    colors = color_map(np.linspace(0, 1, len(problem.staterange) + 5))
     return '"{}"'.format(str(colors[state])[1:-1])
 
 
@@ -33,8 +33,7 @@ def gen_code(node):
 
 
 def gen_label(child_node, problem, dotted=False):
-    color = 'red' if child_node.state == problem.goalstate else 'white'
-    color = 'green' if child_node.state == problem.startstate else get_color(child_node.state, problem)
+    color = get_color(child_node.state, problem)
 
     return '\n{} [label={} style="filled{}", fillcolor={}]' \
         .format(gen_code(child_node), child_node.state, ',dotted' if dotted else '', color)
@@ -236,8 +235,7 @@ def greedy(problem, stype):
             if n is not None else 0
 
     def gl(node, p, dotted=False):
-        color = 'red' if node.state == p.goalstate else 'white'
-        color = 'green' if node.state == p.startstate else get_color(node.state, p)
+        color = get_color(node.state, problem)
 
         return '\n{} [label="<f0>{} |<f1> c:{}" style="filled{}", fillcolor={}]' \
             .format(gen_code(node), node.state, node.pathcost, ',dotted' if dotted else '', color)
@@ -276,8 +274,7 @@ def astar(problem, stype):
             if n is not None else 0
 
     def gl(node, p, dotted=False):
-        color = 'red' if node.state == p.goalstate else 'white'
-        color = 'green' if node.state == p.startstate else get_color(node.state, p)
+        color = get_color(node.state, problem)
 
         return '\n{} [label="<f0>{} |<f1> c:{} |<f2> f: {} ({}+{})", style="filled{}", fillcolor={}]' \
             .format(gen_code(node), node.state, node.pathcost,
@@ -335,18 +332,19 @@ def graph_search(problem, fringe, f=lambda n, c: 0, gl=gen_label, gt=gen_trans, 
                 if child_state not in build_path(node):
                     child_node = FringeNode(child_state, node.pathcost + 1, f(node, child_state), node)
                     dot_string += gt(node, child_node, action, problem, dot_string, gl)
-                    dot_string += gl(node, problem, True)
 
                     if child_state not in fringe and child_state not in closed:
                         fringe.add(child_node)
+                        dot_string += gl(node, problem, True)
 
             if len(fringe) > temp_size:
+                dot_string += gl(node, problem, True)
                 i += 1
 
 
 def tree_search(problem, fringe, f=lambda n, c: 0, gl=gen_label, gt=gen_trans, dot_string=''):
     """
-    Tree search (avoid branch repetition)
+    Tree search
     :param dot_string:
     :param gt:
     :param gl:
@@ -376,6 +374,8 @@ def tree_search(problem, fringe, f=lambda n, c: 0, gl=gen_label, gt=gen_trans, d
             child_node = FringeNode(child_state, node.pathcost + 1, f(node, child_state), node)
             if child_state not in build_path(node) and child_state not in fringe:
                 fringe.add(child_node)
+                dot_string += gl(node, problem, True)
+
             dot_string += gt(node, child_node, action, problem, dot_string, gl)
 
         if len(fringe) > temp_size:
@@ -417,9 +417,9 @@ def tree_search_plus(problem, fringe, f=lambda n, c: 0, gl=gen_label, gt=gen_tra
             child_state = problem.sample(node.state, action)
             if child_state not in build_path(node):
                 child_node = FringeNode(child_state, node.pathcost + 1, f(node, child_state), node)
-                dot_string += gt(node, child_node, action, problem, dot_string, gl)
                 if child_state not in fringe:
                     fringe.add(child_node)
+                    dot_string += gt(node, child_node, action, problem, dot_string, gl)
 
         if len(fringe) > temp_size:
             dot_string += gl(node, problem, True)
