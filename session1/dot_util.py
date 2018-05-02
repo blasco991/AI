@@ -19,12 +19,15 @@ def env_to_html(problem):
     return html
 
 
-def dot_init(problem, shape='circle', strict=False):
-    html_table = '\n\nsubgraph MAP {\nlabel=Map;\nmap [shape=plaintext label=<\
-    <table border="1" cellpadding="5" cellspacing="0" cellborder="1">\n' + env_to_html(problem) + '\n</table>>]}\n'
+def dot_init(problem, shape='circle', strict=False, sub=False, cluster=0):
+    html_table = '\n\nsubgraph MAP {\nlabel=Map;\nmap [shape=plaintext label=<<table' \
+                 ' border="1" cellpadding="5" cellspacing="0" cellborder="1">' + env_to_html(problem) + '</table>>]}\n'
 
-    return "{}digraph {} {{{}\nnodesep=1 ranksep=0.5\nnode [shape={}]\nedge [arrowsize=0.7]\n/*\n{}\n*/\n" \
-        .format('strict ' if strict else '', problem.spec._env_name, html_table, shape, env_to_str(problem))
+    return '{} {} {{\nlabel="{}"\n{}\nnodesep=1 ranksep=0.5\nnode [shape={}]\nedge [arrowsize=0.7]\n/*\n{}\n*/\n' \
+        .format('strict' if strict and not sub else '',
+                'digraph {}'.format(problem.spec._env_name) if not sub else 'subgraph cluster{}'.format(cluster),
+                'Limit: {}'.format(cluster) if sub else problem.spec.id,
+                html_table if not sub else '', shape, env_to_str(problem) if not sub else '')
 
 
 def get_color(state, problem):
@@ -33,7 +36,7 @@ def get_color(state, problem):
     return '"{}"'.format(str(colors[state + 2])[1:-1])
 
 
-def close_dot(dot_string, expanded, node=None):
+def close_dot(dot_string, expanded, gen, node=None):
     if node is not None:
         temp = str()
         for line in dot_string.splitlines():
@@ -44,7 +47,8 @@ def close_dot(dot_string, expanded, node=None):
                 line = line.replace('];', 'color=red ];')
             temp += line + "\n"
         dot_string = temp
-    return dot_string + '\n"#{}"\n}}'.format(expanded)
+    return dot_string + '\n"#exp {}, #gen {}{}" [ shape=box ]\n}}\n' \
+        .format(expanded, gen, ', cost:{}'.format(node.pathcost) if node is not None else '')
 
 
 def gen_code(node):
@@ -83,8 +87,9 @@ def build_path_n(node):
 
 
 def compile_dot_files(path):
+    print('\nCompiling DOT file to PNG')
     for filename in os.listdir('{}/dot'.format(path)):
         subprocess.run(
             ["dot", "{}/dot/{}".format(path, filename), "-Tpng",
              "-o{}/png/{}.png".format(path, filename)])
-    print("\n\nGenerated dot files in:\t{}".format(path))
+    print("\nGenerated dot files in:\t{}".format(path))

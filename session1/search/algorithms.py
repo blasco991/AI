@@ -1,11 +1,24 @@
 """
-Search algorithms: IDS, BFS, UC, GREEDY, A*
+Search algorithms: DFS, IDS, BFS, UCS, GREEDY, A*
 """
 
 from timeit import default_timer as timer
 from datastructures.fringe import *
-from dot_util import dot_init, close_dot, gen_label, gen_trans, gen_code, get_color
+from dot_util import dot_init, close_dot as cs, gen_label, gen_trans, gen_code, get_color
 from search import heuristics
+
+
+def dfs(problem, stype):
+    """
+    Depth-first search
+    :param problem: problem
+    :param stype: type of search: graph or tree (graph_search or tree_search)
+    :return: (path, stats, graph): solution as a path and stats
+    The stats are a tuple of (time, expc, maxstates): elapsed time, number of expansions, max states in memory
+    """
+    t = timer()
+    path, _, stats, graph, node = stype(problem, -1, dot_init(problem))
+    return path, (timer() - t + stats[0], stats[1], stats[2], stats[3]), cs(graph, stats[1], stats[2], node)
 
 
 def ids(problem, stype):
@@ -14,139 +27,52 @@ def ids(problem, stype):
     :param problem: problem
     :param stype: type of search: graph or tree (dls_gs or dls_ts)
     :return: (path, stats): solution as a path and stats
-    The stats are a tuple of (time, npexp, maxdepth): elapsed time, number of expansions, max depth reached
+    The stats are a tuple of (time, npexp, max_depth): elapsed time, number of expansions, max depth reached
     """
-    t, depth = timer(), 0
-
+    t, depth, stats = timer(), 0, [0, 0, 0, 0]
+    graph = dot_init(problem, strict=True)
     while True:
-        solution, cutoff, stats, dot_string = stype(problem, depth)
+        path, cutoff, temp_stats, temp_graph, node = stype(problem, depth, '')
         depth += 1
+        graph += temp_graph
+        stats[:-1] = [x + y for x, y in zip(stats[:-1], temp_stats[:-1])]
+        stats[-1] = stats[-1] if stats[-1] > temp_stats[-1] else temp_stats[-1]
         if not cutoff:
-            return solution, (timer() - t, stats[1], stats[2]), dot_string
+            return path, (timer() - t + stats[0], stats[1], stats[2], stats[3]), cs(graph, stats[1], stats[2], node)
 
 
-def dls_ts(problem, limit):
+def dls_ts(problem, limit, dot_string=''):
     """
     Depth-limited search (tree search)
+    :param dot_string:
     :param problem: problem
     :param limit: depth limit budget
     :return: (path, cutoff, stats): solution as a path, cutoff flag and stats
-    The stats are a tuple of (time, npexp, maxdepth): elapsed time, number of expansions, max depth reached
+    The stats are a tuple of (time, npexp, gen, max_depth): elapsed time, number of expansions, max depth reached
     """
-    t = timer()
-    path, cutoff, expc, maxdepth, dot_string, node = \
-        rdls_ts(problem, FringeNode(problem.startstate, 0, 0, None), limit, dot_init(problem))
-    return path, cutoff, (timer() - t, expc, maxdepth), close_dot(dot_string, expc, node)
+    t, graph = timer(), dot_string if len(dot_string) > 0 else dot_init(problem, sub=True, cluster=limit)
+    path, cutoff, expc, gen, max_depth, graph, node = \
+        _rdls(problem, FringeNode(problem.startstate, 0, 0, None), limit, frozenset(), graph, False)
+    if not len(dot_string) > 0:
+        graph = cs(graph, expc, gen, node if not cutoff else None)
+    return path, cutoff, (timer() - t, expc, gen, max_depth), graph, node
 
 
-def dls_gs(problem, limit):
+def dls_gs(problem, limit, dot_string=''):
     """
     Depth-limited search (graph search)
+    :param dot_string:
     :param problem: problem
     :param limit: depth limit budget
     :return: (path, stats): solution as a path, cutoff flag and stats
-    The stats are a tuple of (time, npexp, maxdepth): elapsed time, number node from expansions, max depth reached
+    The stats are a tuple of (time, npexp, gen, max_depth): elapsed time, number node from expansions, max depth reached
     """
-    t = timer()
-    closed = set()
-    path, cutoff, expc, maxdepth, dot_string, node = \
-        rdls_gs(problem, FringeNode(problem.startstate, 0, 0, None), limit, closed, dot_init(problem))
-    return path, cutoff, (timer() - t, expc, maxdepth), close_dot(dot_string, expc, node)
-
-
-def rdls_ts(problem, node, limit, dot_string=''):
-    """
-    Recursive depth-limited search (tree search version) (avoid branch repetition)
-    :param dot_string:
-    :param problem: problem
-    :param node: node to expand
-    :param limit: depth limit budget
-    :return: (path, cutoff, expc, maxdepth): path, cutoff flag, expanded nodes, max depth reached
-    """
-    dot_string += gen_label(node, problem)
-
-    if problem.goalstate == node.state:
-        return build_path(node), False, 0, node.pathcost, dot_string, node
-    if limit == 0:
-        return None, True, 0, node.pathcost, dot_string, None
-
-    exp_nodes, cutoff = 1, False
-    depth, depth_max = 1, 1
-
-    for action in range(problem.action_space.n):
-        child_state = problem.sample(node.state, action)
-
-        dot_string += gen_label(node, problem, True)
-        child_node = FringeNode(child_state, node.pathcost + 1, 0, node)
-        dot_string += gen_trans(node, child_node, action, problem, dot_string, gen_label)
-
-        if child_state not in build_path(node):
-            result, temp_cutoff, temp_expc, depth_max, temp_dot_string, temp_node = \
-                rdls_ts(problem, child_node, limit - 1)
-
-            if depth_max == node.pathcost:
-                dot_string += gen_label(child_node, problem, True)
-
-            dot_string += temp_dot_string
-            depth = depth_max if depth_max > depth else depth
-            exp_nodes += temp_expc
-            cutoff = cutoff or temp_cutoff
-
-            if result is not None:
-                return result, False, exp_nodes, depth, dot_string, temp_node
-
-    if cutoff:
-        return None, True, exp_nodes, depth_max, dot_string, None
-
-    return None, False, exp_nodes, node.pathcost, dot_string, None
-
-
-def rdls_gs(problem, node, limit, closed, dot_string=''):
-    """
-    Recursive depth-limited search (graph search version)
-    :param dot_string:
-    :param problem: problem
-    :param node: node to expand
-    :param limit: depth limit budget
-    :param closed: completely explored nodes
-    :return: (path, cutoff, expc, maxdepth): path, cutoff flag, expanded nodes, max depth reached
-    """
-    dot_string += gen_label(node, problem)
-
-    if problem.goalstate == node.state:
-        return build_path(node), False, 0, node.pathcost, dot_string, node
-    if limit == 0:
-        return None, True, 0, node.pathcost, dot_string, None
-
-    exp_nodes, cutoff = 1, False
-    depth, depth_max = 1, 1
-
-    if node.state not in closed:
-        closed.add(node.state)
-        for action in range(problem.action_space.n):
-            child_state = problem.sample(node.state, action)
-            dot_string += gen_label(node, problem, True)
-            child_node = FringeNode(child_state, node.pathcost + 1, 0, node)
-            dot_string += gen_trans(node, child_node, action, problem, dot_string, gen_label)
-
-            result, temp_cutoff, temp_exp_nodes, depth_max, temp_dot_string, temp_node = \
-                rdls_gs(problem, child_node, limit - 1, closed)
-
-            if depth_max == node.pathcost:
-                dot_string += gen_label(child_node, problem, True)
-
-            dot_string += temp_dot_string
-            depth = depth_max if depth_max > depth else depth
-            exp_nodes += temp_exp_nodes
-            cutoff = cutoff or temp_cutoff
-
-            if result is not None:
-                return result, cutoff, exp_nodes, depth, dot_string, temp_node
-
-        if cutoff:
-            return None, True, exp_nodes, depth_max, dot_string, None
-
-    return None, False, exp_nodes, depth_max, dot_string, None
+    t, graph = timer(), dot_string if len(dot_string) > 0 else dot_init(problem, sub=True, cluster=limit)
+    path, cutoff, expc, gen, max_depth, graph, node = \
+        _rdls(problem, FringeNode(problem.startstate, 0, 0, None), limit, set(), graph, True)
+    if not len(dot_string) > 0:
+        graph = cs(graph, expc, gen, node if not cutoff else None)
+    return path, cutoff, (timer() - t, expc, gen, max_depth), graph, node
 
 
 def bfs(problem, stype):
@@ -158,8 +84,8 @@ def bfs(problem, stype):
     The stats are a tuple of (time, expc, maxstates): elapsed time, number of expansions, max states in memory
     """
     t = timer()
-    path, stats, graph = stype(problem, QueueFringe(), lambda n, c: 0, gen_label, dot_init(problem))
-    return path, (timer() - t, stats[0], stats[1]), graph
+    path, stats, graph, node = stype(problem, QueueFringe(), lambda n: 0, gen_label, dot_init(problem))
+    return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
 def ucs(problem, stype):
@@ -171,7 +97,7 @@ def ucs(problem, stype):
     The stats are a tuple of (time, expc, maxstates): elapsed time, number of expansions, max states in memory
     """
 
-    def g(n, c):
+    def g(n, c=None):
         """
         Path cost function
         :param n: node
@@ -180,10 +106,9 @@ def ucs(problem, stype):
         """
         return (n.pathcost + 1) if n is not None else 0
 
-    dot_string = dot_init(problem)
     t = timer()
-    path, stats, dot_string = stype(problem, PriorityFringe(), g, gen_label, dot_string)
-    return path, (timer() - t, stats[0], stats[1]), dot_string
+    path, stats, graph, node = stype(problem, PriorityFringe(), g, gen_label, dot_init(problem))
+    return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
 def greedy(problem, stype):
@@ -195,27 +120,26 @@ def greedy(problem, stype):
     The stats are a tuple of (time, expc, maxstates): elapsed time, number of expansions, max states in memory
     """
 
-    def g(n, c):
+    def g(n, c=None):
         """
         Path cost function
         :param n: node
-        :param c:
+        :param c: child state of 'n'
         :return: L1 norm distance value
         """
         return heuristics.l1_norm(problem.state_to_pos(n.state), problem.state_to_pos(problem.goalstate)) \
             if n is not None else 0
 
-    def gl(node, p, exp=False):
-        color = get_color(node.state, p)
+    def gl(n, p, exp=False):
+        color = get_color(n.state, p)
 
         return '\n{} [label="<f0>{} |<f1> c:{}" style=filled color={} fillcolor={}]' \
-            .format(gen_code(node), node.state, node.pathcost,
-                    'black' if exp or problem.goalstate == node.state else 'white', color)
+            .format(gen_code(n), n.state, n.pathcost,
+                    'black' if exp or problem.goalstate == n.state else 'white', color)
 
-    dot_string = dot_init(problem, "record")
     t = timer()
-    path, stats, graph = stype(problem, PriorityFringe(), g, gl, dot_string)
-    return path, (timer() - t, stats[0], stats[1]), graph
+    path, stats, graph, node = stype(problem, PriorityFringe(), g, gl, dot_init(problem, "record"))
+    return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
 def astar(problem, stype):
@@ -227,120 +151,133 @@ def astar(problem, stype):
     The stats are a tuple of (time, expc, maxstates): elapsed time, number of expansions, max states in memory
     """
 
-    def f(n, c):
+    def f(n, c=None):
         """
         f(n) = g(n) + h(n)
         :param n: node
-        :param c:
+        :param c: child state of 'n'
         :return: L1 norm distance value
         """
-        return n.pathcost + heuristics.l1_norm(problem.state_to_pos(n.state),
-                                               problem.state_to_pos(problem.goalstate)) \
+        return n.pathcost + heuristics.l1_norm(problem.state_to_pos(n.state), problem.state_to_pos(problem.goalstate)) \
             if n is not None else 0
 
-    def gl(node, p, exp=False):
-        color = get_color(node.state, p)
+    def gl(n, p, exp=False):
+        color = get_color(n.state, p)
 
         return '\n{} [label="<f0>{} |<f1> c:{} |<f2> f: {} ({}+{})", style=filled color={} fillcolor={}]' \
-            .format(gen_code(node), node.state, node.pathcost,
-                    f(node, None), node.pathcost,
-                    heuristics.l1_norm(p.state_to_pos(node.state), p.state_to_pos(p.goalstate)),
-                    'black' if exp or problem.goalstate == node.state else 'white', color)
+            .format(gen_code(n), n.state, n.pathcost, f(n, None), n.pathcost,
+                    heuristics.l1_norm(p.state_to_pos(n.state), p.state_to_pos(p.goalstate)),
+                    'black' if exp or problem.goalstate == n.state else 'white', color)
 
-    dot_string = dot_init(problem, "record")
     t = timer()
-    path, stats, graph = stype(problem, PriorityFringe(), f, gl, dot_string)
-    return path, (timer() - t, stats[0], stats[1]), graph
+    path, stats, graph, node = stype(problem, PriorityFringe(), f, gl, dot_init(problem, "record"))
+    return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
-def graph_search(problem, fringe, f=lambda n, c: 0, gl=gen_label, dot_string=''):
+def _rdls(problem, node, limit, closed, dot_string='', graph=False, gl=gen_label):
     """
-    Graph search (avoid branch repetition)
+    Recursive depth-limited search (graph search version)
+    :param dot_string:
+    :param problem: problem
+    :param node: node to expand
+    :param limit: depth limit budget
+    :param closed: completely explored nodes
+    :return: (path, cutoff, expc, gen, max_depth): path, cutoff flag, expanded nodes, max depth reached
+    """
+    dot_string += gl(node, problem)
+
+    if problem.goalstate == node.state:
+        return build_path(node), False, 0, 0, node.pathcost, dot_string, node
+    if limit == 0:
+        return None, True, 0, 0, node.pathcost, dot_string, None
+
+    exp_nodes, gen, cutoff = 0, 0, False
+    depth, depth_max = node.pathcost, node.pathcost
+
+    if graph:
+        if node.state not in closed:
+            closed.add(node.state)
+        else:
+            return None, False, exp_nodes, gen, depth_max, dot_string, None
+
+    for action in range(problem.action_space.n):
+        child_node = FringeNode(problem.sample(node.state, action), node.pathcost + 1, 0, node)
+        dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
+        gen += 1
+
+        if child_node.state not in build_path(node):
+            dot_string += gl(node, problem, True)
+
+            result, temp_cutoff, temp_expc, temp_gen, depth, temp_dot_string, temp_node = \
+                _rdls(problem, child_node, limit - 1, closed, '', graph, gl)
+
+            gen += temp_gen
+            exp_nodes += temp_expc + 1
+            dot_string += temp_dot_string
+            cutoff = cutoff or temp_cutoff
+            depth_max = depth if depth > depth_max else depth_max
+            # if depth_max == node.pathcost: dot_string += gl(child_node, problem, True)
+
+            if result is not None:
+                return result, cutoff, exp_nodes, gen, depth_max, dot_string, temp_node
+
+    return None, cutoff, exp_nodes, gen, depth_max, dot_string, None
+
+
+def tree_search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string=''):
+    return _search(problem, fringe, f, gl, dot_string, False)
+
+
+def graph_search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string=''):
+    return _search(problem, fringe, f, gl, dot_string, True)
+
+
+def _search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='', graph=True):
+    """
+    Search (avoid branch repetition)
+    :param graph: enable graph search
     :param dot_string:
     :param gl:
     :param problem: problem
     :param fringe: fringe data structure
     :param f: node evaluation function
     :return: (path, stats): solution as a path and stats
-    The stats are a tuple of (expc, maxstates): number of expansions, max states in memory
+    The stats are a tuple of (expc, #gen, maxstates): number of expansions, generated states, max states in memory
     """
-    closed = set()
-    i, max_states = 1, 0
-    root = FringeNode(problem.startstate, 0, 0, None)
-    fringe.add(root)
-    dot_string += gl(root, problem)
-
-    while i > 0:
-        tmp = len(fringe) + len(closed)
-        max_states = tmp if tmp > max_states else max_states
-
-        if fringe.is_empty():
-            return None, [i, max_states], close_dot(dot_string, max_states)
-
-        node = fringe.remove()
-        if node.state == problem.goalstate:
-            return build_path(node), [i, max_states], close_dot(dot_string, max_states, node)
-
-        if node.state not in closed:
-            closed.add(node.state)
-            temp_size = 0
-            for action in range(problem.action_space.n):
-                child_state = problem.sample(node.state, action)
-                child_node = FringeNode(child_state, node.pathcost + 1, f(node, child_state), node)
-                dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
-
-                if child_state not in build_path(node):
-                    temp_size += 1
-                    if child_state not in fringe and child_state not in closed:
-                        fringe.add(child_node)
-
-            if temp_size > 0:
-                dot_string += gl(node, problem, True)
-                i += 1
-
-
-def tree_search(problem, fringe, f=lambda n, c: 0, gl=gen_label, dot_string='', plus=True):
-    """
-    Tree search
-    :param plus: False for repeat in branch
-    :param dot_string: dot string accumulator
-    :param gl: dot string label generator
-    :param problem: problem
-    :param fringe: fringe data structure
-    :param f: node evaluation function
-    :return: (path, stats): solution as a path and stats
-    The stats are a tuple of (expc, maxstates): number of expansions, max states in memory
-    """
-    i, max_states = 0, 0
+    i, gen, max_states, closed = 0, 1, 0, set()
     root = FringeNode(problem.startstate, 0, 0, None)
     fringe.add(root)
     dot_string += gl(root, problem)
 
     while True:
-
+        max_states = len(fringe) if len(fringe) > max_states else max_states
         if fringe.is_empty():
-            return None, [i, max_states], close_dot(dot_string, i)
+            return None, [i, gen, max_states], dot_string, None
 
         node = fringe.remove()
         if node.state == problem.goalstate:
-            return build_path(node), [i, max_states], close_dot(dot_string, i, node)
+            return build_path(node), [i, gen, max_states], dot_string, node
+
+        if graph:
+            if node.state not in closed:
+                closed.add(node.state)
+            else:
+                continue
 
         temp_size = 0
         for action in range(problem.action_space.n):
-            child_state = problem.sample(node.state, action)
-            child_node = FringeNode(child_state, node.pathcost + 1, f(node, child_state), node)
+            child_node = FringeNode(problem.sample(node.state, action), node.pathcost + 1, f(node), node)
             dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
+            gen += 1
 
-            if child_state not in build_path(node):
+            if child_node.state not in build_path(node):
                 temp_size += 1
-                if child_state not in fringe or not plus:  # TODO this should not be necessary!!
+                if child_node.state not in fringe:
                     fringe.add(child_node)
 
         if temp_size > 0:
             dot_string += gl(node, problem, True)
             i += 1
-
-        max_states = len(fringe) if len(fringe) > max_states else max_states
 
 
 def build_path(node):
