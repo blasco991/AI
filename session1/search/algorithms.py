@@ -36,7 +36,7 @@ def ids(problem, stype):
         depth += 1
         graph += temp_graph
         stats[:-1] = [x + y for x, y in zip(stats[:-1], temp_stats[:-1])]
-        stats[-1] = stats[-1] if stats[-1] > temp_stats[-1] else temp_stats[-1]
+        stats[-1] = max(stats[-1], temp_stats[-1])
         if path is not None or not cutoff:
             return path, (timer() - t + stats[0], stats[1], stats[2], stats[3]), cs(graph, stats[1], stats[2], node)
 
@@ -192,11 +192,6 @@ def _rdls(problem, node, limit, closed, dot_string='', graph=False, gl=gen_label
     """
     dot_string += gl(node, problem)
 
-    if limit == 0:
-        return None, True, 0, 0, node.pathcost, dot_string, None
-    if problem.goalstate == node.state:
-        return build_path(node), False, 0, 0, node.pathcost, dot_string, node
-
     exp_nodes, gen, cutoff = 0, 0, False
     depth, depth_max = node.pathcost, node.pathcost
 
@@ -204,7 +199,12 @@ def _rdls(problem, node, limit, closed, dot_string='', graph=False, gl=gen_label
         if node.state not in closed:
             closed.add(node.state)
         else:
-            return None, False, exp_nodes, gen, depth_max, dot_string, None
+            return None, False, 0, 0, depth_max, dot_string, None
+
+    if limit == 0:
+        return None, True, 1, 0, node.pathcost, dot_string, None
+    if problem.goalstate == node.state:
+        return build_path(node), False, 1, 0, node.pathcost, dot_string, node
 
     for action in range(problem.action_space.n):
         child_node = FringeNode(problem.sample(node.state, action), node.pathcost + 1, 0, node)
@@ -218,10 +218,10 @@ def _rdls(problem, node, limit, closed, dot_string='', graph=False, gl=gen_label
                 _rdls(problem, child_node, limit - 1, closed, '', graph, gl)
 
             gen += temp_gen
-            exp_nodes += temp_expc + 1
+            exp_nodes += temp_expc
             dot_string += temp_dot_string
             cutoff = cutoff or temp_cutoff
-            depth_max = depth if depth > depth_max else depth_max
+            depth_max = max(depth, depth_max)
 
             if result is not None:
                 return result, cutoff, exp_nodes, gen, depth_max, dot_string, temp_node
@@ -255,7 +255,8 @@ def _search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='',
     dot_string += gl(root, problem)
 
     while True:
-        max_states = len(fringe) if len(fringe) > max_states else max_states
+        temp_size = len(fringe) if not closed else len(fringe) + len(closed)
+        max_states = max(max_states, temp_size)
 
         if fringe.is_empty():
             return None, [i, gen, max_states], dot_string, None
@@ -274,11 +275,11 @@ def _search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='',
         has_exp = False
         for action in range(problem.action_space.n):
             child_node = FringeNode(problem.sample(node.state, action), node.pathcost + 1, f(node), node)
-            dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
             has_exp = has_exp or True
             gen += 1
 
             if child_node.state not in build_path(node):
+                dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
                 fringe.add(child_node)
 
         if has_exp:
