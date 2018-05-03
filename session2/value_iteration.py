@@ -7,7 +7,7 @@ from timeit import default_timer as timer
 
 # Learning parameters
 delta = 1e-3
-gamma = 1.0
+gamma = 0.9
 maxiters = 50  # Max number of iterations to perform
 
 envname = "LavaFloor-v0"
