@@ -4,7 +4,6 @@ import gym_ai_lab
 import mdps.planning as mdp
 from timeit import default_timer as timer
 
-
 # Learning parameters
 delta = 1e-3
 gamma = 0.9
@@ -19,10 +18,14 @@ print("----------------------------------------------------------------\n")
 
 env = gym.make(envname)
 env.render()
+print("\n{}".format(env.actions))
 
 t = timer()
-policy = mdp.policy_iteration(env, pmaxiters, vmaxiters, gamma, delta)
+policy, i = mdp.policy_iteration(env, pmaxiters, vmaxiters, gamma, delta)
+policy = policy.reshape(env.rows, env.cols)
 
-print("\n\nPolicy Iteration:\n----------------------------------------------------------------"
-      "\nExecution time: {0}s\nPolicy:\n{1}".format(round(timer() - t, 4), np.vectorize(env.actions.get)(policy.reshape(
-                                                                                        env.rows, env.cols))))
+print("\n\nValue Iteration:\n--------------------------------------------"
+      "\nExecution time: {}s\n"
+      "\nPolicy:\n\n{}\n"
+      "\niterations: {}\n\n"
+      .format(round(timer() - t, 4), np.vectorize(env.actions.get)(policy), i))
