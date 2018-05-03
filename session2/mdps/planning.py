@@ -1,6 +1,7 @@
 """
 Passive MDP solving algorithms
 """
+import sys
 
 import numpy as np
 
@@ -14,7 +15,25 @@ def value_iteration(problem, maxiters, gamma, delta):
     :param delta: delta value
     :return: policy
     """
-    pass
+    print(problem, maxiters, gamma, delta)
+    V = [0 for _ in range(problem.grid.size)]
+    Vp = [sys.maxsize for _ in range(problem.grid.size)]
+    viter = 0
+
+    while False:
+        Vp = V
+        viter += 1
+        for i, s in enumerate(problem.observation_space):
+            # V[s] = max_arg()
+            continue
+
+    pi = [0 for _ in range(problem.grid.size)]
+
+    for i, s in enumerate(problem.observation_space):
+        # V[s] = max_arg()
+        continue
+
+    return pi
 
 
 def policy_iteration(problem, pmaxiters, vmaxiters, gamma, delta):
@@ -27,4 +46,4 @@ def policy_iteration(problem, pmaxiters, vmaxiters, gamma, delta):
     :param delta: delta value
     :return: policy
     """
-    pass
+    # print(problem, pmaxiters, vmaxiters, gamma, delta)

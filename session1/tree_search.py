@@ -4,7 +4,9 @@ import search.algorithms as search
 from dot_util import compile_dot_files, close_dot
 
 path = "artifacts/ts"
-envs = ["XSMaze-v0","SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", "CompMaze-v0", "BigMaze-v0"]
+# envs = ["XSMaze-v0", "SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", "CompMaze-v0", "BigMaze-v0"]
+envs = ["SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0"]
+
 algs = {"dfs": search.dls_ts, "ids": search.dls_ts, "bfs": search.tree_search, "ucs": search.tree_search,
         "greedy": search.tree_search, "astar": search.tree_search}
 

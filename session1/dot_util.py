@@ -6,15 +6,17 @@ import numpy as np
 
 
 def env_to_str(problem):
-    return problem.grid.reshape(problem.rows, problem.cols)
+    return '/*\n{}\n*/\n'.format(problem.grid.reshape(problem.rows, problem.cols))
 
 
 def env_to_html(problem):
     html = str()
+    i = 0
     for row in problem.grid.reshape(problem.rows, problem.cols):
         html += "<tr>"
         for element in row:
-            html += "<td>{}</td>".format(element)
+            html += "<td>{}:{}</td>".format(element, i)
+            i += 1
         html += "</tr>"
     return html
 
@@ -23,7 +25,7 @@ def dot_init(problem, shape='circle', strict=False, sub=False, cluster=0):
     html_table = '\n\nsubgraph MAP {\nlabel=Map;\nmap [shape=plaintext label=<<table' \
                  ' border="1" cellpadding="5" cellspacing="0" cellborder="1">' + env_to_html(problem) + '</table>>]}\n'
 
-    return '{} {} {{\nlabel="{}"\n{}\nnodesep=1 ranksep=0.5\nnode [shape={}]\nedge [arrowsize=0.7]\n/*\n{}\n*/\n' \
+    return '{} {} {{\nlabel="{}"\n{}\nnodesep=1 ranksep=0.5\nnode [shape={}]\nedge [arrowsize=0.7]\n{}' \
         .format('strict' if strict and not sub else '',
                 'digraph {}'.format(problem.spec._env_name) if not sub else 'subgraph cluster{}'.format(cluster),
                 'Limit: {}'.format(cluster) if sub else problem.spec.id,
@@ -61,7 +63,8 @@ def gen_label(node, problem, exp=False):
 
     return '\n{} [label={} style=filled color={} {} fillcolor={}]' \
         .format(gen_code(node), node.state,
-                'black' if exp or problem.goalstate == node.state else 'white',
+                'black' if exp or node.state == problem.goalstate else 'white',
+                # '{}'.format('red' if node.state == problem.goalstate else 'white') if exp else 'white',
                 'peripheries=2' if problem.goalstate == node.state else '', color)
 
 

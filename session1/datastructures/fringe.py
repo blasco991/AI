@@ -11,7 +11,6 @@ class FringeNode:
     """
     Fringe state representation
     """
-
     def __init__(self, state, pathcost, value, parent):
         """
         Creates a representation of a node in the fringe
@@ -46,7 +45,6 @@ class Fringe(ABC):
     """
     General fringe abstract class
     """
-
     def __init__(self, fringe=None):
         """
         Initializes the fringe
@@ -54,13 +52,14 @@ class Fringe(ABC):
         """
         self.fringe = fringe
         self.frdict = {}  # For quick access to fringe content
+        self.frlen = 0
 
     def is_empty(self):
         """
         Checks if the fringe is empty
         :return: True if empty, False otherwise
         """
-        return len(self.frdict) == 0
+        return self.frlen == 0
 
     @abstractmethod
     def add(self, n):
@@ -77,6 +76,7 @@ class Fringe(ABC):
         """
         self.frdict[n.state].removed = True
         self.frdict[n.state] = n
+        self.frlen -= 1
         self.add(n)
 
     @abstractmethod
@@ -115,39 +115,21 @@ class QueueFringe(Fringe):
     """
     Queue implementation of the fringe (FIFO)
     """
-
     def __init__(self):
         super().__init__(deque())
 
     def add(self, n):
         self.frdict[n.state] = n
         self.fringe.append(n)
+        self.frlen += 1
 
     def remove(self):
         while True:
             n = self.fringe.popleft()
             if not n.removed:
-                del self.frdict[n.state]
-            return n
-
-
-class PriorityFringe(Fringe):
-    """
-    Orderer implementation of the fringe
-    """
-
-    def __init__(self):
-        super().__init__([])
-
-    def add(self, n):
-        heapq.heappush(self.fringe, n)
-        self.frdict[n.state] = n
-
-    def remove(self):
-        while True:
-            n = heapq.heappop(self.fringe)
-            if not n.removed:
-                del self.frdict[n.state]
+                if n.state in self.frdict:
+                    del self.frdict[n.state]
+                self.frlen -= 1
                 return n
 
 
@@ -155,17 +137,41 @@ class StackFringe(Fringe):
     """
     Stack implementation of the fringe (LIFO)
     """
-
     def __init__(self):
         super().__init__([])
 
     def add(self, n):
         self.frdict[n.state] = n
         self.fringe.append(n)
+        self.frlen += 1
 
     def remove(self):
         while True:
             n = self.fringe.pop()
             if not n.removed:
-                del self.frdict[n.state]
+                if n.state in self.frdict:
+                    del self.frdict[n.state]
+                self.frlen -= 1
+                return n
+
+
+class PriorityFringe(Fringe):
+    """
+    Ordered implementation of the fringe
+    """
+    def __init__(self):
+        super().__init__([])
+
+    def add(self, n):
+        heapq.heappush(self.fringe, n)
+        self.frdict[n.state] = n
+        self.frlen += 1
+
+    def remove(self):
+        while True:
+            n = heapq.heappop(self.fringe)
+            if not n.removed:
+                if n.state in self.frdict:
+                    del self.frdict[n.state]
+                self.frlen -= 1
                 return n
