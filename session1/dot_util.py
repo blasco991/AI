@@ -58,7 +58,7 @@ def gen_code(node):
     return '"' + '.'.join(map(str, build_path(node))) + '"'
 
 
-def gen_label(node, problem, exp=False):
+def gen_label(node, problem, exp=False, j=None):
     color = get_color(node.state, problem)
 
     return '\n{} [label={} style=filled color={} {} fillcolor={}]' \

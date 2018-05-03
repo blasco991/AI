@@ -136,11 +136,13 @@ def greedy(problem, stype):
         return heuristics.l1_norm(problem.state_to_pos(n.state), problem.state_to_pos(problem.goalstate)) \
             if n is not None else 0
 
-    def gl(n, p, exp=False):
+    def gl(n, p, exp=False, j=None):
         color = get_color(n.state, p)
+        code = gen_code(n)
+        label = '{}'.format(n.state) if j is None else '{}  [{}]'.format(n.state, j)
 
         return '\n{} [label="<f0>{} |<f1> c:{}" style=filled color={} fillcolor={}]' \
-            .format(gen_code(n), n.state, n.pathcost,
+            .format(gen_code(n), label, n.pathcost,
                     'black' if exp or problem.goalstate == n.state else 'white', color)
 
     t = timer()
@@ -167,11 +169,12 @@ def astar(problem, stype):
         return n.pathcost + heuristics.l1_norm(problem.state_to_pos(n.state), problem.state_to_pos(problem.goalstate)) \
             if n is not None else 0
 
-    def gl(n, p, exp=False):
+    def gl(n, p, exp=False, j=None):
         color = get_color(n.state, p)
+        label = '{}'.format(n.state) if j is None else '{}  [{}]'.format(n.state, j)
 
         return '\n{} [label="<f0>{} |<f1> c:{} |<f2> f: {} ({}+{})", style=filled color={} fillcolor={}]' \
-            .format(gen_code(n), n.state, n.pathcost, f(n, None), n.pathcost,
+            .format(gen_code(n), label, n.pathcost, f(n, None), n.pathcost,
                     heuristics.l1_norm(p.state_to_pos(n.state), p.state_to_pos(p.goalstate)),
                     'black' if exp or problem.goalstate == n.state else 'white', color)
 
@@ -191,9 +194,7 @@ def _rdls(problem, node, limit, closed, dot_string='', graph=False, gl=gen_label
     :return: (path, cutoff, expc, gen, max_depth): path, cutoff flag, expanded nodes, max depth reached
     """
     dot_string += gl(node, problem)
-
-    exp_nodes, gen, cutoff = 0, 0, False
-    depth, depth_max = node.pathcost, node.pathcost
+    exp_nodes, gen, cutoff, depth, depth_max = 0, 0, False, node.pathcost, node.pathcost
 
     if graph:
         if node.state not in closed:
@@ -249,21 +250,20 @@ def _search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='',
     :return: (path, stats): solution as a path and stats
     The stats are a tuple of (expc, #gen, maxstates): number of expansions, generated states, max states in memory
     """
-    i, gen, max_states, closed = 0, 1, 0, set()
-    root = FringeNode(problem.startstate, 0, 0, None)
+    i, j, gen, max_states, closed, root = 0, 0, 1, 0, set(), FringeNode(problem.startstate, 0, 0, None)
     fringe.add(root)
     dot_string += gl(root, problem)
 
-    while True:
-        temp_size = len(fringe) if not closed else len(fringe) + len(closed)
-        max_states = max(max_states, temp_size)
+    while j >= 0:
+        fringe_size = len(fringe) if not closed else len(fringe) + len(closed)
+        max_states = max(max_states, fringe_size)
 
         if fringe.is_empty():
             return None, [i, gen, max_states], dot_string, None
 
         node = fringe.remove()
         if node.state == problem.goalstate:
-            dot_string += gl(node, problem, True)
+            dot_string += gl(node, problem, True, j)
             return build_path(node), [i, gen, max_states], dot_string, node
 
         if graph:
