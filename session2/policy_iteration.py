@@ -10,7 +10,7 @@ gamma = 0.9
 pmaxiters = 50  # Max number of policy improvements to perform
 vmaxiters = 5  # Max number of iterations to perform while evaluating a policy
 
-envname = "LavaFloor-v0"
+envname = "BiggerLavaFloor-v0"
 
 print("\n----------------------------------------------------------------")
 print("\tEnvironment: ", envname)
@@ -21,11 +21,10 @@ env.render()
 print("\n{}".format(env.actions))
 
 t = timer()
-policy, i = mdp.policy_iteration(env, pmaxiters, vmaxiters, gamma, delta)
+policy = mdp.policy_iteration(env, pmaxiters, vmaxiters, gamma, delta)
 policy = policy.reshape(env.rows, env.cols)
 
 print("\n\nValue Iteration:\n--------------------------------------------"
       "\nExecution time: {}s\n"
       "\nPolicy:\n\n{}\n"
-      "\niterations: {}\n\n"
-      .format(round(timer() - t, 4), np.vectorize(env.actions.get)(policy), i))
+      .format(round(timer() - t, 4), np.vectorize(env.actions.get)(policy)))

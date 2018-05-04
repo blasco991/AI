@@ -15,6 +15,7 @@ print("Start: {0} - {1}\nGoal: {2} - {3}".format(start, env.state_to_pos(start),
 
 # Available actions
 print("Available actions: ", env.actions)
+print("Available actions: ", list(env.actions.keys()))
 
 # Transition probability T(0, 'R', 1): probability of transitioning from state (0, 0) to (0, 1) with action 'R'
 print("T[0, 1, 1]: ", env.T[0, 1, 1])

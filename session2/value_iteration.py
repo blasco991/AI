@@ -20,11 +20,10 @@ env.render()
 print("\n{}".format(env.actions))
 
 t = timer()
-policy, i = mdp.value_iteration(env, maxiters, gamma, delta)
+policy = mdp.value_iteration(env, maxiters, gamma, delta)
 policy = policy.reshape(env.rows, env.cols)
 
 print("\n\nValue Iteration:\n--------------------------------------------"
       "\nExecution time: {}s\n"
       "\nPolicy:\n\n{}\n"
-      "\niterations: {}\n\n"
-      .format(round(timer() - t, 4), np.vectorize(env.actions.get)(policy), i))
+      .format(round(timer() - t, 4), np.vectorize(env.actions.get)(policy)))

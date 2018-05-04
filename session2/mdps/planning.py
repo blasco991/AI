@@ -1,9 +1,12 @@
 """
 Passive MDP solving algorithms
 """
-import sys
 
 import numpy as np
+
+
+def actions_from_state(actions, s):
+    return [actions[s]] if not isinstance(actions, dict) else list(actions.keys())
 
 
 def value_iteration(problem, vmaxiters, gamma, delta):
@@ -15,26 +18,32 @@ def value_iteration(problem, vmaxiters, gamma, delta):
     :param delta: delta value
     :return: policy
     """
-    viter = 0
-    v = [0 for _ in range(problem.observation_space.n)]
-    vp = [1 for _ in range(problem.observation_space.n)]
-    pi = [0 for _ in range(problem.observation_space.n)]
+    return _value_iteration(problem, vmaxiters, gamma, delta, problem.actions)
 
-    while max(np.abs(np.subtract(v, vp))) > delta and viter < vmaxiters:
+
+def _value_iteration(problem, vmaxiters, gamma, delta, actions):
+    viter = 0
+    v = np.zeros(problem.observation_space.n)
+    vp = np.ones(problem.observation_space.n)
+    pi = np.zeros(problem.observation_space.n, dtype="int8")
+
+    while max(np.abs(v - vp)) >= delta and viter < vmaxiters:
         vp = v
         viter += 1
+
         for s in range(problem.observation_space.n):
-            v[s] = max([np.sum([problem.T[s, a, sp] * (problem.R[s, a, sp] + gamma * vp[sp])
+            v[s] = max([np.sum([problem.T[s, a, sp] * (problem.R[s, a, sp] + gamma * v[sp])
                                 for sp in range(problem.observation_space.n)])
-                        for a in problem.actions.keys()])
+                        for a in actions_from_state(actions, s)])
 
     for s in range(problem.observation_space.n):
-        values = {(a, s): np.sum([problem.T[s, a, sp] * (problem.R[s, a, sp] + gamma * vp[sp])
+        values = {(s, a): np.sum([problem.T[s, a, sp] * (problem.R[s, a, sp] + gamma * v[sp])
                                   for sp in range(problem.observation_space.n)])
                   for a in problem.actions.keys()}
-        pi[s] = max(values, key=values.get)[0]
 
-    return np.array(pi).astype(int), viter
+        pi[s] = max(values, key=values.get)[1]
+
+    return np.asarray(pi)
 
 
 def policy_iteration(problem, pmaxiters, vmaxiters, gamma, delta):
@@ -47,28 +56,22 @@ def policy_iteration(problem, pmaxiters, vmaxiters, gamma, delta):
     :param delta: delta value
     :return: policy
     """
-    v = [0 for _ in range(problem.observation_space.n)]
-    vp = [1 for _ in range(problem.observation_space.n)]
-    pi = [0 for _ in range(problem.observation_space.n)]
-    pip = [1 for _ in range(problem.observation_space.n)]
-
     piter = 0
+    v = np.zeros(problem.observation_space.n)
+    vp = np.ones(problem.observation_space.n)
+    pi = np.zeros(problem.observation_space.n, dtype="int8")
+    pip = np.ones(problem.observation_space.n, dtype="int8")
 
     while not np.array_equal(pi, pip) and piter < pmaxiters:
         pip = pi
-        viter = 0
         piter += 1
-        while max(np.abs(np.subtract(v, vp))) > delta and viter < vmaxiters:
-            vp = v
-            viter += 1
-            for s in range(problem.observation_space.n):
-                v[s] = np.sum([problem.T[s, pi[s], sp] * (problem.R[s, pi[s], sp] + gamma * vp[sp])
-                               for sp in range(problem.observation_space.n)])
+
+        pi = _value_iteration(problem, vmaxiters, gamma, delta, pi)
 
         for s in range(problem.observation_space.n):
-            values = {(a, s): np.sum([problem.T[s, a, sp] * (problem.R[s, a, sp] + gamma * vp[sp])
+            values = {(s, a): np.sum([problem.T[s, a, sp] * (problem.R[s, a, sp] + gamma * v[sp])
                                       for sp in range(problem.observation_space.n)])
                       for a in problem.actions.keys()}
-            pi[s] = max(values, key=values.get)[0]
+            pi[s] = max(values, key=values.get)[1]
 
-    return np.array(pi).astype(int), piter
+    return np.asarray(pi)
