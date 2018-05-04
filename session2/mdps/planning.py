@@ -18,7 +18,7 @@ def value_iteration(problem, vmaxiters, gamma, delta):
     :param delta: delta value
     :return: policy
     """
-    return _value_iteration(problem, vmaxiters, gamma, delta, problem.actions)
+    return _value_iteration(problem, vmaxiters, gamma, delta, problem.actions)[0]
 
 
 def _value_iteration(problem, vmaxiters, gamma, delta, actions):
@@ -28,7 +28,7 @@ def _value_iteration(problem, vmaxiters, gamma, delta, actions):
     pi = np.zeros(problem.observation_space.n, dtype="int8")
 
     while max(np.abs(v - vp)) >= delta and viter < vmaxiters:
-        vp = v
+        vp = np.copy(v)
         viter += 1
 
         for s in range(problem.observation_space.n):
@@ -37,13 +37,11 @@ def _value_iteration(problem, vmaxiters, gamma, delta, actions):
                         for a in actions_from_state(actions, s)])
 
     for s in range(problem.observation_space.n):
-        values = {(s, a): np.sum([problem.T[s, a, sp] * (problem.R[s, a, sp] + gamma * v[sp])
-                                  for sp in range(problem.observation_space.n)])
-                  for a in problem.actions.keys()}
+        pi[s] = np.argmax([np.sum([problem.T[s, a, sp] * (problem.R[s, a, sp] + gamma * v[sp])
+                                   for sp in range(problem.observation_space.n)])
+                           for a in problem.actions.keys()])
 
-        pi[s] = max(values, key=values.get)[1]
-
-    return np.asarray(pi)
+    return np.asarray(pi), v
 
 
 def policy_iteration(problem, pmaxiters, vmaxiters, gamma, delta):
@@ -57,8 +55,6 @@ def policy_iteration(problem, pmaxiters, vmaxiters, gamma, delta):
     :return: policy
     """
     piter = 0
-    v = np.zeros(problem.observation_space.n)
-    vp = np.ones(problem.observation_space.n)
     pi = np.zeros(problem.observation_space.n, dtype="int8")
     pip = np.ones(problem.observation_space.n, dtype="int8")
 
@@ -66,12 +62,11 @@ def policy_iteration(problem, pmaxiters, vmaxiters, gamma, delta):
         pip = pi
         piter += 1
 
-        pi = _value_iteration(problem, vmaxiters, gamma, delta, pi)
+        pi, v = _value_iteration(problem, vmaxiters, gamma, delta, pi)
 
         for s in range(problem.observation_space.n):
-            values = {(s, a): np.sum([problem.T[s, a, sp] * (problem.R[s, a, sp] + gamma * v[sp])
-                                      for sp in range(problem.observation_space.n)])
-                      for a in problem.actions.keys()}
-            pi[s] = max(values, key=values.get)[1]
+            pi[s] = np.argmax([np.sum([problem.T[s, a, sp] * (problem.R[s, a, sp] + gamma * v[sp])
+                                       for sp in range(problem.observation_space.n)])
+                               for a in problem.actions.keys()])
 
     return np.asarray(pi)

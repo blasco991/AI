@@ -24,6 +24,10 @@ def run_episode(problem, policy, limit):
     return reward
 
 
+def map_action(action):
+    return {0: '<', 1: '>', 2: '^', 3: 'v'}[action]
+
+
 def plot(series, title, xlabel, ylabel):
     """
     Plots data
