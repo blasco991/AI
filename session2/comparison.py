@@ -10,7 +10,7 @@ delta = 1e-3
 gamma = 0.9
 maxiters = 50  # Max number of iterations to perform
 
-for envname in ["LavaFloor-v0", "VeryBadLavaFloor-v0", "NiceLavaFloor-v0", "BiggerLavaFloor-v0", "HugeLavaFloor-v0"]:
+for envname in ["LavaFloor-v0", "NiceLavaFloor-v0", "VeryBadLavaFloor-v0", "BiggerLavaFloor-v0", "HugeLavaFloor-v0"]:
 
     print("\n----------------------------------------------------------------")
     print("\tEnvironment: ", envname)
@@ -64,4 +64,4 @@ for envname in ["LavaFloor-v0", "VeryBadLavaFloor-v0", "NiceLavaFloor-v0", "Bigg
     np.set_printoptions(linewidth=10000)
     print("Leaning rate comparison:\nVI: {0}\nPI: {1}".format(virewards, pirewards))
 
-    utils.plot(series, "Learning Rate", "Iterations", "Reward")
+    utils.plot(series, '{}'.format(envname), "Iterations", "Reward")

@@ -11,7 +11,7 @@ delta = 1e-3
 gamma = 0.9
 maxiters = 50  # Max number of iterations to perform
 
-for envname in ["LavaFloor-v0", "VeryBadLavaFloor-v0", "NiceLavaFloor-v0", "BiggerLavaFloor-v0", "HugeLavaFloor-v0"]:
+for envname in ["LavaFloor-v0", "NiceLavaFloor-v0", "VeryBadLavaFloor-v0", "BiggerLavaFloor-v0", "HugeLavaFloor-v0"]:
 
     print("\n----------------------------------------------------------------")
     print("\tEnvironment: ", envname)

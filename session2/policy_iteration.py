@@ -12,7 +12,7 @@ gamma = 0.9
 pmaxiters = 50  # Max number of policy improvements to perform
 vmaxiters = 5  # Max number of iterations to perform while evaluating a policy
 
-for envname in ["LavaFloor-v0", "VeryBadLavaFloor-v0", "NiceLavaFloor-v0", "BiggerLavaFloor-v0", "HugeLavaFloor-v0"]:
+for envname in ["LavaFloor-v0", "NiceLavaFloor-v0", "VeryBadLavaFloor-v0", "BiggerLavaFloor-v0", "HugeLavaFloor-v0"]:
 
     print("\n----------------------------------------------------------------")
     print("\tEnvironment: ", envname)
@@ -28,5 +28,5 @@ for envname in ["LavaFloor-v0", "VeryBadLavaFloor-v0", "NiceLavaFloor-v0", "Bigg
 
     print("\n\nValue Iteration:\n--------------------------------------------"
           "\nExecution time: {}s\n"
-          "\nPolicy:\n\n{}\n{}\n"
+          "\nPolicy:\n\n{}\n\n{}\n"
           .format(round(timer() - t, 4), np.vectorize(env.actions.get)(policy), np.vectorize(utils.map_action)(policy)))

@@ -5,10 +5,6 @@ Passive MDP solving algorithms
 import numpy as np
 
 
-def actions_from_state(actions, s):
-    return [actions[s]] if not isinstance(actions, dict) else list(actions.keys())
-
-
 def value_iteration(problem, vmaxiters, gamma, delta):
     """
     Performs the value iteration algorithm for a specific environment.
@@ -18,30 +14,32 @@ def value_iteration(problem, vmaxiters, gamma, delta):
     :param delta: delta value
     :return: policy
     """
-    return _value_iteration(problem, vmaxiters, gamma, delta, problem.actions)[0]
+    return _value_iteration(problem, vmaxiters, gamma, delta)
 
 
-def _value_iteration(problem, vmaxiters, gamma, delta, actions):
-    viter = 0
-    v = np.zeros(problem.observation_space.n)
-    vp = np.ones(problem.observation_space.n)
-    pi = np.zeros(problem.observation_space.n, dtype="int8")
+def _q(s, a, p, r, gamma, v, n):
+    return np.sum((p[s, a, sp] * (r[s, a, sp] + gamma * v[sp]) for sp in range(n)))
 
-    while max(np.abs(v - vp)) >= delta and viter < vmaxiters:
-        vp = np.copy(v)
+
+def _value_iteration(problem, vmaxiters, gamma, delta, policy=None, v=None):
+    viter, n = 0, problem.observation_space.n
+    q, vp, v = np.zeros(n), np.ones(n), np.zeros(n) if v is None else v
+
+    while (np.abs(v - vp)).max() >= delta and viter < vmaxiters:
+        vp = v.copy()
         viter += 1
 
-        for s in range(problem.observation_space.n):
-            v[s] = max([np.sum([problem.T[s, a, sp] * (problem.R[s, a, sp] + gamma * v[sp])
-                                for sp in range(problem.observation_space.n)])
-                        for a in actions_from_state(actions, s)])
+        q = (problem.T * (problem.R + gamma * v)).sum(axis=2)
 
-    for s in range(problem.observation_space.n):
-        pi[s] = np.argmax([np.sum([problem.T[s, a, sp] * (problem.R[s, a, sp] + gamma * v[sp])
-                                   for sp in range(problem.observation_space.n)])
-                           for a in problem.actions.keys()])
+        if policy is not None:
+            for s in range(n):
+                for a in range(problem.action_space.n):
+                    q[s][a] = q[s][a] if a == policy[s] else 1
 
-    return np.asarray(pi), v
+        v = q.max(axis=1)
+
+    return (problem.T * (problem.R + gamma * v)).sum(axis=2).argmax(axis=1) \
+        if policy is None else (v, q)
 
 
 def policy_iteration(problem, pmaxiters, vmaxiters, gamma, delta):
@@ -54,19 +52,17 @@ def policy_iteration(problem, pmaxiters, vmaxiters, gamma, delta):
     :param delta: delta value
     :return: policy
     """
-    piter = 0
-    pi = np.zeros(problem.observation_space.n, dtype="int8")
-    pip = np.ones(problem.observation_space.n, dtype="int8")
+    piter, n = 0, problem.observation_space.n
+    pi, pip = np.zeros(n, dtype="int8"), np.ones(n, dtype="int8")
+    v = np.zeros(n)
+
+    # v, q = _value_iteration(problem, vmaxiters, gamma, delta, pi, np.zeros(n))
 
     while not np.array_equal(pi, pip) and piter < pmaxiters:
-        pip = pi
+        pip = np.copy(pi)
         piter += 1
 
-        pi, v = _value_iteration(problem, vmaxiters, gamma, delta, pi)
+        v, q = _value_iteration(problem, vmaxiters, gamma, delta, pi, v)
+        pi = np.argmax(q, axis=1)
 
-        for s in range(problem.observation_space.n):
-            pi[s] = np.argmax([np.sum([problem.T[s, a, sp] * (problem.R[s, a, sp] + gamma * v[sp])
-                                       for sp in range(problem.observation_space.n)])
-                               for a in problem.actions.keys()])
-
-    return np.asarray(pi)
+    return pi
