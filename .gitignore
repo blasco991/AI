@@ -103,3 +103,8 @@ ENV/
 .idea/workspace.xml
 .idea/inspectionProfiles/
 /session1/artifacts/
+/.idea/ai-lab.iml
+.idea/dictionaries/
+.idea/misc.xml
+.idea/other.xml
+.idea/vcs.xml
