@@ -1,7 +1,7 @@
 import numpy as np
 import gym
 import gym_ai_lab
-import mdps.planning as mdp
+import mdps.planning_iterative as mdp
 from timeit import default_timer as timer
 
 # Learning parameters
@@ -13,7 +13,6 @@ pmaxiters = 50  # Max number of policy improvements to perform
 vmaxiters = 5  # Max number of iterations to perform while evaluating a policy
 
 for envname in ["LavaFloor-v0", "NiceLavaFloor-v0", "VeryBadLavaFloor-v0", "BiggerLavaFloor-v0", "HugeLavaFloor-v0"]:
-
     print("\n----------------------------------------------------------------")
     print("\tEnvironment: ", envname)
     print("----------------------------------------------------------------\n")
