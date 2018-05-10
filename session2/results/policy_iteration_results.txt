@@ -45,7 +45,7 @@ Policy:
 
 Policy Iteration:
 ----------------------------------------------------------------
-Execution time: 0.0004s
+Execution time: 0.0024s
 Policy:
 [['L' 'U' 'L' 'U']
  ['L' 'L' 'L' 'L']
