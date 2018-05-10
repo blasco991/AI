@@ -21,21 +21,14 @@ def value_iteration(problem, vmaxiters, gamma, delta):
 def _value_iteration(problem, vmaxiters, gamma, delta, policy=None, v=None):
     viter, n = 0, problem.observation_space.n
     q, vp, v = np.zeros(n), np.ones(n), np.zeros(n) if v is None else v
+    y = [n for n in range(n)]
 
-    while (np.abs(v - vp)).max() >= delta and viter < vmaxiters:
+    while (np.abs(v - vp)).max() > delta and viter < vmaxiters:
         vp = v.copy()
         viter += 1
 
         if policy is not None:
-            """for s in range(n):
-                v[s] = (problem.T[s, policy[s]:policy[s] + 1, :] * (problem.R[s, policy[s]:policy[s] + 1, :] + gamma * v))
-                .sum()"""
-            """for s in range(n):
-                v[s] = ((problem.T * (problem.R + gamma * v))[s:s + 1, policy[s]:policy[s] + 1, :]).sum()"""
-            """for s in range(n):
-                v[s] = ((problem.T * (problem.R + gamma * v)).take(indices=policy[s], axis=0)).sum()"""
-            v = np.compress([1, 1, 1, 1], problem.T * (problem.R + gamma * v), axis=1).sum(axis=2).max(1)
-
+            v = (problem.T * (problem.R + gamma * v)).sum(axis=2)[y, policy]
         else:
             v = (problem.T * (problem.R + gamma * v)).sum(axis=2).max(axis=1)
 
@@ -54,8 +47,9 @@ def policy_iteration(problem, pmaxiters, vmaxiters, gamma, delta):
     """
     piter, n = 0, problem.observation_space.n
     pi, pip = np.zeros(n, dtype="int8"), np.ones(n, dtype="int8")
+    v = np.zeros(n)
 
-    v = _value_iteration(problem, vmaxiters, gamma, delta, pi, np.zeros(n))
+    # v = _value_iteration(problem, vmaxiters / 4, gamma, delta, pi, np.zeros(n))
 
     while not np.array_equal(pi, pip) and piter < pmaxiters:
         pip = np.copy(pi)
