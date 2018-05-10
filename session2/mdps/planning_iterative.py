@@ -2,8 +2,8 @@
 Passive MDP solving algorithms
 """
 
-import numpy as np
 import gym.spaces
+import numpy as np
 
 
 def value_iteration(problem, vmaxiters, gamma, delta):
@@ -18,20 +18,16 @@ def value_iteration(problem, vmaxiters, gamma, delta):
     return _value_iteration(problem, vmaxiters, gamma, delta)
 
 
-def actions_from_state(actions, s):
-    return [actions[s]] if not isinstance(actions, dict) else list(actions.keys())
-
-
 def _q(s, a, p, gamma, v):
-    return np.sum([p.T[s, a, sp] * (p.R[s, a, sp] + gamma * v[sp])
-                   for sp in range(p.observation_space.n)])
+    return sum([p.T[s, a, sp] * (p.R[s, a, sp] + gamma * v[sp])
+                for sp in range(p.observation_space.n)])
 
 
 def _value_iteration(problem, vmaxiters, gamma, delta, policy=None, v=None):
     viter, n = 0, problem.observation_space.n
     q, vp, v = np.zeros((n, problem.action_space.n)), np.ones(n), np.zeros(n) if v is None else v
 
-    while (np.abs(v - vp)).max() >= delta and viter < vmaxiters:
+    while (np.abs(v - vp)).max() >= delta and viter < vmaxiters:  # Compute Bellman Equation
         vp = v.copy()
         viter += 1
 
@@ -41,7 +37,7 @@ def _value_iteration(problem, vmaxiters, gamma, delta, policy=None, v=None):
             else:
                 for a in range(problem.action_space.n):
                     q[s, a] = _q(s, a, problem, gamma, v)
-                v[s] = q[s].max()
+                v[s] = max(q[s])
 
     return (problem.T * (problem.R + gamma * v)).sum(axis=2).argmax(axis=1) if policy is None else v
 
@@ -61,11 +57,11 @@ def policy_iteration(problem, pmaxiters, vmaxiters, gamma, delta):
 
     v = _value_iteration(problem, vmaxiters, gamma, delta, pi, np.zeros(n))
 
-    while not np.array_equal(pi, pip) and piter < pmaxiters:
+    while not np.array_equal(pi, pip) and piter < pmaxiters:  # Improve policy
         pip = np.copy(pi)
         piter += 1
 
-        v = _value_iteration(problem, vmaxiters, gamma, delta, pi, v)
+        v = _value_iteration(problem, vmaxiters, gamma, delta, pi, v)  # Eval policy
 
         pi = (problem.T * (problem.R + gamma * v)).sum(axis=2).argmax(axis=1)
 
