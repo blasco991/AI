@@ -25,7 +25,7 @@ def dls_gs(problem, limit):
     Depth-limited search (tree search)
     :param problem: problem
     :param limit: depth limit budget
-    :return: (path, stats): solution as a path, cutoff flag and stats
+    :return: (path, cutoff, stats): solution as a path, cutoff flag and stats
     The stats are a tuple of (time, npexp, maxdepth): elapsed time, number of expansions, max depth reached
     """
     pass
