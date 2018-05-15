@@ -25,7 +25,7 @@ for envname in ["LavaFloor-v0", "NiceLavaFloor-v0", "VeryBadLavaFloor-v0", "Bigg
     policy = mdp.policy_iteration(env, pmaxiters, vmaxiters, gamma, delta)
     policy = policy.reshape(env.rows, env.cols)
 
-    print("\n\nValue Iteration:\n--------------------------------------------"
+    print("\n\nPolicy Iteration:\n--------------------------------------------"
           "\nExecution time: {}s\n"
           "\nPolicy:\n\n{}\n\n{}\n"
           .format(round(timer() - t, 4), np.vectorize(env.actions.get)(policy), np.vectorize(utils.map_action)(policy)))
