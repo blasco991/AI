@@ -11,7 +11,7 @@ delta = 1e-3
 gamma = 0.9
 maxiters = 50  # Max number of iterations to perform
 
-envname = "BiggerLavaFloor-v0"
+envname = "LavaFloor-v0"
 
 print("\n----------------------------------------------------------------")
 print("\tEnvironment: ", envname)
@@ -33,12 +33,12 @@ t = timer()
 
 # Value iteration
 for i in liters:
-    reprew = np.zeros(rep)
+    reprew = 0
+    policy = mdp.value_iteration(env, i, gamma, delta)  # Compute policy
     # Repeat multiple times and compute mean reward
-    for j in range(rep):
-        policy = mdp.value_iteration(env, i, gamma, delta)  # Compute policy
-        reprew[j] = utils.run_episode(env, policy, elimit)  # Execute policy
-    virewards[c] = reprew.mean()
+    for _ in range(rep):
+        reprew += utils.run_episode(env, policy, elimit)  # Execute policy
+    virewards[c] = reprew / rep
     c += 1
     print("\rValue Iteration: {0}%".format(int(c / len(liters) * 100)), end="")
 series.append({"x": liters, "y": virewards, "ls": "-", "label": "Value Iteration"})
@@ -51,12 +51,12 @@ c = 0
 
 # Policy iteration
 for i in liters:
-    reprew = np.zeros(rep)
+    reprew = 0
+    policy = mdp.policy_iteration(env, i, vmaxiters, gamma, delta)  # Compute policy
     # Repeat multiple times and compute mean reward
-    for j in range(rep):
-        policy = mdp.policy_iteration(env, i, vmaxiters, gamma, delta)  # Compute policy
-        reprew[j] = utils.run_episode(env, policy, elimit)  # Execute policy
-    pirewards[c] = reprew.mean()
+    for _ in range(rep):
+        reprew += utils.run_episode(env, policy, elimit)  # Execute policy
+    pirewards[c] = reprew / rep
     c += 1
     print("\rPolicy Iteration: {0}%".format(int(c / len(liters) * 100)), end="")
 series.append({"x": liters, "y": pirewards, "ls": "-", "label": "Policy Iteration"})
