@@ -6,6 +6,7 @@ from dot_util import dot_init, close_dot as cs, gen_label, gen_trans, gen_code, 
 from timeit import default_timer as timer
 from datastructures.fringe import *
 from search import heuristics
+import gym.spaces
 
 
 def dfs(problem, stype):
