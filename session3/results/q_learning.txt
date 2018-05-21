@@ -1,0 +1,81 @@
+----------------------------------------------------------------
+	Environment:  CliffWalking-v0
+----------------------------------------------------------------
+
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+x  C  C  C  C  C  C  C  C  C  C  T
+
+
+Execution time: 0.6476s
+Policy:
+[['D' 'L' 'R' 'R' 'R' 'R' 'R' 'R' 'R' 'R' 'R' 'D']
+ ['L' 'U' 'R' 'D' 'R' 'R' 'R' 'R' 'D' 'D' 'R' 'D']
+ ['R' 'R' 'R' 'R' 'R' 'R' 'R' 'R' 'R' 'R' 'R' 'D']
+ ['U' 'U' 'U' 'U' 'U' 'U' 'U' 'U' 'U' 'U' 'U' 'U']]
+
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+x  o  o  o  o  o  o  o  o  o  o  o
+o  C  C  C  C  C  C  C  C  C  C  T
+
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+o  x  o  o  o  o  o  o  o  o  o  o
+o  C  C  C  C  C  C  C  C  C  C  T
+
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  x  o  o  o  o  o  o  o  o  o
+o  C  C  C  C  C  C  C  C  C  C  T
+
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  x  o  o  o  o  o  o  o  o
+o  C  C  C  C  C  C  C  C  C  C  T
+
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  x  o  o  o  o  o  o  o
+o  C  C  C  C  C  C  C  C  C  C  T
+
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  x  o  o  o  o  o  o
+o  C  C  C  C  C  C  C  C  C  C  T
+
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  x  o  o  o  o  o
+o  C  C  C  C  C  C  C  C  C  C  T
+
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  x  o  o  o  o
+o  C  C  C  C  C  C  C  C  C  C  T
+
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  x  o  o  o
+o  C  C  C  C  C  C  C  C  C  C  T
+
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  x  o  o
+o  C  C  C  C  C  C  C  C  C  C  T
+
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  x  o
+o  C  C  C  C  C  C  C  C  C  C  T
+
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  x
+o  C  C  C  C  C  C  C  C  C  C  T
+
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+o  o  o  o  o  o  o  o  o  o  o  o
+o  C  C  C  C  C  C  C  C  C  C  x
