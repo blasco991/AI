@@ -1,8 +1,8 @@
+import numpy as np
 import gym
 import gym_ai_lab
-import numpy as np
-import mdps.utils as utils
 import mdps.planning as mdp
+import mdps.utils as utils
 from timeit import default_timer as timer
 
 # Learning parameters
@@ -32,12 +32,12 @@ for envname in ["LavaFloor-v0", "NiceLavaFloor-v0", "VeryBadLavaFloor-v0", "Bigg
 
     # Value iteration
     for i in liters:
-        reprew = 0
-        policy = mdp.value_iteration(env, i, gamma, delta)  # Compute policy
+        reprew = np.zeros(rep)
         # Repeat multiple times and compute mean reward
-        for _ in range(rep):
-            reprew += utils.run_episode(env, policy, elimit)  # Execute policy
-        virewards[c] = reprew / rep
+        for j in range(rep):
+            policy = mdp.value_iteration(env, i, gamma, delta)  # Compute policy
+            reprew[j] = utils.run_episode(env, policy, elimit)  # Execute policy
+        virewards[c] = reprew.mean()
         c += 1
         print("\rValue Iteration: {0}%".format(int(c / len(liters) * 100)), end="")
     series.append({"x": liters, "y": virewards, "ls": "-", "label": "Value Iteration"})
@@ -50,12 +50,12 @@ for envname in ["LavaFloor-v0", "NiceLavaFloor-v0", "VeryBadLavaFloor-v0", "Bigg
 
     # Policy iteration
     for i in liters:
-        reprew = 0
-        policy = mdp.policy_iteration(env, i, vmaxiters, gamma, delta)  # Compute policy
+        reprew = np.zeros(rep)
         # Repeat multiple times and compute mean reward
-        for _ in range(rep):
-            reprew += utils.run_episode(env, policy, elimit)  # Execute policy
-        pirewards[c] = reprew / rep
+        for j in range(rep):
+            policy = mdp.policy_iteration(env, i, vmaxiters, gamma, delta)  # Compute policy
+            reprew[j] = utils.run_episode(env, policy, elimit)  # Execute policy
+        pirewards[c] = reprew.mean()
         c += 1
         print("\rPolicy Iteration: {0}%".format(int(c / len(liters) * 100)), end="")
     series.append({"x": liters, "y": pirewards, "ls": "-", "label": "Policy Iteration"})
@@ -64,4 +64,4 @@ for envname in ["LavaFloor-v0", "NiceLavaFloor-v0", "VeryBadLavaFloor-v0", "Bigg
     np.set_printoptions(linewidth=10000)
     print("Leaning rate comparison:\nVI: {0}\nPI: {1}".format(virewards, pirewards))
 
-    utils.plot(series, "{}".format(envname), "Iterations", "Reward")
+    utils.plot(series, '{}'.format(envname), "Iterations", "Reward")

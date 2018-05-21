@@ -6,7 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/session2" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/session3" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.6" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.6.0 (C:\Users\marian\AppData\Local\Programs\Python\Python36\python.exe)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="gym-ai-lab" />
   </component>
