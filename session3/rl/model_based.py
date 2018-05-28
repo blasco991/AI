@@ -20,20 +20,14 @@ def model_based(problem, episodes, ep_limit, vmaxiters, gamma, delta):
     :param delta: delta value
     :return: (policy, rews, ep_lengths): final policy, rewards for each episode [array], length of each episode [array]
     """
-    N = problem.observation_space.n
-    A = problem.action_space.n
-
-    pi = np.random.choice(A, N)
-    problem.T = np.zeros((N, A, N), dtype=float)
-    problem.R = np.zeros([N, A, N], dtype=float)
+    N, A = problem.observation_space.n, problem.action_space.n
+    pi, problem.T, problem.R = np.random.choice(A, N), np.zeros((N, A, N)), np.zeros([N, A, N])
     rewards, lengths = np.zeros(episodes), np.zeros(episodes)
 
     for e in range(episodes):
         sT = np.zeros((N, A, N), dtype=int)
         sR = np.zeros((N, A, N), dtype=int)
-        s = problem.reset()
-        done = False
-        i = 0
+        s, done, i = problem.reset(), False, 0
 
         while not done and i < ep_limit:
             sp, r, done, _ = problem.step(pi[s])
@@ -42,12 +36,10 @@ def model_based(problem, episodes, ep_limit, vmaxiters, gamma, delta):
             i += 1
             s = sp
 
-        rewards[e], lengths[e] = sR.sum(), sT.sum()
-
         st_sum = sT.sum(axis=2, keepdims=True)
+        rewards[e], lengths[e] = sR.sum(), st_sum.sum()
         np.divide(sT, st_sum, out=problem.T, where=st_sum != 0)
         np.divide(sR, st_sum, out=problem.R, where=st_sum != 0)
-
         pi = value_iteration(problem, vmaxiters, gamma, delta)
 
     return pi, rewards, lengths
