@@ -22,46 +22,31 @@ def model_based(problem, episodes, ep_limit, vmaxiters, gamma, delta):
     """
     N = problem.observation_space.n
     A = problem.action_space.n
-    problem.T = np.full((N, A, N), 0.25, dtype=float)
-    problem.R = np.full([N, A, N], 1)
+
     pi = np.random.choice(A, N)
+    problem.T = np.zeros((N, A, N), dtype=float)
+    problem.R = np.zeros([N, A, N], dtype=float)
     rewards, lengths = np.zeros(episodes), np.zeros(episodes)
-    episode = []
 
     for e in range(episodes):
-        i = 0
-        reward = 0
-        done = False
+        sT = np.zeros((N, A, N), dtype=int)
+        sR = np.zeros((N, A, N), dtype=int)
         s = problem.reset()
+        done = False
+        i = 0
 
-        # sT = np.full((N, A, N), 0, dtype=int)
-        # sR = np.full((N, A, N), 0, dtype=int)
-
-        episode.append([])
         while not done and i < ep_limit:
             sp, r, done, _ = problem.step(pi[s])
-            episode[e].append((s, pi[s], sp, r))
-            # sT[s, pi[s], sp] += 1
-            # sR[s, pi[s], sp] += r
-
-            reward += r
+            sT[s, pi[s], sp] += 1
+            sR[s, pi[s], sp] += r
             i += 1
             s = sp
 
-        # problem.T += np.divide(sT, sT.sum(axis=2, keepdims=True))  # how i divide by sa??? maybe broadcasting
-        lengths[e], rewards[e] = i, reward
+        rewards[e], lengths[e] = sR.sum(), sT.sum()
 
-        for s in range(N):
-            for a in range(A):
-                sa = len([ei for ei in episode[e] if ei[0] == s and ei[1] == a])
-                for sp in range(N):
-                    match = [ei[3] for ei in episode[e] if ei[0] == s and ei[1] == a and ei[2] == sp]
-                    sasp = len(match)
-                    r = sum(match)
-                    if sa != 0:
-                        problem.T[s, a, sp] = sasp / sa
-                    if sasp != 0:
-                        problem.R[s, a, sp] = r / sasp
+        st_sum = sT.sum(axis=2, keepdims=True)
+        np.divide(sT, st_sum, out=problem.T, where=st_sum != 0)
+        np.divide(sR, st_sum, out=problem.R, where=st_sum != 0)
 
         pi = value_iteration(problem, vmaxiters, gamma, delta)
 

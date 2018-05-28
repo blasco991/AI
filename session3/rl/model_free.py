@@ -47,18 +47,14 @@ def q_learning(problem, episodes, alpha, gamma, expl_func, expl_param):
     for e in range(episodes):
         s = problem.reset()
         done = False
-        reward = 0
-        i = 0
 
         while not done:
             a = expl_func(Q, s, expl_param)
             sp, r, done, _ = problem.step(a)
             Q[s, a] = Q[s, a] + alpha * (r + gamma * (Q[sp, a] - Q[s, a]).max())
-            r += reward
+            rewards[e] += r
+            lengths[e] += 1
             s = sp
-            i += 1
-
-        lengths[e], rewards[e] = i, reward
 
     pi = Q.argmax(axis=1)
 
@@ -82,8 +78,6 @@ def sarsa(problem, episodes, alpha, gamma, expl_func, expl_param):
     rewards, lengths = np.zeros(episodes), np.zeros(episodes)
 
     for e in range(episodes):
-        i = 0
-        reward = 0
         done = False
 
         s = problem.reset()
@@ -92,12 +86,10 @@ def sarsa(problem, episodes, alpha, gamma, expl_func, expl_param):
             sp, r, done, _ = problem.step(a)
             ap = expl_func(Q, sp, expl_param)
             Q[s, a] = Q[s, a] + alpha * (r + gamma * (Q[sp, ap] - Q[s, a]))
-            r += reward
+            rewards[e] += r
+            lengths[e] += 1
             s = sp
             a = ap
-            i += 1
-
-        lengths[e], rewards[e] = i, reward
 
     pi = Q.argmax(axis=1)
 
