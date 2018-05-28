@@ -30,4 +30,4 @@ t = timer()
 policy, rews, lengths = mf.q_learning(env, episodes, alpha, gamma, mf.epsilon_greedy, epsilon)
 print("Execution time: {0}s\nPolicy:\n{1}\n".format(round(timer() - t, 4), np.vectorize(actions.get)(policy.reshape(
     env.shape))))
-utils.run_episode(env, policy, 20, True, 1)
+utils.run_episode(env, policy, 20)

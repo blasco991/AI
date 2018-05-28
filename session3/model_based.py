@@ -5,7 +5,6 @@ import rl.model_based as mb
 import rl.utils as utils
 from timeit import default_timer as timer
 
-
 envname = "CliffWalking-v0"
 
 print("\n----------------------------------------------------------------")
@@ -29,6 +28,6 @@ t = timer()
 
 # Model-Based
 policy, rews, lengths = mb.model_based(env, episodes, ep_limit, vmaxiters, gamma, delta)
-print("Execution time: {0}s\nPolicy:\n{1}\n".format(round(timer() - t, 4), np.vectorize(actions.get)(policy.reshape(
-    env.shape))))
-utils.run_episode(env, policy, 20, True, 1)
+print("\nExecution time: {0}s\nPolicy:\n{1}\n"
+      .format(round(timer() - t, 4), np.vectorize(actions.get)(policy.reshape(env.shape))))
+utils.run_episode(env, policy, 20)
