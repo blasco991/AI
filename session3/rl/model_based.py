@@ -58,8 +58,8 @@ def model_based(problem, episodes, ep_limit, vmaxiters, gamma, delta):
                     match = [ei[3] for ei in episode[e] if ei[0] == s and ei[1] == a and ei[2] == sp]
                     sasp = len(match)
                     r = sum(match)
-                    #if sa != 0:
-                    #    problem.T[s, a, sp] = sasp / sa
+                    if sa != 0:
+                        problem.T[s, a, sp] = sasp / sa
                     if sasp != 0:
                         problem.R[s, a, sp] = r / sasp
 
