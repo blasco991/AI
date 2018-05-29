@@ -39,10 +39,8 @@ def q_learning(problem, episodes, alpha, gamma, expl_func, expl_param):
     :param expl_param: exploration parameter (epsilon, T)
     :return: (policy, rews, ep_lengths): final policy, rewards for each episode [array], length of each episode [array]
     """
-    N = problem.observation_space.n
-    A = problem.action_space.n
-    Q = np.random.rand(N, A)
-    rewards, lengths = np.zeros(episodes), np.zeros(episodes)
+    N, A = problem.observation_space.n, problem.action_space.n
+    Q, rewards, lengths = np.random.rand(N, A), np.zeros(episodes), np.zeros(episodes)
 
     for e in range(episodes):
         s = problem.reset()
@@ -51,7 +49,7 @@ def q_learning(problem, episodes, alpha, gamma, expl_func, expl_param):
         while not done:
             a = expl_func(Q, s, expl_param)
             sp, r, done, _ = problem.step(a)
-            Q[s, a] = Q[s, a] + alpha * (r + gamma * (Q[sp, a] - Q[s, a]).max())
+            Q[s, a] = Q[s, a] + alpha * (r + gamma * (Q[sp, a] - Q[s, a]))
             rewards[e] += r
             lengths[e] += 1
             s = sp
@@ -72,15 +70,11 @@ def sarsa(problem, episodes, alpha, gamma, expl_func, expl_param):
     :param expl_param: exploration parameter (epsilon, T)
     :return: (policy, rews, ep_lengths): final policy, rewards for each episode [array], length of each episode [array]
     """
-    N = problem.observation_space.n
-    A = problem.action_space.n
-    Q = np.random.rand(N, A)
-    rewards, lengths = np.zeros(episodes), np.zeros(episodes)
+    N, A = problem.observation_space.n, problem.action_space.n
+    Q, rewards, lengths = np.random.rand(N, A), np.zeros(episodes), np.zeros(episodes)
 
     for e in range(episodes):
-        done = False
-
-        s = problem.reset()
+        done, s = False, problem.reset()
         a = expl_func(Q, s, expl_param)
         while not done:
             sp, r, done, _ = problem.step(a)
@@ -88,8 +82,7 @@ def sarsa(problem, episodes, alpha, gamma, expl_func, expl_param):
             Q[s, a] = Q[s, a] + alpha * (r + gamma * (Q[sp, ap] - Q[s, a]))
             rewards[e] += r
             lengths[e] += 1
-            s = sp
-            a = ap
+            s, a = sp, ap
 
     pi = Q.argmax(axis=1)
 

@@ -27,7 +27,7 @@ epsilon = 0.1
 t = timer()
 
 # Q-Learning epsilon greedy
-policy, rews, lengths = mf.q_learning(env, episodes, alpha, gamma, mf.epsilon_greedy, epsilon)
+policy, rews, lengths = mf.q_learning(env, episodes, alpha, gamma, mf.softmax, epsilon)
 print("Execution time: {0}s\nPolicy:\n{1}\n".format(round(timer() - t, 4), np.vectorize(actions.get)(policy.reshape(
     env.shape))))
 utils.run_episode(env, policy, 20)
