@@ -23,21 +23,22 @@ def model_based(problem, episodes, ep_limit, vmaxiters, gamma, delta):
     N, A = problem.observation_space.n, problem.action_space.n
     pi, problem.T, problem.R = np.random.choice(A, N), np.zeros((N, A, N)), np.zeros([N, A, N])
     rewards, lengths = np.zeros(episodes), np.zeros(episodes)
+    sT = np.zeros((N, A, N), dtype=int)
+    sR = np.zeros((N, A, N), dtype=int)
 
     for e in range(episodes):
-        sT = np.zeros((N, A, N), dtype=int)
-        sR = np.zeros((N, A, N), dtype=int)
         s, done, i = problem.reset(), False, 0
 
         while not done and i < ep_limit:
             sp, r, done, _ = problem.step(pi[s])
             sT[s, pi[s], sp] += 1
             sR[s, pi[s], sp] += r
+            rewards[e] += r
             i += 1
             s = sp
 
+        lengths[e] += i
         st_sum = sT.sum(axis=2, keepdims=True)
-        rewards[e], lengths[e] = sR.sum(), st_sum.sum()
         np.divide(sT, st_sum, out=problem.T, where=st_sum != 0)
         np.divide(sR, st_sum, out=problem.R, where=st_sum != 0)
         pi = value_iteration(problem, vmaxiters, gamma, delta)

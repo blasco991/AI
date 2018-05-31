@@ -13,7 +13,7 @@ def epsilon_greedy(q, state, epsilon):
     :param epsilon: epsilon parameter
     :return: action
     """
-    return np.random.randint(0, len(q[state])) if np.random.random() < epsilon else q[state].argmax()
+    return q[state].argmax() if np.random.random() >= epsilon else np.random.randint(0, q[state].size)
 
 
 def softmax(q, state, t):
@@ -24,8 +24,8 @@ def softmax(q, state, t):
     :param t: t parameter (temperature)
     :return: action
     """
-    p = np.divide(np.exp(np.divide(q[state], t)), np.sum(np.exp(np.divide(q[state], t)), axis=0))
-    return np.random.choice(len(q[state]), p=p)
+    return np.random \
+        .choice(len(q[state]), p=np.divide(np.exp(np.divide(q[state], t)), np.sum(np.exp(np.divide(q[state], t)))))
 
 
 def q_learning(problem, episodes, alpha, gamma, expl_func, expl_param):
@@ -40,7 +40,7 @@ def q_learning(problem, episodes, alpha, gamma, expl_func, expl_param):
     :return: (policy, rews, ep_lengths): final policy, rewards for each episode [array], length of each episode [array]
     """
     N, A = problem.observation_space.n, problem.action_space.n
-    Q, rewards, lengths = np.random.rand(N, A), np.zeros(episodes), np.zeros(episodes)
+    Q, rewards, lengths = np.zeros([N, A]), np.zeros(episodes), np.zeros(episodes)
 
     for e in range(episodes):
         s = problem.reset()
@@ -71,7 +71,7 @@ def sarsa(problem, episodes, alpha, gamma, expl_func, expl_param):
     :return: (policy, rews, ep_lengths): final policy, rewards for each episode [array], length of each episode [array]
     """
     N, A = problem.observation_space.n, problem.action_space.n
-    Q, rewards, lengths = np.random.rand(N, A), np.zeros(episodes), np.zeros(episodes)
+    Q, rewards, lengths = np.zeros([N, A]), np.zeros(episodes), np.zeros(episodes)
 
     for e in range(episodes):
         done, s = False, problem.reset()

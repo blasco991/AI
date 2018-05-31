@@ -9,7 +9,7 @@ from search import heuristics
 import gym.spaces
 
 
-def dfs(problem, stype):
+def dfs(problem, stype, optimazed=True):
     """
     Depth-first search
     :param problem: problem
@@ -22,7 +22,7 @@ def dfs(problem, stype):
     return path, (timer() - t + stats[0], stats[1], stats[2], stats[3]), cs(graph, stats[1], stats[2], node)
 
 
-def ids(problem, stype):
+def ids(problem, stype, optimazed=True):
     """
     Iterative deepening depth-first search
     :param problem: problem
@@ -82,7 +82,7 @@ def dls_gs(problem, limit, dot_string=''):
     return path, cutoff, (timer() - t, expc, gen, max_depth), graph, node
 
 
-def bfs(problem, stype):
+def bfs(problem, stype, optimazed=True):
     """
     Breadth-first search
     :param problem: problem
@@ -95,7 +95,7 @@ def bfs(problem, stype):
     return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
-def ucs(problem, stype):
+def ucs(problem, stype, optimazed=True):
     """
     Uniform-cost search
     :param problem: problem
@@ -114,13 +114,14 @@ def ucs(problem, stype):
         return (n.pathcost + 1) if n is not None else 0
 
     t = timer()
-    path, stats, graph, node = stype(problem, PriorityFringe(), g, gen_label, dot_init(problem))
+    path, stats, graph, node = stype(problem, PriorityFringe(), g, gen_label, dot_init(problem), optimazed=optimazed)
     return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
-def greedy(problem, stype):
+def greedy(problem, stype, optimazed=True):
     """
     Greedy best-first search
+    :param optimazed:
     :param problem: problem
     :param stype: type of search: graph or tree (graph_search or tree_search)
     :return: (path, stats): solution as a path and stats
@@ -147,13 +148,14 @@ def greedy(problem, stype):
                     'black' if exp or problem.goalstate == n.state else 'white', color)
 
     t = timer()
-    path, stats, graph, node = stype(problem, PriorityFringe(), g, gl, dot_init(problem, "record"))
+    path, stats, graph, node = stype(problem, PriorityFringe(), g, gl, dot_init(problem, "record"), optimazed=optimazed)
     return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
-def astar(problem, stype):
+def astar(problem, stype, optimazed=True):
     """
     A* best-first search
+    :param optimazed:
     :param problem: problem
     :param stype: type of search: graph or tree (graph_search or tree_search)
     :return: (path, stats): solution as a path and stats
@@ -180,11 +182,11 @@ def astar(problem, stype):
                     'black' if exp or problem.goalstate == n.state else 'white', color)
 
     t = timer()
-    path, stats, graph, node = stype(problem, PriorityFringe(), f, gl, dot_init(problem, "record"))
+    path, stats, graph, node = stype(problem, PriorityFringe(), f, gl, dot_init(problem, "record"), optimazed=optimazed)
     return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
-def _rdls(problem, node, limit, closed, dot_string='', graph=False, gl=gen_label):
+def _rdls(problem, node, limit, closed, dot_string='', graph=False, gl=gen_label, optimazed=True):
     """
     Recursive depth-limited search (graph search version)
     :param dot_string:
@@ -213,7 +215,7 @@ def _rdls(problem, node, limit, closed, dot_string='', graph=False, gl=gen_label
         dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
         gen += 1
 
-        if child_node.state not in build_path(node):
+        if child_node.state not in build_path(node) or not optimazed:
             dot_string += gl(node, problem, True)
 
             result, temp_cutoff, temp_expc, temp_gen, depth, temp_dot_string, temp_node = \
@@ -231,15 +233,15 @@ def _rdls(problem, node, limit, closed, dot_string='', graph=False, gl=gen_label
     return None, cutoff, exp_nodes, gen, depth_max, dot_string, None
 
 
-def tree_search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string=''):
-    return _search(problem, fringe, f, gl, dot_string, False)
+def tree_search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='', optimazed=True):
+    return _search(problem, fringe, f, gl, dot_string, False, optimazed)
 
 
-def graph_search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string=''):
-    return _search(problem, fringe, f, gl, dot_string, True)
+def graph_search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='', optimazed=True):
+    return _search(problem, fringe, f, gl, dot_string, True, optimazed)
 
 
-def _search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='', graph=True):
+def _search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='', graph=True, optimazed=True):
     """
     Search (avoid branch repetition)
     :param graph: enable graph search
@@ -279,9 +281,18 @@ def _search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='',
             has_exp = has_exp or True
             gen += 1
 
-            if child_node.state not in build_path(node):
-                dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
-                fringe.add(child_node)
+            if child_node.state not in build_path(node) or not optimazed:
+                if not graph:  # if TREE_SEARCH
+                    dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
+                    fringe.add(child_node)
+                elif child_node.state not in fringe:  # if GRAPH_SEARCH and child_state NOT IN fringe
+                    dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
+                    fringe.add(child_node)
+                else:  # if GRAPH_SEARCH and child_state IN fringe -> check value
+                    f_node = next(n for n in fringe.fringe if node.state == child_node.state)
+                    if child_node.pathcost < f_node.pathcost:
+                        fringe.replace(child_node)
+                        dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
 
         if has_exp:
             dot_string += gl(node, problem, True)

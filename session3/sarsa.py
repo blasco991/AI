@@ -5,7 +5,6 @@ import rl.model_free as mf
 import rl.utils as utils
 from timeit import default_timer as timer
 
-
 envname = "CliffWalking-v0"
 
 print("\n----------------------------------------------------------------")
@@ -25,9 +24,14 @@ gamma = 0.95
 epsilon = 0.1
 
 t = timer()
-
 # SARSA epsilon greedy
-policy, rews, lengths = mf.sarsa(env, episodes, alpha, gamma, mf.epsilon_greedy, epsilon)
-print("Execution time: {0}s\nPolicy:\n{1}\n".format(round(timer() - t, 4), np.vectorize(actions.get)(policy.reshape(
-    env.shape))))
+policy, _, _ = mf.sarsa(env, episodes, alpha, gamma, mf.epsilon_greedy, epsilon)
+print("Execution time: {0}s\nPolicy with epsilon_greedy:\n{1}\n"
+      .format(round(timer() - t, 4), np.vectorize(actions.get)(policy.reshape(env.shape))))
 utils.run_episode(env, policy, 20)
+
+t = timer()
+# SARSA softmax
+policy, _, _ = mf.sarsa(env, episodes, alpha, gamma, mf.softmax, epsilon)
+print("Execution time: {0}s\nPolicy with softmax:\n{1}\n"
+      .format(round(timer() - t, 4), np.vectorize(actions.get)(policy.reshape(env.shape))))

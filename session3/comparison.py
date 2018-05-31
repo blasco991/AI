@@ -43,14 +43,14 @@ lengths = utils.rolling(lengths, window)
 lenser.append({"x": np.arange(1, len(lengths) + 1), "y": lengths, "ls": "-", "label": "Model-Based"})
 
 # Q-Learning
-_, rews, lengths = mf.q_learning(env, episodes, alpha, gamma, mf.epsilon_greedy, epsilon)
+_, rews, lengths = mf.q_learning(env, episodes, alpha, gamma, mf.softmax, epsilon)
 rews = utils.rolling(rews, window)
 rewser.append({"x": np.arange(1, len(rews) + 1), "y": rews, "ls": "-", "label": "Q-Learning"})
 lengths = utils.rolling(lengths, window)
 lenser.append({"x": np.arange(1, len(lengths) + 1), "y": lengths, "ls": "-", "label": "Q-Learning"})
 
 # SARSA
-_, rews, lengths = mf.sarsa(env, episodes, alpha, gamma, mf.epsilon_greedy, epsilon)
+_, rews, lengths = mf.sarsa(env, episodes, alpha, gamma, mf.softmax, epsilon)
 rews = utils.rolling(rews, window)
 rewser.append({"x": np.arange(1, len(rews) + 1), "y": rews, "ls": "-", "label": "SARSA"})
 lengths = utils.rolling(lengths, window)

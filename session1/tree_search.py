@@ -21,7 +21,7 @@ for env_name in envs:
 
     for (alg, method) in algs.items():
 
-        solution, stats, graph = getattr(search, alg)(env, method)
+        solution, stats, graph = getattr(search, alg)(env, method, False)
         if solution is not None:
             solution = [env.state_to_pos(s) for s in solution]
 
