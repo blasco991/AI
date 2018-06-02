@@ -7,24 +7,29 @@ from timeit import default_timer as timer
 from datastructures.fringe import *
 from search import heuristics
 import gym.spaces
+import sys
 
-
-def dfs(problem, stype, optimized=True):
+def dfs(problem, stype, optimized=False):
     """
     Depth-first search
+    :param optimized:
     :param problem: problem
     :param stype: type of search: graph or tree (graph_search or tree_search)
     :return: (path, stats, graph): solution as a path and stats
     The stats are a tuple of (time, expc, max_states): elapsed time, number of expansions, max states in memory
     """
+    sys.setrecursionlimit(1000000)
+    print("recursion limit: ", sys.getrecursionlimit())
+
     t = timer()
-    path, _, stats, graph, node = stype(problem, -1, dot_init(problem))
+    path, _, stats, graph, node = stype(problem, -1, dot_init(problem), optimized=optimized)
     return path, (timer() - t + stats[0], stats[1], stats[2], stats[3]), cs(graph, stats[1], stats[2], node)
 
 
-def ids(problem, stype, optimized=True):
+def ids(problem, stype, optimized=False):
     """
     Iterative deepening depth-first search
+    :param optimized:
     :param problem: problem
     :param stype: type of search: graph or tree (dls_gs or dls_ts)
     :return: (path, stats): solution as a path and stats
@@ -33,18 +38,19 @@ def ids(problem, stype, optimized=True):
     t, depth, stats, cutoff = timer(), 0, [0, 0, 0, 0], True
     graph = dot_init(problem, strict=True)
     while cutoff:
-        path, cutoff, temp_stats, temp_graph, node = stype(problem, depth, '')
+        path, cutoff, temp_stats, temp_graph, node = stype(problem, depth, '', optimized=optimized)
         depth += 1
-        graph += temp_graph
+        #graph += temp_graph
         stats[:-1] = [x + y for x, y in zip(stats[:-1], temp_stats[:-1])]
         stats[-1] = max(stats[-1], temp_stats[-1])
         if path is not None or not cutoff:
             return path, (timer() - t + stats[0], stats[1], stats[2], stats[3]), cs(graph, stats[1], stats[2], node)
 
 
-def dls_ts(problem, limit, dot_string=''):
+def dls_ts(problem, limit, dot_string='', optimized=False):
     """
     Depth-limited search (tree search)
+    :param optimized:
     :param dot_string:
     :param problem: problem
     :param limit: depth limit budget
@@ -54,17 +60,18 @@ def dls_ts(problem, limit, dot_string=''):
     t, graph = timer(), dot_string if len(dot_string) > 0 else dot_init(problem, sub=True, cluster=limit)
 
     path, cutoff, expc, gen, max_depth, graph, node = \
-        _rdls(problem, FringeNode(problem.startstate, 0, 0, None), limit, frozenset(), graph, False)
+        _rdls(problem, FringeNode(problem.startstate, 0, 0, None), limit, frozenset(), graph, optimized=optimized)
 
     if not len(dot_string) > 0:
         graph = cs(graph, expc, gen, node if not cutoff else None)
 
-    return path, cutoff, (timer() - t, expc, gen, max_depth), graph, node
+    return path, cutoff, (timer() - t, expc, gen + 1, max_depth), graph, node
 
 
-def dls_gs(problem, limit, dot_string=''):
+def dls_gs(problem, limit, dot_string='', optimized=False):
     """
     Depth-limited search (graph search)
+    :param optimized:
     :param dot_string:
     :param problem: problem
     :param limit: depth limit budget
@@ -74,15 +81,15 @@ def dls_gs(problem, limit, dot_string=''):
     t, graph = timer(), dot_string if len(dot_string) > 0 else dot_init(problem, sub=True, cluster=limit)
 
     path, cutoff, expc, gen, max_depth, graph, node = \
-        _rdls(problem, FringeNode(problem.startstate, 0, 0, None), limit, set(), graph, True)
+        _rdls(problem, FringeNode(problem.startstate, 0, 0, None), limit, set(), graph, optimized=optimized)
 
     if not len(dot_string) > 0:
         graph = cs(graph, expc, gen, node if not cutoff else None)
 
-    return path, cutoff, (timer() - t, expc, gen, max_depth), graph, node
+    return path, cutoff, (timer() - t, expc, gen + 1, max_depth), graph, node
 
 
-def bfs(problem, stype, optimized=True):
+def bfs(problem, stype, optimized=False):
     """
     Breadth-first search
     :param optimized:
@@ -96,7 +103,7 @@ def bfs(problem, stype, optimized=True):
     return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
-def ucs(problem, stype, optimized=True):
+def ucs(problem, stype, optimized=False):
     """
     Uniform-cost search
     :param optimized:
@@ -120,7 +127,7 @@ def ucs(problem, stype, optimized=True):
     return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
-def greedy(problem, stype, optimized=True):
+def greedy(problem, stype, optimized=False):
     """
     Greedy best-first search
     :param optimized:
@@ -154,7 +161,7 @@ def greedy(problem, stype, optimized=True):
     return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
-def astar(problem, stype, optimized=True):
+def astar(problem, stype, optimized=False):
     """
     A* best-first search
     :param optimized:
@@ -188,7 +195,7 @@ def astar(problem, stype, optimized=True):
     return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
-def _rdls(problem, node, limit, closed, dot_string='', graph=False, gl=gen_label, optimized=True):
+def _rdls(problem, node, limit, closed, dot_string='', graph=False, gl=gen_label, optimized=False):
     """
     Recursive depth-limited search (graph search version)
     :param dot_string:
@@ -198,33 +205,33 @@ def _rdls(problem, node, limit, closed, dot_string='', graph=False, gl=gen_label
     :param closed: completely explored nodes
     :return: (path, cutoff, expc, gen, max_depth): path, cutoff flag, expanded nodes, max depth reached
     """
-    dot_string += gl(node, problem)
+    #dot_string += gl(node, problem)
     exp_nodes, gen, cutoff, depth, depth_max = 0, 0, False, node.pathcost, node.pathcost
 
     if graph:
         if node.state not in closed:
             closed.add(node.state)
         else:
-            return None, False, 0, 0, depth_max, dot_string, None
+            return None, False, exp_nodes, gen, depth_max, dot_string, None
 
-    if limit == 0:
-        return None, True, 1, 0, node.pathcost, dot_string, None
     if problem.goalstate == node.state:
-        return build_path(node), False, 1, 0, node.pathcost, dot_string, node
+        return build_path(node), False, exp_nodes, gen, node.pathcost, dot_string, node
+    if limit == 0:
+        return None, True, exp_nodes, gen, node.pathcost, dot_string, None
 
     for action in range(problem.action_space.n):
         child_node = FringeNode(problem.sample(node.state, action), node.pathcost + 1, 0, node)
-        dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
+        #dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
         gen += 1
 
-        if child_node.state not in build_path(node) or not optimized:
-            dot_string += gl(node, problem, True)
+        if not optimized or child_node.state not in build_path(node):
+            #dot_string += gl(node, problem, True)
 
             result, temp_cutoff, temp_expc, temp_gen, depth, temp_dot_string, temp_node = \
                 _rdls(problem, child_node, limit - 1, closed, '', graph, gl)
 
             gen += temp_gen
-            exp_nodes += temp_expc
+            exp_nodes += temp_expc + 1
             dot_string += temp_dot_string
             cutoff = cutoff or temp_cutoff
             depth_max = max(depth, depth_max)
@@ -235,15 +242,15 @@ def _rdls(problem, node, limit, closed, dot_string='', graph=False, gl=gen_label
     return None, cutoff, exp_nodes, gen, depth_max, dot_string, None
 
 
-def tree_search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='', optimized=True):
+def tree_search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='', optimized=False):
     return _search(problem, fringe, f, gl, dot_string, False, optimized)
 
 
-def graph_search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='', optimized=True):
+def graph_search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='', optimized=False):
     return _search(problem, fringe, f, gl, dot_string, True, optimized)
 
 
-def _search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='', graph=True, optimized=True):
+def _search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='', graph=True, optimized=False):
     """
     Search (avoid branch repetition)
     :param graph: enable graph search
@@ -255,7 +262,7 @@ def _search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='',
     :return: (path, stats): solution as a path and stats
     The stats are a tuple of (expc, generated, max_states): number of expansions, generated states, max states in memory
     """
-    i, j, gen, max_states, closed, root = 0, 0, 1, 0, set(), FringeNode(problem.startstate, 0, 0, None)
+    i, j, gen, max_states, closed, root = 1, 0, 1, 0, set(), FringeNode(problem.startstate, 0, 0, None)
     fringe.add(root)
     dot_string += gl(root, problem)
 
@@ -268,7 +275,7 @@ def _search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='',
 
         node = fringe.remove()
         if node.state == problem.goalstate:
-            dot_string += gl(node, problem, True, j)
+            # dot_string += gl(node, problem, True, j)
             return build_path(node), [i, gen, max_states], dot_string, node
 
         if graph:
@@ -283,22 +290,23 @@ def _search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='',
             has_exp = has_exp or True
             gen += 1
 
-            if child_node.state not in build_path(node) or not optimized:  # avoid branch tree repetition
-                dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
+            if not optimized or child_node.state not in build_path(node):  # avoid branch tree repetition
+                # dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
 
                 if not graph:  # if TREE_SEARCH
                     fringe.add(child_node)
                 else:  # GRAPH_SEARCH
-                    if child_node.state not in fringe.fringe:  # if GRAPH_SEARCH and child_state NOT IN fringe
-                        # if GRAPH_SEARCH and child_state IN fringe -> check pathcost
+                    if child_node.state not in closed and child_node.state not in fringe:
+                        fringe.add(child_node)
+                    elif child_node.state in fringe:
+                        # if GRAPH_SEARCH and child_state NOT IN fringe and not in closed
                         f_node = next((n for n in fringe.fringe if node.state == child_node.state), None)
                         if f_node is not None and child_node.pathcost < f_node.pathcost:
+                            # if GRAPH_SEARCH and child_state IN fringe -> check pathcost
                             fringe.replace(child_node)
-                        else:
-                            fringe.add(child_node)
 
         if has_exp:
-            dot_string += gl(node, problem, True)
+            # dot_string += gl(node, problem, True)
             i += 1
 
 

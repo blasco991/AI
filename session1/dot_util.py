@@ -4,6 +4,9 @@ import subprocess
 import matplotlib.pyplot as plt
 import numpy as np
 
+color_map = plt.get_cmap('rainbow')
+colors = None
+
 
 def env_to_str(problem):
     return '/*\n{}\n*/\n'.format(problem.grid.reshape(problem.rows, problem.cols))
@@ -22,6 +25,8 @@ def env_to_html(problem):
 
 
 def dot_init(problem, shape='circle', strict=False, sub=False, cluster=0):
+    global colors
+    colors = color_map(np.linspace(0, 1, len(problem.staterange) * 2))
     html_table = '\n\nsubgraph MAP {\nlabel=Map;\nmap [shape=plaintext label=<<table' \
                  ' border="1" cellpadding="5" cellspacing="0" cellborder="1">' + env_to_html(problem) + '</table>>]}\n'
 
@@ -33,8 +38,6 @@ def dot_init(problem, shape='circle', strict=False, sub=False, cluster=0):
 
 
 def get_color(state, problem):
-    color_map = plt.get_cmap('rainbow')
-    colors = color_map(np.linspace(0, 1, len(problem.staterange) * 2))
     return '"{}"'.format(str(colors[state + 2])[1:-1])
 
 
