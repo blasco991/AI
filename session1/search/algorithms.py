@@ -7,7 +7,7 @@ from timeit import default_timer as timer
 from datastructures.fringe import *
 from search import heuristics
 import gym.spaces
-import sys
+
 
 def dfs(problem, stype, optimized=False):
     """
@@ -18,9 +18,6 @@ def dfs(problem, stype, optimized=False):
     :return: (path, stats, graph): solution as a path and stats
     The stats are a tuple of (time, expc, max_states): elapsed time, number of expansions, max states in memory
     """
-    sys.setrecursionlimit(1000000)
-    print("recursion limit: ", sys.getrecursionlimit())
-
     t = timer()
     path, _, stats, graph, node = stype(problem, -1, dot_init(problem), optimized=optimized)
     return path, (timer() - t + stats[0], stats[1], stats[2], stats[3]), cs(graph, stats[1], stats[2], node)
@@ -40,11 +37,11 @@ def ids(problem, stype, optimized=False):
     while cutoff:
         path, cutoff, temp_stats, temp_graph, node = stype(problem, depth, '', optimized=optimized)
         depth += 1
-        #graph += temp_graph
+        # graph += temp_graph
         stats[:-1] = [x + y for x, y in zip(stats[:-1], temp_stats[:-1])]
         stats[-1] = max(stats[-1], temp_stats[-1])
         if path is not None or not cutoff:
-            return path, (timer() - t + stats[0], stats[1], stats[2], stats[3]), cs(graph, stats[1], stats[2], node)
+            return path, (timer() - t, stats[1], stats[2], stats[3]), cs(graph, stats[1], stats[2], node)
 
 
 def dls_ts(problem, limit, dot_string='', optimized=False):
@@ -65,7 +62,7 @@ def dls_ts(problem, limit, dot_string='', optimized=False):
     if not len(dot_string) > 0:
         graph = cs(graph, expc, gen, node if not cutoff else None)
 
-    return path, cutoff, (timer() - t, expc, gen + 1, max_depth), graph, node
+    return path, cutoff, (timer() - t, expc + 1, gen + 1, max_depth), graph, node
 
 
 def dls_gs(problem, limit, dot_string='', optimized=False):
@@ -81,12 +78,12 @@ def dls_gs(problem, limit, dot_string='', optimized=False):
     t, graph = timer(), dot_string if len(dot_string) > 0 else dot_init(problem, sub=True, cluster=limit)
 
     path, cutoff, expc, gen, max_depth, graph, node = \
-        _rdls(problem, FringeNode(problem.startstate, 0, 0, None), limit, set(), graph, optimized=optimized)
+        _rdls(problem, FringeNode(problem.startstate, 0, 0, None), limit, set(), graph, True, optimized=optimized)
 
     if not len(dot_string) > 0:
         graph = cs(graph, expc, gen, node if not cutoff else None)
 
-    return path, cutoff, (timer() - t, expc, gen + 1, max_depth), graph, node
+    return path, cutoff, (timer() - t, expc + 1, gen + 1, max_depth), graph, node
 
 
 def bfs(problem, stype, optimized=False):
@@ -205,14 +202,8 @@ def _rdls(problem, node, limit, closed, dot_string='', graph=False, gl=gen_label
     :param closed: completely explored nodes
     :return: (path, cutoff, expc, gen, max_depth): path, cutoff flag, expanded nodes, max depth reached
     """
-    #dot_string += gl(node, problem)
+    # dot_string += gl(node, problem)
     exp_nodes, gen, cutoff, depth, depth_max = 0, 0, False, node.pathcost, node.pathcost
-
-    if graph:
-        if node.state not in closed:
-            closed.add(node.state)
-        else:
-            return None, False, exp_nodes, gen, depth_max, dot_string, None
 
     if problem.goalstate == node.state:
         return build_path(node), False, exp_nodes, gen, node.pathcost, dot_string, node
@@ -221,11 +212,17 @@ def _rdls(problem, node, limit, closed, dot_string='', graph=False, gl=gen_label
 
     for action in range(problem.action_space.n):
         child_node = FringeNode(problem.sample(node.state, action), node.pathcost + 1, 0, node)
-        #dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
+        # dot_string += gen_trans(node, child_node, action, problem, dot_string, gl)
         gen += 1
 
         if not optimized or child_node.state not in build_path(node):
-            #dot_string += gl(node, problem, True)
+            # dot_string += gl(node, problem, True)
+
+            if graph:
+                if node.state in closed:
+                    return None, False, exp_nodes, gen, depth_max, dot_string, None
+                else:
+                    closed.add(node.state)
 
             result, temp_cutoff, temp_expc, temp_gen, depth, temp_dot_string, temp_node = \
                 _rdls(problem, child_node, limit - 1, closed, '', graph, gl)
