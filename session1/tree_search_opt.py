@@ -5,10 +5,11 @@ from dot_util import compile_dot_files, close_dot
 
 path = "artifacts/ts"
 # envs = ["XSMaze-v0", "SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", "CompMaze-v0", "BigMaze-v0"]
-envs = ["SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0"]
+envs = ["SmallMaze-v0", "GrdMaze-v0"]  # , "BlockedMaze-v0"]
 
-# "dfs": search.dls_ts, "greedy": search.tree_search,
-algs = {"ids": search.dls_ts, "bfs": search.tree_search, "ucs": search.tree_search, "astar": search.tree_search}
+# "dfs": search.dls_ts,
+algs = {"ids": search.dls_ts, "bfs": search.tree_search, "ucs": search.tree_search,
+        "greedy": search.tree_search, "astar": search.tree_search}
 
 for env_name in envs:
     print("\n----------------------------------------------------------------")
@@ -25,7 +26,7 @@ for env_name in envs:
         if solution is not None:
             solution = [env.state_to_pos(s) for s in solution]
 
-        print("\n{0}:\n----------------------------------------------------------------"
+        print("\n\n{0}:\n----------------------------------------------------------------"
               "\nExecution time: {1}s"
               "\nN° of states expanded: {2}"
               # "\nN° of states generated: {3}"

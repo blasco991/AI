@@ -122,6 +122,7 @@ class QueueFringe(Fringe):
         self.frdict[n.state] = n
         self.fringe.append(n)
         self.frlen += 1
+        return n
 
     def remove(self):
         while True:
@@ -144,6 +145,7 @@ class StackFringe(Fringe):
         self.frdict[n.state] = n
         self.fringe.append(n)
         self.frlen += 1
+        return n
 
     def remove(self):
         while True:
@@ -166,6 +168,7 @@ class PriorityFringe(Fringe):
         heapq.heappush(self.fringe, n)
         self.frdict[n.state] = n
         self.frlen += 1
+        return n
 
     def remove(self):
         while True:

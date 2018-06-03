@@ -7,8 +7,9 @@ path = "artifacts/gs"
 # envs = ["XSMaze-v0", "SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", "CompMaze-v0", "BigMaze-v0"]
 envs = ["SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0"]
 
-# "dfs": search.dls_ts, "greedy": search.graph_search,
-algs = {"ids": search.dls_ts, "bfs": search.graph_search, "ucs": search.graph_search, "astar": search.graph_search}
+# "dfs": search.dls_gs, "greedy": search.graph_search,
+algs = {"ids": search.dls_gs, "bfs": search.graph_search, "ucs": search.graph_search,
+        "greedy": search.graph_search, "astar": search.graph_search}
 
 for env_name in envs:
     print("\n----------------------------------------------------------------")
@@ -25,7 +26,7 @@ for env_name in envs:
         if solution is not None:
             solution = [env.state_to_pos(s) for s in solution]
 
-        print("\n{0}:\n----------------------------------------------------------------"
+        print("\n\n{0}:\n----------------------------------------------------------------"
               "\nExecution time: {1}s"
               "\nN° of states expanded: {2}"
               # "\nN° of states generated: {3}"
