@@ -247,17 +247,15 @@ def _search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='',
     :return: (path, stats): solution as a path and stats
     The stats are a tuple of (expc, generated, max_states): number of expansions, generated states, max states in memory
     """
-    i, j, gen, max_states, closed, root = 1, 0, 1, 0, set(), fringe.add(FringeNode(problem.startstate, 0, 0, None))
+    root = fringe.add(FringeNode(problem.startstate, 0, 0, None))
+    i, j, gen, max_states, closed, root = 1, 0, 1, 0, set(), root
     # dot_string += gl(root, problem)
 
-    while j >= 0:
-        temp_max_states = len(fringe) + len(closed) if graph else len(fringe)
-        max_states = max(max_states, temp_max_states)
+    while not fringe.is_empty():
 
-        if fringe.is_empty():
-            return None, [i, gen, max_states], dot_string, None
-
+        max_states = max(max_states, len(fringe) + len(closed) if graph else len(fringe))
         node, has_exp = fringe.remove(), False
+
         if node.state == problem.goalstate:
             # dot_string += gl(node, problem, True, j)
             return build_path(node), [i, gen, max_states], dot_string, node
@@ -294,6 +292,8 @@ def _search(problem, fringe, f=lambda n, c=None: 0, gl=gen_label, dot_string='',
         if has_exp:
             # dot_string += gl(node, problem, True)
             i += 1
+
+    return None, [i, gen, max_states], dot_string, None
 
 
 def build_path(node):

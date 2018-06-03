@@ -11,6 +11,7 @@ class FringeNode:
     """
     Fringe state representation
     """
+
     def __init__(self, state, pathcost, value, parent):
         """
         Creates a representation of a node in the fringe
@@ -45,6 +46,7 @@ class Fringe(ABC):
     """
     General fringe abstract class
     """
+
     def __init__(self, fringe=None):
         """
         Initializes the fringe
@@ -115,6 +117,7 @@ class QueueFringe(Fringe):
     """
     Queue implementation of the fringe (FIFO)
     """
+
     def __init__(self):
         super().__init__(deque())
 
@@ -122,7 +125,6 @@ class QueueFringe(Fringe):
         self.frdict[n.state] = n
         self.fringe.append(n)
         self.frlen += 1
-        return n
 
     def remove(self):
         while True:
@@ -138,6 +140,7 @@ class StackFringe(Fringe):
     """
     Stack implementation of the fringe (LIFO)
     """
+
     def __init__(self):
         super().__init__([])
 
@@ -161,6 +164,7 @@ class PriorityFringe(Fringe):
     """
     Ordered implementation of the fringe
     """
+
     def __init__(self):
         super().__init__([])
 
@@ -168,7 +172,6 @@ class PriorityFringe(Fringe):
         heapq.heappush(self.fringe, n)
         self.frdict[n.state] = n
         self.frlen += 1
-        return n
 
     def remove(self):
         while True:
