@@ -7,7 +7,7 @@ path = "artifacts/gs"
 # envs = ["XSMaze-v0", "SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", "CompMaze-v0", "BigMaze-v0"]
 envs = ["SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0"]
 
-# "dfs": search.dls_gs, "greedy": search.graph_search,
+# "dfs": search.dls_ts,
 algs = {"ids": search.dls_gs, "bfs": search.graph_search, "ucs": search.graph_search,
         "greedy": search.graph_search, "astar": search.graph_search}
 
