@@ -144,7 +144,7 @@ def bfs(problem, stype, otp=False, avd=False):
     The stats are a tuple of (time, expc, max_states): elapsed time, number of expansions, max states in memory
     """
     t = timer()
-    path, stats, graph, node = stype(problem, QueueFringe(), lambda n: 0, gen_label, dot_init(problem), otp, avd)
+    path, stats, graph, node = stype(problem, QueueFringe(), lambda n, c: 0, gen_label, dot_init(problem), otp, avd)
     return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
@@ -166,7 +166,7 @@ def ucs(problem, stype, otp=False, avd=False):
         :param c: child state of 'n'
         :return: path cost from root to 'c'
         """
-        return n.pathcost + 1
+        return n.pathcost + 1 if n is not None else 0
 
     t = timer()
     path, stats, graph, node = \
@@ -192,7 +192,7 @@ def greedy(problem, stype, otp=False, avd=False):
         :param c: child state of 'n'
         :return: L1 norm distance value
         """
-        return heuristics.l1_norm(problem.state_to_pos(n.state), problem.state_to_pos(problem.goalstate))
+        return heuristics.l1_norm(problem.state_to_pos(c), problem.state_to_pos(problem.goalstate))
 
     def gl(n, p, exp=False, j=None):
         label = '{}'.format(n.state) if j is None else '{}  [{}]'.format(n.state, j)
@@ -224,7 +224,8 @@ def astar(problem, stype, otp=False, avd=False):
         :param c: child state of 'n' ??? goalstate
         :return: L1 norm distance value
         """
-        return n.pathcost + heuristics.l1_norm(problem.state_to_pos(n.state), problem.state_to_pos(problem.goalstate))
+        return n.pathcost + heuristics.l1_norm(problem.state_to_pos(c), problem.state_to_pos(problem.goalstate)) \
+            if n is not None else 0
 
     def gl(n, p, exp=False, j=None):
         label = '{}'.format(n.state) if j is None else '{}  [{}]'.format(n.state, j)
@@ -239,13 +240,11 @@ def astar(problem, stype, otp=False, avd=False):
     return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
-def tree_search(problem, fringe, f=lambda n: 0, gl=gen_label, dot='', otp=False, avd=False,
-                is_ucs=False):
+def tree_search(problem, fringe, f=lambda n, c: 0, gl=gen_label, dot='', otp=False, avd=False):
     return _search(problem, fringe, f, gl, dot, graph=False, otp=otp, avd=avd)
 
 
-def graph_search(problem, fringe, f=lambda n: 0, gl=gen_label, dot='', otp=False, avd=False,
-                 is_ucs=False):
+def graph_search(problem, fringe, f=lambda n, c: 0, gl=gen_label, dot='', otp=False, avd=False):
     return _search(problem, fringe, f, gl, dot, graph=True, otp=otp, avd=avd)
 
 
@@ -261,7 +260,8 @@ def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, otp=False, avd
     :return: (path, stats): solution as a path and stats
     The stats are a tuple of (expc, generated, max_states): number of expansions, generated states, max states in memory
     """
-    i, j, gen, max_states, closed, root = 0, 0, 1, 0, set(), FringeNode(problem.startstate, 0, 0, None)
+    i, j, gen, max_states, closed, root = 0, 0, 1, 0, set(), \
+                                          FringeNode(problem.startstate, 0, f(None, problem.startstate), None)
     fringe.add(root)
     # dot += gl(root, problem)
 
@@ -281,7 +281,8 @@ def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, otp=False, avd
                 continue
 
         for action in range(problem.action_space.n):
-            child_node = FringeNode(problem.sample(node.state, action), node.pathcost + 1, f(node), node)
+            child_state = problem.sample(node.state, action)
+            child_node = FringeNode(child_state, node.pathcost + 1, f(node, child_state), node)
             # dot += gen_trans(node, child_node, action, problem, dot, gl)
             gen += 1
 
