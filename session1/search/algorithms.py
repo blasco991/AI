@@ -170,7 +170,7 @@ def ucs(problem, stype, otp=False, avd=False):
 
     t = timer()
     path, stats, graph, node = \
-        stype(problem, PriorityFringe(), g, gen_label, dot_init(problem), otp=otp, avd=avd, is_ucs=True)
+        stype(problem, PriorityFringe(), g, gen_label, dot_init(problem), otp=otp, avd=avd)
     return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
@@ -241,15 +241,15 @@ def astar(problem, stype, otp=False, avd=False):
 
 def tree_search(problem, fringe, f=lambda n: 0, gl=gen_label, dot='', otp=False, avd=False,
                 is_ucs=False):
-    return _search(problem, fringe, f, gl, dot, graph=False, otp=otp, avd=avd, is_ucs=is_ucs)
+    return _search(problem, fringe, f, gl, dot, graph=False, otp=otp, avd=avd)
 
 
 def graph_search(problem, fringe, f=lambda n: 0, gl=gen_label, dot='', otp=False, avd=False,
                  is_ucs=False):
-    return _search(problem, fringe, f, gl, dot, graph=True, otp=otp, avd=avd, is_ucs=is_ucs)
+    return _search(problem, fringe, f, gl, dot, graph=True, otp=otp, avd=avd)
 
 
-def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, otp=False, avd=False, is_ucs=False):
+def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, otp=False, avd=False):
     """
     Search (avoid branch repetition)
     :param graph: enable graph search
@@ -295,7 +295,7 @@ def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, otp=False, avd
                     has_exp = has_exp or True
                     if child_node.state not in closed and child_node.state not in fringe:
                         fringe.add(child_node)
-                    elif child_node.state in fringe and is_ucs:
+                    elif child_node.state in fringe:
                         # if child_state IN fringe but NOT in closed
                         f_node = next((n for n in fringe.fringe if n.state == child_node.state), None)
                         if f_node is not None and child_node.pathcost < f_node.pathcost:
