@@ -221,7 +221,7 @@ def astar(problem, stype, otp=False, avd=False):
         """
         f(n) = g(n) + h(n)
         :param n: node
-        :param c: child state of 'n' ??? goalstate
+        :param c: child state of 'n'
         :return: L1 norm distance value
         """
         return n.pathcost + heuristics.l1_norm(problem.state_to_pos(c), problem.state_to_pos(problem.goalstate)) \
@@ -260,8 +260,8 @@ def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, otp=False, avd
     :return: (path, stats): solution as a path and stats
     The stats are a tuple of (expc, generated, max_states): number of expansions, generated states, max states in memory
     """
-    i, j, gen, max_states, closed, root = 0, 0, 1, 0, set(), \
-                                          FringeNode(problem.startstate, 0, f(None, problem.startstate), None)
+    root = FringeNode(problem.startstate, 0, f(None, problem.startstate), None)
+    i, j, gen, max_states, closed, = 0, 0, 1, 0, set()
     fringe.add(root)
     # dot += gl(root, problem)
 
