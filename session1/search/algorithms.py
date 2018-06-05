@@ -225,7 +225,7 @@ def astar(problem, stype, otp=False, avd=False):
         :return: L1 norm distance value
         """
         return n.pathcost + heuristics.l1_norm(problem.state_to_pos(c), problem.state_to_pos(problem.goalstate)) \
-            if n is not None else 0
+            if n is not None else heuristics.l1_norm(problem.state_to_pos(c), problem.state_to_pos(problem.goalstate))
 
     def gl(n, p, exp=False, j=None):
         label = '{}'.format(n.state) if j is None else '{}  [{}]'.format(n.state, j)
