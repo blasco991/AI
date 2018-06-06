@@ -8,7 +8,7 @@ path = "artifacts/ts"
 envs = ["SmallMaze-v0", "GrdMaze-v0"]  # , "BlockedMaze-v0"]
 
 # "dfs": search.dls_ts, "greedy": search.tree_search,
-algs = {"ids": search.dls_ts, "bfs": search.tree_search, "ucs": search.tree_search, "astar": search.tree_search}
+algs = {"r_ids": search.dls_ts, "bfs": search.tree_search, "ucs": search.tree_search, "astar": search.tree_search}
 
 for env_name in envs:
     print("\n----------------------------------------------------------------")

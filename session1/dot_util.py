@@ -37,7 +37,7 @@ def dot_init(problem, shape='circle', strict=False, sub=False, cluster=0):
                 html_table if not sub else '', shape, env_to_str(problem) if not sub else '')
 
 
-def get_color(state, problem):
+def get_color(state):
     return '"{}"'.format(str(colors[state + 2])[1:-1])
 
 
