@@ -224,13 +224,14 @@ def astar(problem, stype, otp=False, avd=False):
         :param c: child state of 'n'
         :return: L1 norm distance value
         """
-        return n.pathcost + heuristics.l1_norm(problem.state_to_pos(c), problem.state_to_pos(problem.goalstate)) \
-            if n is not None else heuristics.l1_norm(problem.state_to_pos(c), problem.state_to_pos(problem.goalstate))
+        return heuristics.l1_norm(problem.state_to_pos(c), problem.state_to_pos(int(problem.goalstate))) \
+               + n.pathcost + 1 if n is not None else 0
 
     def gl(n, p, exp=False, j=None):
         label = '{}'.format(n.state) if j is None else '{}  [{}]'.format(n.state, j)
         return '\n{} [label="<f0>{} |<f1> c:{} |<f2> f: {} ({}+{})", style=filled color={} fillcolor={}]' \
-            .format(gen_code(n), label, n.pathcost, f(n, None), n.pathcost,
+            .format(gen_code(n), label, n.pathcost, f(n.parent, n.state),
+                    n.parent.pathcost if n.parent is not None else 0,
                     heuristics.l1_norm(p.state_to_pos(n.state), p.state_to_pos(p.goalstate)),
                     'black' if exp or problem.goalstate == n.state else 'white', get_color(n.state, p))
 
@@ -261,7 +262,7 @@ def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, otp=False, avd
     The stats are a tuple of (expc, generated, max_states): number of expansions, generated states, max states in memory
     """
     root = FringeNode(problem.startstate, 0, f(None, problem.startstate), None)
-    i, j, gen, max_states, closed, = 0, 0, 1, 0, set()
+    expc, k, gen, max_states, closed, = 0, 0, 1, 0, set()
     fringe.add(root)
     # dot += gl(root, problem)
 
@@ -271,8 +272,8 @@ def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, otp=False, avd
         node, has_exp = fringe.remove(), False
 
         if node.state == problem.goalstate:
-            # dot += gl(node, problem, True, j)
-            return build_path(node), [i + 1, gen, max_states], dot, node
+            dot += gl(node, problem, True, k)
+            return build_path(node), [expc + 1, gen, max_states], dot, node
 
         if graph:
             if node.state not in closed:
@@ -282,11 +283,11 @@ def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, otp=False, avd
 
         for action in range(problem.action_space.n):
             child_state = problem.sample(node.state, action)
-            child_node = FringeNode(child_state, node.pathcost + 1, f(node, child_state), node)
-            # dot += gen_trans(node, child_node, action, problem, dot, gl)
-            gen += 1
 
-            if not avd or child_node.state not in build_path(node):  # Flag on avoid branch tree repetition (avd)
+            if not avd or child_state not in build_path(node):  # Flag on avoid branch tree repetition (avd)
+                child_node = FringeNode(child_state, node.pathcost + 1, f(node, child_state), node)
+                dot += gen_trans(node, child_node, action, problem, dot, gl)
+                gen += 1
 
                 if not graph and not otp:  # TREE SEARCH not otp
                     has_exp = has_exp or True
@@ -294,20 +295,19 @@ def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, otp=False, avd
 
                 elif graph or otp:  # TREE SEARCH otp and GRAPH_SEARCH
                     has_exp = has_exp or True
-                    if child_node.state not in closed and child_node.state not in fringe:
+                    if child_state not in closed and child_state not in fringe:
                         fringe.add(child_node)
-                    elif child_node.state in fringe:
+                    elif child_state in fringe:
                         # if child_state IN fringe but NOT in closed
-                        f_node = next((n for n in fringe.fringe if n.state == child_node.state), None)
-                        if f_node is not None and child_node.pathcost < f_node.pathcost:
+                        if child_node.value < fringe[child_state].value:
                             # if child_state IN fringe -> check pathcost
                             fringe.replace(child_node)
 
-        # dot += gl(node, problem, has_exp)
+        dot += gl(node, problem, has_exp)
         if has_exp:
-            i += 1
+            expc += 1
 
-    return None, [i, gen, max_states], dot, None
+    return None, [expc, gen, max_states], dot, None
 
 
 def build_path(node):
@@ -317,7 +317,7 @@ def build_path(node):
     :return: path from root to 'node'
     """
     path = []
-    while node is not None:  # IMPORTANT the ROOT node must be in the path!
+    while node.parent is not None:
         path.append(node.state)
         node = node.parent
     return reversed(path)
