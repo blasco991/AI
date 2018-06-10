@@ -62,7 +62,7 @@ def gen_code(node):
 
 
 def gen_label(node, problem, exp=False, j=None):
-    color = get_color(node.state, problem)
+    color = get_color(node.state)
 
     return '\n{} [label={} style=filled color={} {} fillcolor={}]' \
         .format(gen_code(node), node.state,
