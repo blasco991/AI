@@ -1,6 +1,7 @@
 import os
 import subprocess
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -38,6 +39,7 @@ def dot_init(problem, shape='circle', strict=False, sub=False, cluster=0):
 
 
 def get_color(state):
+    # return '"{}"'.format("#" + str(matplotlib.colors.rgb2hex(colors[state + 2])[1:-1]))
     return '"{}"'.format(str(colors[state + 2])[1:-1])
 
 

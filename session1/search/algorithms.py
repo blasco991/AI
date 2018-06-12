@@ -164,9 +164,9 @@ def ids(problem, stype, opt=False, avd=False):
     graph = dot_init(problem, strict=True)
     while cutoff:
         path, temp_stats, temp_graph, node, cutoff = \
-            stype(problem, StackFringe(), dot='', opt=opt, avd=avd, limit=depth)
+            stype(problem, StackFringe(), dot=dot_init(problem, sub=True, cluster=depth), opt=opt, avd=avd, limit=depth)
         depth += 1
-        graph += temp_graph
+        graph += cs(temp_graph, temp_stats[0], temp_stats[1], node)
         stats[:-1] = [x + y for x, y in zip(stats[:-1], temp_stats[:-1])]
         stats[-1] = max(stats[-1], temp_stats[-1])
         if path is not None or not cutoff:
@@ -278,7 +278,7 @@ def astar(problem, stype, opt=False, avd=False):
     t = timer()
     path, stats, graph, node, _ = \
         stype(problem, PriorityFringe(), f, gl, dot_init(problem, "record"), opt=opt, avd=avd)
-    return path, ( timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
+    return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
 def tree_search(problem, fringe, f=lambda n, c: 0, gl=gen_label, dot='', opt=False, avd=False, limit=-1):
@@ -330,16 +330,20 @@ def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, opt=False, avd
 
                 if not graph and not opt:  # TREE SEARCH not opt
                     fringe.add(child_node)
+                    dot += gl(node, problem, True, i)
 
                 elif graph or opt:  # TREE SEARCH opt and GRAPH_SEARCH
                     if child_state not in closed and child_state not in fringe:
                         fringe.add(child_node)
+                        dot += gl(node, problem, True, i)
 
                     elif child_state in fringe:
                         # if child_state IN fringe but NOT in closed
                         if child_node.value < fringe[child_state].value:
                             # if child_state IN fringe -> check pathcost
                             fringe.replace(child_node)
+                            dot += gl(node, problem, True, i)
+
         i += 1
 
     return None, [expc, gen, max_states], dot, None, False

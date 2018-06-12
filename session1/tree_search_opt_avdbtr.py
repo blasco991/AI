@@ -1,9 +1,13 @@
 import gym
+import pathlib
 import gym_ai_lab
 import search.algorithms as search
 from dot_util import compile_dot_files, close_dot
 
 path = "artifacts/ts"
+for folder in ["dot", "md", "png"]:
+    pathlib.Path(path + "/" + folder).mkdir(parents=True, exist_ok=True)
+
 # envs = ["XSMaze-v0", "SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", "CompMaze-v0", "BigMaze-v0"]
 envs = ["SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0"]
 
