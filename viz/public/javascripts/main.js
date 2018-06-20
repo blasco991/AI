@@ -42,7 +42,7 @@ let timerId = null;
 function render() {
     //console.info("render");
     if (step > n_steps ) {
-        clearInterval(timerId);
+        clearTimeout(timerId);
         timerId = null;
     } else {
         document.getElementById("step").value = step;
@@ -66,32 +66,32 @@ function render() {
 }
 
 document.getElementById("back").onclick = function () {
-    clearInterval(timerId);
+    clearTimeout(timerId);
     step -= 2;
     render();
 };
 
 document.getElementById("forward").onclick = function () {
-    clearInterval(timerId);
+    clearTimeout(timerId);
     render();
 };
 
 document.getElementById("pp").onclick = function () {
     if (timerId != null) {
-        clearInterval(timerId);
+        clearTimeout(timerId);
         timerId = null;
     } else
         timerId = setTimeout(render, gear);
 };
 
 document.getElementById("step").oninput = function (event) {
-    clearInterval(timerId);
+    clearTimeout(timerId);
     step = Number(event.target.value);
     document.getElementById("step_value").value = step - dotHeader.length;
 };
 
 document.getElementById("step").onchange = function (event) {
-    clearInterval(timerId);
+    clearTimeout(timerId);
     step = Number(event.target.value);
     document.getElementById("step_value").value = step - dotHeader.length;
     render();
@@ -100,7 +100,7 @@ document.getElementById("step").onchange = function (event) {
 document.getElementById("gear").onchange = function (event) {
     gear = Number(event.target.value);
     if (timerId != null) {
-        clearInterval(timerId);
+        clearTimeout(timerId);
         timerId = setTimeout(render, gear);
     }
 };
