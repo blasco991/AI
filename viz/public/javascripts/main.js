@@ -56,7 +56,7 @@ function render() {
 
         step++;
         let dot = dotHeader.join(' ') + dotBody + dotFooter.join('');
-        console.log("dot:\t", dot);
+        //console.log("dot:\t", dot);
         graphviz.dot(dot).render()
             .on("end", function () {
                 if (timerId != null)
