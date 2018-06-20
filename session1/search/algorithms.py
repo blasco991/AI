@@ -160,13 +160,18 @@ def ids(problem, stype, opt=False, avd=False):
     :return: (path, stats): solution as a path and stats
     The stats are a tuple of (time, npexp, max_depth): elapsed time, number of expansions, max depth reached
     """
-    t, depth, stats, cutoff = timer(), 0, [0, 0, 0, 0], True
+    t, depth, stats, cutoff, clusters = timer(), 0, [0, 0, 0, 0], True, []
     graph = dot_init(problem, strict=True)
     while cutoff:
         path, temp_stats, temp_graph, node, cutoff = \
             stype(problem, StackFringe(), dot=dot_init(problem, sub=True, cluster=depth), opt=opt, avd=avd, limit=depth)
         depth += 1
-        graph += cs(temp_graph, temp_stats[0], temp_stats[1], node)
+        temp_graph = cs(temp_graph, temp_stats[0], temp_stats[1], node)
+        """for cluster in clusters:
+            for line in cluster[2:-1].splitlines():
+                temp_graph = str(temp_graph).replace(line, '').replace("\n\n", "\n")"""
+        clusters.append(temp_graph)
+        graph += temp_graph
         stats[:-1] = [x + y for x, y in zip(stats[:-1], temp_stats[:-1])]
         stats[-1] = max(stats[-1], temp_stats[-1])
         if path is not None or not cutoff:
@@ -301,17 +306,17 @@ def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, opt=False, avd
     :return: (path, stats): solution as a path and stats
     The stats are a tuple of (expc, generated, max_states): number of expansions, generated states, max states in memory
     """
-    root = FringeNode(problem.startstate, 0, f(None, problem.startstate), None)
+    root = FringeNode(problem.startstate, 0, f(None, problem.startstate), None, None)
     expc, i, gen, max_states, closed, = 0, 0, 1, 0, set()
     fringe.add(root)
-    dot += gl(root, problem)
+    dot += gl(root, problem, i)
 
     while not fringe.is_empty():
         expc += 1
         max_states, node = max(max_states, len(fringe) + len(closed)), fringe.remove()
 
         if node.state == problem.goalstate:
-            dot += gl(node, problem, True, i)
+            # dot += gl(node, problem, True, i)
             return build_path(node), [expc, gen, max_states], dot, node, False
 
         if graph and node.state not in closed:
@@ -324,25 +329,25 @@ def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, opt=False, avd
             child_state = problem.sample(node.state, action)
 
             if not avd or child_state not in build_path(node):  # Flag on avoid branch tree repetition (avd)
-                child_node = FringeNode(child_state, node.pathcost + 1, f(node, child_state), node)
-                dot += gen_trans(node, child_node, action, problem, dot, gl)
+                child_node = FringeNode(child_state, node.pathcost + 1, f(node, child_state), node, action)
+                dot += gen_trans(node, child_node, problem, dot, gl, i)
                 gen += 1
 
                 if not graph and not opt:  # TREE SEARCH not opt
                     fringe.add(child_node)
-                    dot += gl(node, problem, True, i)
+                    # dot += gl(node, problem, True, i)
 
                 elif graph or opt:  # TREE SEARCH opt and GRAPH_SEARCH
                     if child_state not in closed and child_state not in fringe:
                         fringe.add(child_node)
-                        dot += gl(node, problem, True, i)
+                        # dot += gl(node, problem, True, i)
 
                     elif child_state in fringe:
                         # if child_state IN fringe but NOT in closed
                         if child_node.value < fringe[child_state].value:
                             # if child_state IN fringe -> check pathcost
                             fringe.replace(child_node)
-                            dot += gl(node, problem, True, i)
+                            # dot += gl(node, problem, True, i)
 
         i += 1
 

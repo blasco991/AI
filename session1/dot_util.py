@@ -7,6 +7,7 @@ import numpy as np
 
 color_map = plt.get_cmap('rainbow')
 colors = None
+sub_c = 0
 
 
 def env_to_str(problem):
@@ -26,16 +27,17 @@ def env_to_html(problem):
 
 
 def dot_init(problem, shape='circle', strict=False, sub=False, cluster=0):
-    global colors
+    global colors, sub_c
+    sub_c = str(cluster) + "_"
     colors = color_map(np.linspace(0, 1, len(problem.staterange) * 2))
-    html_table = '\n\nsubgraph MAP {\nlabel=Map;\nmap [shape=plaintext label=<<table' \
-                 ' border="1" cellpadding="5" cellspacing="0" cellborder="1">' + env_to_html(problem) + '</table>>]}\n'
+    html_table = '\nsubgraph MAP {label=Map;map [shape=plaintext label=<<table' \
+                 ' border="1" cellpadding="5" cellspacing="0" cellborder="1">' + env_to_html(problem) + '</table>>]} \n'
 
-    return '{} {} {{\nlabel="{}"\n{}\nnodesep=1 ranksep=0.5\nnode [shape={}]\nedge [arrowsize=0.7]\n{}' \
-        .format('strict' if strict and not sub else '',
-                'digraph {}'.format(problem.spec._env_name) if not sub else 'subgraph cluster{}'.format(cluster),
+    return '{}{} {{ label="{}"{}nodesep=1 ranksep=0.5 node [shape={}] edge [arrowsize=0.7] ' \
+        .format('strict ' if strict and not sub else '',
+                'digraph {}'.format(problem.spec._env_name) if not sub else '\nsubgraph cluster{}'.format(cluster),
                 'Limit: {}'.format(cluster) if sub else problem.spec.id,
-                html_table if not sub else '', shape, env_to_str(problem) if not sub else '')
+                html_table if not sub else ' ', shape)
 
 
 def get_color(state):
@@ -51,34 +53,33 @@ def close_dot(dot_string, expanded, gen, node=None):
                 line = line.replace('color=black', 'color=red')
             if any(nodepath in line.strip()
                    for nodepath in (tuple(map(lambda s: '-> ' + s, map(gen_code, build_path_n(node)))))):
-                line = line.replace('];', 'color=red ];')
+                line = line.replace('];', 'color=red ]; ')
             temp += line + "\n"
         dot_string = temp
-    return dot_string + '\n"#exp {}, #gen {}{}" [ shape=box ]\n}}\n' \
+    return dot_string + ' "#exp {}, #gen {}{}" [ shape=box ];\n}}' \
         .format(expanded, gen, ', cost:{}'.format(node.pathcost) if node is not None else '')
 
 
 def gen_code(node):
-    from search.algorithms import build_path
-    return '"' + '.'.join(map(str, build_path(node))) + '"'
+    return '"' + str(sub_c) + '.'.join(map(lambda n: str(n.state), build_path_n(node))) + '{}"' \
+        .format('-' + str(node.cause) if node.cause is not None else '')
 
 
 def gen_label(node, problem, exp=False, j=None):
     color = get_color(node.state)
 
-    return '\n{} [label={} style=filled color={} {} fillcolor={}]' \
+    return '\n{} [label={} style=filled color={} {} fillcolor={}]; ' \
         .format(gen_code(node), node.state,
                 'black' if exp or node.state == problem.goalstate else 'white',
                 # '{}'.format('red' if node.state == problem.goalstate else 'white') if exp else 'white',
                 'peripheries=2' if problem.goalstate == node.state else '', color)
 
 
-def gen_trans(node, child_node, action, problem, accumulator, gl):
+def gen_trans(node, child_node, problem, accumulator, gl, j=None):
     state_label = gl(child_node, problem)
-    return '{}\n{} -> {} [label="({},{})" ];\n\n' \
-        .format('' if state_label in accumulator else state_label,
-                gen_code(node), gen_code(child_node),
-                problem.actions[action], 1)
+    return '{} {} -> {} [label="({},{})" ]; ' \
+        .format(state_label if state_label not in accumulator else '',
+                gen_code(node), gen_code(child_node), problem.actions[child_node.cause], 1)
 
 
 def build_path_n(node):
@@ -91,7 +92,7 @@ def build_path_n(node):
     while node is not None:
         path.append(node)
         node = node.parent
-    return tuple(reversed(path))
+    return reversed(path)
 
 
 def compile_dot_files(path):

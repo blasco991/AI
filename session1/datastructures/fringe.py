@@ -11,19 +11,22 @@ class FringeNode:
     """
     Fringe state representation
     """
-    def __init__(self, state, pathcost, value, parent):
+
+    def __init__(self, state, pathcost, value, parent, cause):
         """
         Creates a representation of a node in the fringe
         :param state: the state embedded in the node
         :param pathcost: path cost from the root node to this one
         :param value: value of a node
         :param parent: parent node
+        :param cause: parent node
         """
         self.state = state
         self.pathcost = pathcost
         self.value = value
         self.parent = parent
         self.removed = False
+        self.cause = cause
 
     def __lt__(self, other):
         """
@@ -45,6 +48,7 @@ class Fringe(ABC):
     """
     General fringe abstract class
     """
+
     def __init__(self, fringe=None):
         """
         Initializes the fringe
@@ -115,6 +119,7 @@ class QueueFringe(Fringe):
     """
     Queue implementation of the fringe (FIFO)
     """
+
     def __init__(self):
         super().__init__(deque())
 
@@ -137,6 +142,7 @@ class StackFringe(Fringe):
     """
     Stack implementation of the fringe (LIFO)
     """
+
     def __init__(self):
         super().__init__([])
 
@@ -159,6 +165,7 @@ class PriorityFringe(Fringe):
     """
     Ordered implementation of the fringe
     """
+
     def __init__(self):
         super().__init__([])
 
