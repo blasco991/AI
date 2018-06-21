@@ -20,7 +20,7 @@ def env_to_html(problem):
     for row in problem.grid.reshape(problem.rows, problem.cols):
         html += "<tr>"
         for element in row:
-            html += "<td>{}:{}</td>".format(element, i)
+            html += "<td bgcolor={}>{}:{}</td>".format(get_color(i), element, i)
             i += 1
         html += "</tr>"
     return html

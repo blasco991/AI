@@ -41,7 +41,7 @@ let timerId = null;
 
 function render() {
     //console.info("render");
-    if (step > n_steps ) {
+    if (step > n_steps) {
         clearTimeout(timerId);
         timerId = null;
     } else {
@@ -66,32 +66,31 @@ function render() {
 }
 
 document.getElementById("back").onclick = function () {
-    clearTimeout(timerId);
+    timerId = clearTimeout(timerId);
     step -= 2;
     render();
 };
 
 document.getElementById("forward").onclick = function () {
-    clearTimeout(timerId);
+    timerId = clearTimeout(timerId);
     render();
 };
 
 document.getElementById("pp").onclick = function () {
     if (timerId != null) {
-        clearTimeout(timerId);
-        timerId = null;
+        timerId = clearTimeout(timerId);
     } else
         timerId = setTimeout(render, gear);
 };
 
 document.getElementById("step").oninput = function (event) {
-    clearTimeout(timerId);
+    timerId = clearTimeout(timerId);
     step = Number(event.target.value);
     document.getElementById("step_value").value = step - dotHeader.length;
 };
 
 document.getElementById("step").onchange = function (event) {
-    clearTimeout(timerId);
+    timerId = clearTimeout(timerId);
     step = Number(event.target.value);
     document.getElementById("step_value").value = step - dotHeader.length;
     render();
