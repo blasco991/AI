@@ -4,15 +4,15 @@ import gym_ai_lab
 import search.algorithms as search
 from dot_util import compile_dot_files, close_dot
 
-path = "artifacts/ts+"
+path = "../viz/public/artifacts/tsp"
 for folder in ["dot", "md", "png"]:
     pathlib.Path(path + "/" + folder).mkdir(parents=True, exist_ok=True)
 
-# envs = ["XSMaze-v0", "SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", "CompMaze-v0", "BigMaze-v0"]
-envs = ["SmallMaze-v0", "GrdMaze-v0"]  # , "BlockedMaze-v0"]
+envs = ["XSMaze-v0", "SmallMaze-v0", "GrdMaze-v0", "CompMaze-v0", "BigMaze-v0"]
+# envs = ["SmallMaze-v0", "GrdMaze-v0"]  # , "BlockedMaze-v0"]
 
 # "dfs": search.dls_ts, "greedy": search.tree_search,
-algs = {"r_ids": search.dls_ts, "bfs": search.tree_search, "ucs": search.tree_search,
+algs = {"dfs": search.tree_search, "ids": search.tree_search, "bfs": search.tree_search, "ucs": search.tree_search,
         "astar": search.tree_search}
 
 for env_name in envs:

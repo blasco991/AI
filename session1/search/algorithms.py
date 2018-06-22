@@ -138,6 +138,7 @@ def _dls(problem, dot='', closed=None, graph=False, opt=False, avd=False, limit=
 def dfs(problem, stype, opt=False, avd=True, limit=-1):
     """
     Breadth-first search
+    :param limit:
     :param avd:
     :param opt:
     :param problem: problem
@@ -146,7 +147,8 @@ def dfs(problem, stype, opt=False, avd=True, limit=-1):
     The stats are a tuple of (time, expc, max_states): elapsed time, number of expansions, max states in memory
     """
     t = timer()
-    path, stats, graph, node, _ = stype(problem, StackFringe(), lambda n, c: 0, gen_label, dot_init(problem), opt, True)
+    path, stats, graph, node, _ = \
+        stype(problem, StackFringe(), lambda n, c: 0, gen_label, dot_init(problem), opt, avd, limit)
     return path, (timer() - t, stats[0], stats[1], stats[2]), cs(graph, stats[0], stats[1], node)
 
 
@@ -167,9 +169,6 @@ def ids(problem, stype, opt=False, avd=False):
             stype(problem, StackFringe(), dot=dot_init(problem, sub=True, cluster=depth), opt=opt, avd=avd, limit=depth)
         depth += 1
         temp_graph = cs(temp_graph, temp_stats[0], temp_stats[1], node)
-        """for cluster in clusters:
-            for line in cluster[2:-1].splitlines():
-                temp_graph = str(temp_graph).replace(line, '').replace("\n\n", "\n")"""
         clusters.append(temp_graph)
         graph += temp_graph
         stats[:-1] = [x + y for x, y in zip(stats[:-1], temp_stats[:-1])]
@@ -241,7 +240,7 @@ def greedy(problem, stype, opt=False, avd=False):
 
     def gl(n, p, exp=False, j=None):
         label = '{}'.format(n.state) if j is None else '{}  [{}]'.format(n.state, j)
-        return '\n{} [label="<f0>{} |<f1> c:{}" style=filled color={} fillcolor={}]' \
+        return '\n{} [label="<f0>{} |<f1> cost: {}" style=filled color={} fillcolor={}]' \
             .format(gen_code(n), label, n.pathcost,
                     'black' if exp or problem.goalstate == n.state else 'white', get_color(n.state))
 
@@ -274,7 +273,7 @@ def astar(problem, stype, opt=False, avd=False):
 
     def gl(n, p, exp=False, j=None):
         label = '{}'.format(n.state) if j is None else '{}  [{}]'.format(n.state, j)
-        return '\n{} [label="<f0>{} |<f1> c:{} |<f2> f: {} ({}+{})", style=filled color={} fillcolor={}]' \
+        return '\n{} [label="<f0>{} |<f1> cost: {} |<f2> f: {} ({}+{})", style=filled color={} fillcolor={}]' \
             .format(gen_code(n), label, n.pathcost, f(n.parent, n.state),
                     n.parent.pathcost if n.parent is not None else 0,
                     heuristics.l1_norm(p.state_to_pos(n.state), p.state_to_pos(p.goalstate)),
@@ -348,7 +347,6 @@ def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, opt=False, avd
                             # if child_state IN fringe -> check pathcost
                             fringe.replace(child_node)
                             # dot += gl(node, problem, True, i)
-
         i += 1
 
     return None, [expc, gen, max_states], dot, None, False
@@ -361,7 +359,7 @@ def build_path(node):
     :return: path from root to 'node'
     """
     path = []
-    while node.parent is not None:
+    while node is not None:  # root Node must be in build_path
         path.append(node.state)
         node = node.parent
     return reversed(path)

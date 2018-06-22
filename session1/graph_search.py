@@ -10,8 +10,7 @@ for folder in ["dot", "md", "png"]:
 
 envs = ["XSMaze-v0", "SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", "CompMaze-v0", "BigMaze-v0"]
 
-# "dfs": search.dls_ts,
-algs = {"ids": search.graph_search, "bfs": search.graph_search, "ucs": search.graph_search,
+algs = {"dfs": search.graph_search, "ids": search.graph_search, "bfs": search.graph_search, "ucs": search.graph_search,
         "greedy": search.graph_search, "astar": search.graph_search}
 
 for env_name in envs:

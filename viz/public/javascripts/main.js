@@ -41,21 +41,20 @@ let timerId = null;
 
 function render() {
     //console.info("render");
-    if (step > n_steps) {
-        clearTimeout(timerId);
-        timerId = null;
+    if (step > n_steps + dotFooter.length) {
+        timerId = clearTimeout(timerId);
     } else {
         document.getElementById("step").value = step;
         document.getElementById("step_value").value = step - 3;
-        dotBody = String(dotLines.slice(dotHeader.length, step).join(' '));
+        dotBody = String(dotLines.slice(dotHeader.length, step).join('\n'));
         if (!dotBody.endsWith('}') && dotBody.includes('subgraph cluster'))
             dotBody = dotBody.concat('}');
 
-        if (step !== n_steps)
+        if (step < n_steps)
             dotBody = dotBody.replace(new RegExp('red', 'g'), 'black');
 
         step++;
-        let dot = dotHeader.join(' ') + dotBody + dotFooter.join('');
+        let dot = dotHeader.join(' ') + dotBody + dotFooter.join(' ');
         //console.log("dot:\t", dot);
         graphviz.dot(dot).render()
             .on("end", function () {
