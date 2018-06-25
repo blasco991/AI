@@ -69,11 +69,11 @@ def gen_code(node):
 def gen_label(node, problem, exp=False, j=None):
     color = get_color(node.state)
 
-    return '\n{} [label={} style=filled color={} {} fillcolor={}]; ' \
+    return '\n{} [label={} style=filled color={} {} fillcolor={}]; {} ' \
         .format(gen_code(node), node.state,
                 'black' if exp or node.state == problem.goalstate else 'grey',
-                # '{}'.format('red' if node.state == problem.goalstate else 'white') if exp else 'white',
-                'peripheries=2' if problem.goalstate == node.state else '', color)
+                'peripheries=2' if problem.goalstate == node.state else '', color,
+                '/*GOALSTATE*/' if problem.goalstate == node.state else '')
 
 
 def gen_trans(node, child_node, problem, accumulator, gl, j=None):

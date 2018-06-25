@@ -240,9 +240,10 @@ def greedy(problem, stype, opt=False, avd=False):
 
     def gl(n, p, exp=False, j=None):
         label = '{}'.format(n.state) if j is None else '{}  [{}]'.format(n.state, j)
-        return '\n{} [label="<f0>{} |<f1> cost: {}" style=filled color={} fillcolor={}]' \
+        return '\n{} [label="<f0>{} |<f1> cost: {}" style=filled color={} fillcolor={}]; {} ' \
             .format(gen_code(n), label, n.pathcost,
-                    'black' if exp or problem.goalstate == n.state else 'white', get_color(n.state))
+                    'black' if exp or p.goalstate == n.state else 'white', get_color(n.state),
+                    '/*GOALSTATE*/' if p.goalstate == n.state else '')
 
     t = timer()
     path, stats, graph, node, _ = \
@@ -273,11 +274,12 @@ def astar(problem, stype, opt=False, avd=False):
 
     def gl(n, p, exp=False, j=None):
         label = '{}'.format(n.state) if j is None else '{}  [{}]'.format(n.state, j)
-        return '\n{} [label="<f0>{} |<f1> cost: {} |<f2> f: {} ({}+{})", style=filled color={} fillcolor={}]' \
+        return '\n{} [label="<f0>{} |<f1> cost: {} |<f2> f: {} ({}+{})", style=filled color={} fillcolor={}]; {} ' \
             .format(gen_code(n), label, n.pathcost, f(n.parent, n.state),
                     n.parent.pathcost if n.parent is not None else 0,
                     heuristics.l1_norm(p.state_to_pos(n.state), p.state_to_pos(p.goalstate)),
-                    'black' if exp or problem.goalstate == n.state else 'white', get_color(n.state))
+                    'black' if exp or p.goalstate == n.state else 'white', get_color(n.state),
+                    '/*GOALSTATE*/' if p.goalstate == n.state else '')
 
     t = timer()
     path, stats, graph, node, _ = \
@@ -308,7 +310,6 @@ def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, opt=False, avd
     root = FringeNode(problem.startstate, 0, f(None, problem.startstate), None, None)
     expc, i, gen, max_states, closed, = 0, 0, 1, 0, set()
     fringe.add(root)
-    # dot += gl(root, problem, i)
 
     while not fringe.is_empty():
         expc += 1
