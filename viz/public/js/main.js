@@ -39,10 +39,13 @@ $(function () {
             }
         ).catch(error => console.error(error));
 
-    if (urlParams.has('target')) {
+    if (urlParams.has('target'))
         $("#target").val(urlParams.get('target'));
-        ftc($("#target").val());
-    }
+    else
+        $("#target").val($("#target option:first").val());
+
+    ftc($("#target").val());
+
 
     let timerId = null;
 
