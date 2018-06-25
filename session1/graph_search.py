@@ -4,7 +4,7 @@ import gym_ai_lab
 import search.algorithms as search
 from dot_util import compile_dot_files, close_dot
 
-path = "../viz/public/artifacts/gs"
+path = "../viz/artifacts/gs"
 for folder in ["dot", "md", "png"]:
     pathlib.Path(path + "/" + folder).mkdir(parents=True, exist_ok=True)
 
