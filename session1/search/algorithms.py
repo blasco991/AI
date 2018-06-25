@@ -329,7 +329,7 @@ def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, opt=False, avd
 
             if not avd or child_state not in build_path(node):  # Flag on avoid branch tree repetition (avd)
                 child_node = FringeNode(child_state, node.pathcost + 1, f(node, child_state), node, action)
-                dot += gen_trans(node, child_node, problem, dot, gl, i)
+                dot += gen_trans(node, child_node, problem, dot, gl, gen)
                 gen += 1
 
                 if not graph and not opt:  # TREE SEARCH not opt

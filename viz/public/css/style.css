@@ -1,0 +1,23 @@
+body {
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    margin: 5px;
+}
+
+#graph {
+    text-align: center;
+    height: 80%;
+}
+
+svg {
+    height: 100%;
+    width: 100%;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 1rem;
+    background-color: #efefef;
+    text-align: center;
+}

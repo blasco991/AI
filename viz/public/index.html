@@ -1,36 +1,194 @@
-<html>
-<head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>viz.blasco991.com</title>
-    <link rel="stylesheet" href="stylesheets/style.css">
-
-    <script src="https://d3js.org/d3.v4.min.js" type="text/javascript"></script>
-    <script>
-        window.d3 || document.write('<script src="javascripts/d3.v4.js" type="text/javascript">\x3C/script>')
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="./index_files/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous">
     </script>
-    <script src="https://unpkg.com/viz.js@1.8.0/viz.js" type="javascript/worker"></script>
     <script>
-        window.Viz || document.write('<script src="javascripts/viz.js" type="javascript/worker">\x3C/script>')
+        window.$ || document.write('<script src="javascripts/jquery-3.3.1.slim.min.js" type="text/javascript">\x3C/script>')
     </script>
-    <script src="https://unpkg.com/d3-graphviz@1.4.0/build/d3-graphviz.js" type="text/javascript"></script>
+    <script src="./index_files/d3.v4.min.js" type="text/javascript"></script>
     <script>
-        window.graphviz || document.write('<script src="javascripts/d3-graphviz.js"type="text/javascript">\x3C/script>')
+        window.d3 || document.write('<script src="/js/d3.v4.js" type="text/javascript">\x3C/script>')
     </script>
+    <script src="./index_files/viz.js" type="javascript/worker"></script>
+    <script>
+        window.Viz || document.write('<script src="/js/viz.js" type="javascript/worker">\x3C/script>')
+    </script><script src="/js/viz.js" type="javascript/worker"></script>
+    <script src="./index_files/d3-graphviz.js" type="text/javascript"></script>
+    <script>
+        window.graphviz || document.write('<script src="/js/d3-graphviz.js"type="text/javascript">\x3C/script>')
+    </script><script src="/js/d3-graphviz.js" type="text/javascript"></script>
 </head>
+
 <body>
-<h1>Algo Visualizer by blasco991&reg;</h1>
+<header>
+    <h1>Algo Visualizer by blasco991®</h1>
+    <select id="target" title="Target">
+        <optgroup label="Graph Search">
+            <option value="/artifacts/gs/dot/BigMaze-v0_astar.dot">BigMaze-v0_astar.dot</option>
+            <option value="/artifacts/gs/dot/BigMaze-v0_bfs.dot">BigMaze-v0_bfs.dot</option>
+            <option value="/artifacts/gs/dot/BigMaze-v0_dfs.dot">BigMaze-v0_dfs.dot</option>
+            <option value="/artifacts/gs/dot/BigMaze-v0_greedy.dot">BigMaze-v0_greedy.dot</option>
+            <option value="/artifacts/gs/dot/BigMaze-v0_ids.dot">BigMaze-v0_ids.dot</option>
+            <option value="/artifacts/gs/dot/BigMaze-v0_ucs.dot">BigMaze-v0_ucs.dot</option>
+            <option value="/artifacts/gs/dot/BlockedMaze-v0_astar.dot">BlockedMaze-v0_astar.dot</option>
+            <option value="/artifacts/gs/dot/BlockedMaze-v0_bfs.dot">BlockedMaze-v0_bfs.dot</option>
+            <option value="/artifacts/gs/dot/BlockedMaze-v0_dfs.dot">BlockedMaze-v0_dfs.dot</option>
+            <option value="/artifacts/gs/dot/BlockedMaze-v0_greedy.dot">BlockedMaze-v0_greedy.dot</option>
+            <option value="/artifacts/gs/dot/BlockedMaze-v0_ids.dot">BlockedMaze-v0_ids.dot</option>
+            <option value="/artifacts/gs/dot/BlockedMaze-v0_ucs.dot">BlockedMaze-v0_ucs.dot</option>
+            <option value="/artifacts/gs/dot/CompMaze-v0_astar.dot">CompMaze-v0_astar.dot</option>
+            <option value="/artifacts/gs/dot/CompMaze-v0_bfs.dot">CompMaze-v0_bfs.dot</option>
+            <option value="/artifacts/gs/dot/CompMaze-v0_dfs.dot">CompMaze-v0_dfs.dot</option>
+            <option value="/artifacts/gs/dot/CompMaze-v0_greedy.dot">CompMaze-v0_greedy.dot</option>
+            <option value="/artifacts/gs/dot/CompMaze-v0_ids.dot">CompMaze-v0_ids.dot</option>
+            <option value="/artifacts/gs/dot/CompMaze-v0_ucs.dot">CompMaze-v0_ucs.dot</option>
+            <option value="/artifacts/gs/dot/GrdMaze-v0_astar.dot">GrdMaze-v0_astar.dot</option>
+            <option value="/artifacts/gs/dot/GrdMaze-v0_bfs.dot">GrdMaze-v0_bfs.dot</option>
+            <option value="/artifacts/gs/dot/GrdMaze-v0_dfs.dot">GrdMaze-v0_dfs.dot</option>
+            <option value="/artifacts/gs/dot/GrdMaze-v0_greedy.dot">GrdMaze-v0_greedy.dot</option>
+            <option value="/artifacts/gs/dot/GrdMaze-v0_ids.dot">GrdMaze-v0_ids.dot</option>
+            <option value="/artifacts/gs/dot/GrdMaze-v0_ucs.dot">GrdMaze-v0_ucs.dot</option>
+            <option value="/artifacts/gs/dot/SmallMaze-v0_astar.dot">SmallMaze-v0_astar.dot</option>
+            <option value="/artifacts/gs/dot/SmallMaze-v0_bfs.dot">SmallMaze-v0_bfs.dot</option>
+            <option value="/artifacts/gs/dot/SmallMaze-v0_dfs.dot">SmallMaze-v0_dfs.dot</option>
+            <option value="/artifacts/gs/dot/SmallMaze-v0_greedy.dot">SmallMaze-v0_greedy.dot</option>
+            <option value="/artifacts/gs/dot/SmallMaze-v0_ids.dot">SmallMaze-v0_ids.dot</option>
+            <option value="/artifacts/gs/dot/SmallMaze-v0_ucs.dot">SmallMaze-v0_ucs.dot</option>
+            <option value="/artifacts/gs/dot/XSMaze-v0_astar.dot">XSMaze-v0_astar.dot</option>
+            <option value="/artifacts/gs/dot/XSMaze-v0_bfs.dot">XSMaze-v0_bfs.dot</option>
+            <option value="/artifacts/gs/dot/XSMaze-v0_dfs.dot">XSMaze-v0_dfs.dot</option>
+            <option value="/artifacts/gs/dot/XSMaze-v0_greedy.dot">XSMaze-v0_greedy.dot</option>
+            <option value="/artifacts/gs/dot/XSMaze-v0_ids.dot">XSMaze-v0_ids.dot</option>
+            <option value="/artifacts/gs/dot/XSMaze-v0_ucs.dot">XSMaze-v0_ucs.dot</option>
+            <option value="/artifacts/gs/dot/test.dot">test.dot</option>
+        </optgroup>
+        <optgroup label="Tree Search Optimized">
+            <option value="/artifacts/tsp/dot/BigMaze-v0_astar.dot">BigMaze-v0_astar.dot</option>
+            <option value="/artifacts/tsp/dot/BigMaze-v0_bfs.dot">BigMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tsp/dot/BigMaze-v0_dfs.dot">BigMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tsp/dot/BigMaze-v0_ucs.dot">BigMaze-v0_ucs.dot</option>
+            <option value="/artifacts/tsp/dot/BlockedMaze-v0_dfs.dot">BlockedMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tsp/dot/CompMaze-v0_astar.dot">CompMaze-v0_astar.dot</option>
+            <option value="/artifacts/tsp/dot/CompMaze-v0_bfs.dot">CompMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tsp/dot/CompMaze-v0_dfs.dot">CompMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tsp/dot/CompMaze-v0_ucs.dot">CompMaze-v0_ucs.dot</option>
+            <option value="/artifacts/tsp/dot/GrdMaze-v0_astar.dot">GrdMaze-v0_astar.dot</option>
+            <option value="/artifacts/tsp/dot/GrdMaze-v0_bfs.dot">GrdMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tsp/dot/GrdMaze-v0_dfs.dot">GrdMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tsp/dot/GrdMaze-v0_ucs.dot">GrdMaze-v0_ucs.dot</option>
+            <option value="/artifacts/tsp/dot/SmallMaze-v0_astar.dot">SmallMaze-v0_astar.dot</option>
+            <option value="/artifacts/tsp/dot/SmallMaze-v0_bfs.dot">SmallMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tsp/dot/SmallMaze-v0_dfs.dot">SmallMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tsp/dot/SmallMaze-v0_ucs.dot">SmallMaze-v0_ucs.dot</option>
+            <option value="/artifacts/tsp/dot/XSMaze-v0_astar.dot">XSMaze-v0_astar.dot</option>
+            <option value="/artifacts/tsp/dot/XSMaze-v0_bfs.dot">XSMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tsp/dot/XSMaze-v0_dfs.dot">XSMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tsp/dot/XSMaze-v0_ucs.dot">XSMaze-v0_ucs.dot</option>
+        </optgroup>
+        <optgroup label="Tree Search Avoid Branch Repetition">
+            <option value="/artifacts/tsd/dot/BigMaze-v0_astar.dot">BigMaze-v0_astar.dot</option>
+            <option value="/artifacts/tsd/dot/BigMaze-v0_bfs.dot">BigMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tsd/dot/BigMaze-v0_dfs.dot">BigMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tsd/dot/BigMaze-v0_greedy.dot">BigMaze-v0_greedy.dot</option>
+            <option value="/artifacts/tsd/dot/BigMaze-v0_ids.dot">BigMaze-v0_ids.dot</option>
+            <option value="/artifacts/tsd/dot/BigMaze-v0_ucs.dot">BigMaze-v0_ucs.dot</option>
+            <option value="/artifacts/tsd/dot/BlockedMaze-v0_astar.dot">BlockedMaze-v0_astar.dot</option>
+            <option value="/artifacts/tsd/dot/BlockedMaze-v0_bfs.dot">BlockedMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tsd/dot/BlockedMaze-v0_dfs.dot">BlockedMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tsd/dot/BlockedMaze-v0_greedy.dot">BlockedMaze-v0_greedy.dot</option>
+            <option value="/artifacts/tsd/dot/BlockedMaze-v0_ids.dot">BlockedMaze-v0_ids.dot</option>
+            <option value="/artifacts/tsd/dot/BlockedMaze-v0_ucs.dot">BlockedMaze-v0_ucs.dot</option>
+            <option value="/artifacts/tsd/dot/CompMaze-v0_astar.dot">CompMaze-v0_astar.dot</option>
+            <option value="/artifacts/tsd/dot/CompMaze-v0_bfs.dot">CompMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tsd/dot/CompMaze-v0_dfs.dot">CompMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tsd/dot/CompMaze-v0_greedy.dot">CompMaze-v0_greedy.dot</option>
+            <option value="/artifacts/tsd/dot/CompMaze-v0_ids.dot">CompMaze-v0_ids.dot</option>
+            <option value="/artifacts/tsd/dot/CompMaze-v0_ucs.dot">CompMaze-v0_ucs.dot</option>
+            <option value="/artifacts/tsd/dot/GrdMaze-v0_astar.dot">GrdMaze-v0_astar.dot</option>
+            <option value="/artifacts/tsd/dot/GrdMaze-v0_bfs.dot">GrdMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tsd/dot/GrdMaze-v0_dfs.dot">GrdMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tsd/dot/GrdMaze-v0_greedy.dot">GrdMaze-v0_greedy.dot</option>
+            <option value="/artifacts/tsd/dot/GrdMaze-v0_ids.dot">GrdMaze-v0_ids.dot</option>
+            <option value="/artifacts/tsd/dot/GrdMaze-v0_ucs.dot">GrdMaze-v0_ucs.dot</option>
+            <option value="/artifacts/tsd/dot/SmallMaze-v0_astar.dot">SmallMaze-v0_astar.dot</option>
+            <option value="/artifacts/tsd/dot/SmallMaze-v0_bfs.dot">SmallMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tsd/dot/SmallMaze-v0_dfs.dot">SmallMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tsd/dot/SmallMaze-v0_greedy.dot">SmallMaze-v0_greedy.dot</option>
+            <option value="/artifacts/tsd/dot/SmallMaze-v0_ids.dot">SmallMaze-v0_ids.dot</option>
+            <option value="/artifacts/tsd/dot/SmallMaze-v0_ucs.dot">SmallMaze-v0_ucs.dot</option>
+            <option value="/artifacts/tsd/dot/XSMaze-v0_astar.dot">XSMaze-v0_astar.dot</option>
+            <option value="/artifacts/tsd/dot/XSMaze-v0_bfs.dot">XSMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tsd/dot/XSMaze-v0_dfs.dot">XSMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tsd/dot/XSMaze-v0_greedy.dot">XSMaze-v0_greedy.dot</option>
+            <option value="/artifacts/tsd/dot/XSMaze-v0_ids.dot">XSMaze-v0_ids.dot</option>
+            <option value="/artifacts/tsd/dot/XSMaze-v0_ucs.dot">XSMaze-v0_ucs.dot</option>
+        </optgroup>
+        <optgroup label="Tree Search Opitmized Avoid Branch Repetition">
+            <option value="/artifacts/tspd/dot/BigMaze-v0_astar.dot">BigMaze-v0_astar.dot</option>
+            <option value="/artifacts/tspd/dot/BigMaze-v0_bfs.dot">BigMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tspd/dot/BigMaze-v0_dfs.dot">BigMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tspd/dot/BigMaze-v0_greedy.dot">BigMaze-v0_greedy.dot</option>
+            <option value="/artifacts/tspd/dot/BigMaze-v0_ids.dot">BigMaze-v0_ids.dot</option>
+            <option value="/artifacts/tspd/dot/BigMaze-v0_ucs.dot">BigMaze-v0_ucs.dot</option>
+            <option value="/artifacts/tspd/dot/BlockedMaze-v0_astar.dot">BlockedMaze-v0_astar.dot</option>
+            <option value="/artifacts/tspd/dot/BlockedMaze-v0_bfs.dot">BlockedMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tspd/dot/BlockedMaze-v0_dfs.dot">BlockedMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tspd/dot/BlockedMaze-v0_greedy.dot">BlockedMaze-v0_greedy.dot</option>
+            <option value="/artifacts/tspd/dot/BlockedMaze-v0_ids.dot">BlockedMaze-v0_ids.dot</option>
+            <option value="/artifacts/tspd/dot/BlockedMaze-v0_ucs.dot">BlockedMaze-v0_ucs.dot</option>
+            <option value="/artifacts/tspd/dot/CompMaze-v0_astar.dot">CompMaze-v0_astar.dot</option>
+            <option value="/artifacts/tspd/dot/CompMaze-v0_bfs.dot">CompMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tspd/dot/CompMaze-v0_dfs.dot">CompMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tspd/dot/CompMaze-v0_greedy.dot">CompMaze-v0_greedy.dot</option>
+            <option value="/artifacts/tspd/dot/CompMaze-v0_ids.dot">CompMaze-v0_ids.dot</option>
+            <option value="/artifacts/tspd/dot/CompMaze-v0_ucs.dot">CompMaze-v0_ucs.dot</option>
+            <option value="/artifacts/tspd/dot/GrdMaze-v0_astar.dot">GrdMaze-v0_astar.dot</option>
+            <option value="/artifacts/tspd/dot/GrdMaze-v0_bfs.dot">GrdMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tspd/dot/GrdMaze-v0_dfs.dot">GrdMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tspd/dot/GrdMaze-v0_greedy.dot">GrdMaze-v0_greedy.dot</option>
+            <option value="/artifacts/tspd/dot/GrdMaze-v0_ids.dot">GrdMaze-v0_ids.dot</option>
+            <option value="/artifacts/tspd/dot/GrdMaze-v0_ucs.dot">GrdMaze-v0_ucs.dot</option>
+            <option value="/artifacts/tspd/dot/SmallMaze-v0_astar.dot">SmallMaze-v0_astar.dot</option>
+            <option value="/artifacts/tspd/dot/SmallMaze-v0_bfs.dot">SmallMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tspd/dot/SmallMaze-v0_dfs.dot">SmallMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tspd/dot/SmallMaze-v0_greedy.dot">SmallMaze-v0_greedy.dot</option>
+            <option value="/artifacts/tspd/dot/SmallMaze-v0_ids.dot">SmallMaze-v0_ids.dot</option>
+            <option value="/artifacts/tspd/dot/SmallMaze-v0_ucs.dot">SmallMaze-v0_ucs.dot</option>
+            <option value="/artifacts/tspd/dot/XSMaze-v0_astar.dot">XSMaze-v0_astar.dot</option>
+            <option value="/artifacts/tspd/dot/XSMaze-v0_bfs.dot">XSMaze-v0_bfs.dot</option>
+            <option value="/artifacts/tspd/dot/XSMaze-v0_dfs.dot">XSMaze-v0_dfs.dot</option>
+            <option value="/artifacts/tspd/dot/XSMaze-v0_greedy.dot">XSMaze-v0_greedy.dot</option>
+            <option value="/artifacts/tspd/dot/XSMaze-v0_ids.dot">XSMaze-v0_ids.dot</option>
+            <option value="/artifacts/tspd/dot/XSMaze-v0_ucs.dot">XSMaze-v0_ucs.dot</option>
+        </optgroup>
+        <optgroup label="Tree Search">
+            <option value="/artifacts/ts/dot/SmallMaze-v0_dfs.dot">SmallMaze-v0_dfs.dot</option>
+            <option value="/artifacts/ts/dot/XSMaze-v0_astar.dot">XSMaze-v0_astar.dot</option>
+            <option value="/artifacts/ts/dot/XSMaze-v0_bfs.dot">XSMaze-v0_bfs.dot</option>
+            <option value="/artifacts/ts/dot/XSMaze-v0_dfs.dot">XSMaze-v0_dfs.dot</option>
+            <option value="/artifacts/ts/dot/XSMaze-v0_greedy.dot">XSMaze-v0_greedy.dot</option>
+            <option value="/artifacts/ts/dot/XSMaze-v0_ucs.dot">XSMaze-v0_ucs.dot</option>
+        </optgroup>
+    </select>
+</header>
 <div id="graph"></div>
 <footer>
+    <button id="reset">Reset</button>
     <button id="back">Back</button>
     <button id="pp">Play/Pause</button>
     <button id="forward">Forward</button>
     <label>Step:&nbsp;
-        <input id="step" type="range" title="Step" step="2"/>
+        <input id="step" type="range" title="Step" step="2" min="3" max="47">
     </label>
-    <input id="step_value" type="number" title="Value" disabled="disabled"/>
+    <input id="step_value" type="number" title="Value" disabled="disabled">
     <label>Gear:&nbsp;
-        <input id="gear" type="number" min="200" max="10000" title="gear" step="100"/>
+        <input id="gear" type="number" min="200" max="10000" title="gear" step="100">
     </label>
 </footer>
-<script src="javascripts/main.js" type="text/javascript"></script>
-</body>
-</html>
+
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+</body></html>
