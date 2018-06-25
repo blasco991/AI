@@ -308,7 +308,7 @@ def _search(problem, fringe, f, gl=gen_label, dot='', graph=True, opt=False, avd
     root = FringeNode(problem.startstate, 0, f(None, problem.startstate), None, None)
     expc, i, gen, max_states, closed, = 0, 0, 1, 0, set()
     fringe.add(root)
-    dot += gl(root, problem, i)
+    # dot += gl(root, problem, i)
 
     while not fringe.is_empty():
         expc += 1
