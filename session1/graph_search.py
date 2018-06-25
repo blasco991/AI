@@ -36,9 +36,6 @@ for env_name in envs:
               "\nSolution: {5}"
               .format(alg.upper(), round(stats[0], 4), stats[1], stats[2], stats[3], solution))
 
-        with open("{}/md/{}_{}.md".format(path, env_name, alg), "w") as text_file:
-            print("```plantuml\n{}```".format(graph), file=text_file)
-
         with open("{}/dot/{}_{}.dot".format(path, env_name, alg), "w") as text_file:
             print(graph, file=text_file)
 
