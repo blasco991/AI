@@ -2,7 +2,7 @@ $(function () {
 
     let step = 0, gear = 100, timerId = null;
     const $gear = $("#gear"), $step = $("#step"), $target = $("#target"), $step_value = $("#step_value");
-    const selection = d3.select("#graph"), graphviz = selection.graphviz({scaleExtent: [1, 10]})
+    const selection = d3.select("#graph"), graphviz = selection.graphviz() //{scaleExtent: [1, 10]}
         .transition(function () {
             return d3.transition("main")
             //.ease(d3.easeLinear)
@@ -13,8 +13,6 @@ $(function () {
     //.tweenPaths(false);
 
     $gear.val(gear);
-    $step.val(step);
-    $step_value.val(step);
 
     let dotLines, dotHeader, dotFooter, n_steps;
     const urlParams = new URLSearchParams(window.location.search);
@@ -26,21 +24,29 @@ $(function () {
                 dotLines = text.split('\n');
                 dotHeader = dotLines.slice(0, 3);
                 //dotBody = dotLines.slice(dotHeader.length, step + dotHeader.length);
-                dotFooter = dotLines.slice(-1);
+                dotFooter = dotLines.slice(-2);
                 n_steps = dotLines.length - dotHeader.length - dotFooter.length;
                 step = dotHeader.length;
                 $step.attr("min", String(dotHeader.length));
                 $step.attr("max", n_steps + dotFooter.length);
-                console.log(text);
+                $step.val(step);
+                $step_value.val(step);
+                //console.log(text);
                 console.log(n_steps);
                 graphviz.dot(text).render()
             }
         ).catch(error => console.error(error));
 
     $target.val(urlParams.has('target') ? urlParams.get('target') : $("#target option:first").val());
-    $target.change(event => window.location.href = "/?target=" + encodeURI(event.target.value));
+    //$target.change(event => window.location.href = "/?target=" + encodeURI(event.target.value));
+    $target.change(event => {
+        timerId = clearTimeout(timerId);
+        ftc(encodeURI(event.target.value))
+    });
 
     ftc($target.val());
+
+    const resetZoom = () => graphviz.resetZoom(graphviz.transition())
 
     const render = () => {
         //console.info("render");
@@ -63,13 +69,15 @@ $(function () {
             //console.log("dot:\t", dot);
             graphviz.dot(dot).render()
                 .on("end", function () {
+                    resetZoom();
                     if (timerId != null)
                         timerId = setTimeout(render, gear);
                 });
         }
     };
 
-    $("#reset").click(() => graphviz.resetZoom(graphviz.transition()));
+
+    $("#reset").click(() => resetZoom());
 
     $("#back").click(function () {
         timerId = clearTimeout(timerId);

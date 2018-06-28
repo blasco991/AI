@@ -172,6 +172,7 @@ def ids(problem, stype, opt=False, avd=False):
         stats[:-1] = [x + y for x, y in zip(stats[:-1], temp_stats[:-1])]
         stats[-1] = max(stats[-1], temp_stats[-1])
         if path is not None or not cutoff:
+            nodes = (nodes[0], None)
             graph, gen = cs(stats[0], nodes, graph)
             return path, (timer() - t, stats[0], gen, stats[1]), graph
 
@@ -240,13 +241,13 @@ def greedy(problem, stype, opt=False, avd=False):
 
     def gl(n, p, exp=False, j=None):
         label = '{}'.format(n.state) if j is None else '{}  [{}]'.format(n.state, j)
-        return '\n{} [label="<f0>{} |<f1> cost: {}" style=filled color={} fillcolor={}]; {} ' \
+        return '{} [label="<f0>{} |<f1> cost: {}" style=filled color={} fillcolor={}]; {} ' \
             .format(gen_code(n), label, n.pathcost,
                     'black' if exp or p.goalstate == n.state else 'grey', get_color(n.state),
                     '/*GOALSTATE*/' if p.goalstate == n.state else '')
 
     t = timer()
-    path, stats, nodes, _ = stype(problem, PriorityFringe(), g, gl, opt=opt, avd=avd)
+    path, stats, nodes, _ = stype(problem, PriorityFringe(), g, gl, opt=opt, avd=avd, shape='record')
     graph, gen = cs(stats[0], nodes)
     return path, (timer() - t, stats[0], gen, stats[1]), graph
 
@@ -274,7 +275,7 @@ def astar(problem, stype, opt=False, avd=False):
 
     def gl(n, p, exp=False, j=None):
         label = '{}'.format(n.state) if j is None else '{}  [{}]'.format(n.state, j)
-        return '\n{} [label="<f0>{} |<f1> cost: {} |<f2> f: {} ({}+{})", style=filled color={} fillcolor={}]; {} ' \
+        return '{} [label="<f0>{} |<f1> cost: {} |<f2> f: {} ({}+{})", style=filled color={} fillcolor={}]; {} ' \
             .format(gen_code(n), label, n.pathcost, f(n.parent, n.state),
                     n.parent.pathcost if n.parent is not None else 0,
                     heuristics.l1_norm(p.state_to_pos(n.state), p.state_to_pos(p.goalstate)),
@@ -321,7 +322,7 @@ def _search(problem, fringe, f, shape, gl=gen_label, graph=True, opt=False, avd=
             closed.add(node.state)
 
         if limit == i:
-            return None, [expc, max_states], (root, node), True
+            return None, [expc, max_states], (root, None), True
 
         for action in range(problem.action_space.n):
             child_state = problem.sample(node.state, action)

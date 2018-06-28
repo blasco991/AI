@@ -32,9 +32,9 @@ def dot_init(problem, shape='circle', sub=False, cluster=0):
     html_table = '\nsubgraph MAP {label=Map;map [shape=plaintext label=<<table' \
                  ' border="1" cellpadding="5" cellspacing="0" cellborder="1">' + env_to_html(problem) + '</table>>]} \n'
 
-    return '{} {{ label="{}"{}nodesep=1 ranksep=1 node [shape={}] edge [arrowsize=0.7] ' \
+    return '{} {{ label="{}" {} nodesep=1 ranksep=1 node [shape={}] edge [arrowsize=0.7] ' \
         .format('digraph {}'.format(problem.spec._env_name) if not sub else '\nsubgraph cluster{}'.format(cluster),
-                'Limit: "{}"'.format(cluster) if sub else problem.spec.id,
+                'Limit: {}'.format(cluster) if sub else problem.spec.id,
                 html_table if not sub else ' ', shape)
 
 
@@ -55,9 +55,9 @@ def close_dot(expanded, nodes=None, dot=None):
                    for nodepath in (tuple(map(lambda s: '-> ' + s, map(gen_code, build_path_n(s_node)))))):
                 line = line.replace('color=grey', 'color=grey color=red')
             temp += line + "\n"
-        dot_string = temp[0:-1]
+        dot_string = temp[:-2]
 
-    return dot_string + ' "#exp {}, #gen {}{}" [ shape=box ]; }}' \
+    return dot_string + '\n"#exp {}, #gen {}{}" [ shape=box ]; }}' \
         .format(expanded, root.gen(), ', cost:{}'.format(s_node.pathcost) if s_node is not None else ''), root.gen()
 
 
@@ -82,8 +82,8 @@ def gen_trans(node, child_node, problem, gl, accumulator, j=None):
     return '\n{}{} {} -> {} [label="({},{})" headlabel=" {} " color=grey ]; ' \
         .format(state_label if state_label not in accumulator else '',
                 child_state_label if child_state_label not in accumulator else '',
-                gen_code(node), gen_code(child_node), problem.actions[child_node.cause], 1,
-                j if j is not None else '')
+                gen_code(node), gen_code(child_node), problem.actions[child_node.cause],
+                child_node.pathcost - node.pathcost, j if j is not None else '')
 
 
 def build_path_n(node):
