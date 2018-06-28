@@ -26,12 +26,12 @@ $(function () {
                 dotLines = text.split('\n');
                 dotHeader = dotLines.slice(0, 3);
                 //dotBody = dotLines.slice(dotHeader.length, step + dotHeader.length);
-                dotFooter = dotLines.slice(-2);
+                dotFooter = dotLines.slice(-1);
                 n_steps = dotLines.length - dotHeader.length - dotFooter.length;
                 step = dotHeader.length;
                 $step.attr("min", String(dotHeader.length));
-                $step.attr("max", n_steps);
-                //console.log(text);
+                $step.attr("max", n_steps + dotFooter.length);
+                console.log(text);
                 console.log(n_steps);
                 graphviz.dot(text).render()
             }
@@ -54,7 +54,9 @@ $(function () {
                 dotBody = dotBody.concat('}');
 
             if (!dotBody.includes('GOALSTATE'))
-                dotBody = dotBody.replace(new RegExp('red', 'g'), 'grey');
+                dotBody = dotBody
+                    .replace(new RegExp('black color=red', 'g'), 'black')
+                    .replace(new RegExp('grey color=red', 'g'), 'grey');
 
             step++;
             let dot = dotHeader.join(' ') + dotBody + dotFooter.join(' ');

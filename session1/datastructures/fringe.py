@@ -3,8 +3,13 @@ Data structures representing the fringe for search methods
 """
 
 import heapq
+from dot_util import dot_init, gen_trans
 from collections import deque
+
 from abc import ABC, abstractmethod
+
+dot = ''
+gen = 0
 
 
 class FringeNode:
@@ -12,7 +17,7 @@ class FringeNode:
     Fringe state representation
     """
 
-    def __init__(self, state, pathcost, value, parent, cause):
+    def __init__(self, state, pathcost, value, parent, cause, problem, gl, shape='circle', limit=None, sub=False):
         """
         Creates a representation of a node in the fringe
         :param state: the state embedded in the node
@@ -22,11 +27,23 @@ class FringeNode:
         :param cause: parent node
         """
         self.state = state
-        self.pathcost = pathcost
+        self.cause = cause
         self.value = value
         self.parent = parent
         self.removed = False
-        self.cause = cause
+        self.pathcost = pathcost
+
+        global dot
+        global gen
+        if parent is None:
+            gen = 1
+            if limit != -1:
+                dot = dot_init(problem, shape, sub=True, cluster=limit)
+            else:
+                dot = dot_init(problem, shape)
+        else:
+            dot += gen_trans(parent, self, problem, gl, dot, gen)
+            gen += 1
 
     def __lt__(self, other):
         """
@@ -42,6 +59,12 @@ class FringeNode:
         :return: unique integer identifier of the embedded state
         """
         return self.state
+
+    def dot(self):
+        return dot
+
+    def gen(self):
+        return gen
 
 
 class Fringe(ABC):

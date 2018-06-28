@@ -8,7 +8,8 @@ path = "../viz/artifacts/gs"
 for folder in ["dot", "md", "png"]:
     pathlib.Path(path + "/" + folder).mkdir(parents=True, exist_ok=True)
 
-envs = ["XSMaze-v0", "SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", "CompMaze-v0", "BigMaze-v0"]
+# envs = ["XSMaze-v0", "SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", "CompMaze-v0", "BigMaze-v0"]
+envs = ["SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", ]
 
 algs = {"dfs": search.graph_search, "ids": search.graph_search, "bfs": search.graph_search, "ucs": search.graph_search,
         "greedy": search.graph_search, "astar": search.graph_search}
