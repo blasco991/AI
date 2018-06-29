@@ -53,7 +53,7 @@ $(function () {
             timerId = clearTimeout(timerId);
         } else {
             $step.val(step);
-            $step_value.val(step - 2);
+            $step_value.val(step - dotHeader.length);
             let dotBody = String(dotLines.slice(dotHeader.length, step).join('\n'));
             if (dotBody.includes('subgraph cluster') && ((dotBody.match(/{/g) || []).length > (dotBody.match(/}/g) || []).length))
                 dotBody = dotBody.concat('}');
