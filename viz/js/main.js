@@ -24,11 +24,11 @@ $(function () {
         .then(text => {
                 //console.info(text);
                 dotLines = text.split('\n');
-                dotHeader = dotLines.slice(0, 3);
+                dotHeader = dotLines.slice(0, 2);
                 dotFooter = dotLines.slice(-2);
                 n_steps = dotLines.length - dotHeader.length - dotFooter.length;
                 step = dotHeader.length;
-                $step.attr("min", String(dotHeader.length));
+                $step.attr("min", dotHeader.length);
                 $step.attr("max", n_steps + dotFooter.length);
                 $step.val(step);
                 $step_value.val(step);
@@ -53,19 +53,17 @@ $(function () {
             timerId = clearTimeout(timerId);
         } else {
             $step.val(step);
-            $step_value.val(step - 3);
+            $step_value.val(step - 2);
             let dotBody = String(dotLines.slice(dotHeader.length, step).join('\n'));
-            if (!dotBody.endsWith('}') && dotBody.includes('subgraph cluster'))
+            if (dotBody.includes('subgraph cluster') && ((dotBody.match(/{/g) || []).length > (dotBody.match(/}/g) || []).length))
                 dotBody = dotBody.concat('}');
 
             if (!dotBody.includes('GOALSTATE'))
-                dotBody = dotBody
-                    .replace(new RegExp('black color=red', 'g'), 'black')
-                    .replace(new RegExp('grey color=red', 'g'), 'grey');
+                dotBody = dotBody.replace(new RegExp('color=red', 'g'), '');
 
             step++;
             let dot = dotHeader.join(' ') + dotBody + dotFooter.join(' ');
-            //console.log("dot:\t", dot);
+            //console.log(dot);
             graphviz.dot(dot).render()
                 .on("end", function () {
                     resetZoom();
