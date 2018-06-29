@@ -30,12 +30,13 @@ def dot_init(problem, shape='circle', sub=False, cluster=0):
     sub_c = str(cluster) + "_"
     colors = color_map(np.linspace(0, 1, len(problem.staterange) * 2))
     html_table = '\nsubgraph MAP {label=Map;map [shape=plaintext label=<<table' \
-                 ' border="1" cellpadding="5" cellspacing="0" cellborder="1">' + env_to_html(problem) + '</table>>]} \n'
+                 ' border="1" cellpadding="5" cellspacing="0" cellborder="1">' + env_to_html(problem) + '</table>>]}'
 
-    return '{} {{ label="{}" {} nodesep=1 ranksep=1 node [shape={}] edge [arrowsize=0.7] ' \
+    return '{} {{ label="{}" {} {} ' \
         .format('digraph {}'.format(problem.spec._env_name) if not sub else '\nsubgraph cluster{}'.format(cluster),
                 'Limit: {}'.format(cluster) if sub else problem.spec.id,
-                html_table if not sub else ' ', shape)
+                'nodesep=1 ranksep=1 node [shape=' + shape + '] edge [arrowsize=0.7]' if not sub else '',
+                html_table if not sub else ' ')
 
 
 def get_color(state):

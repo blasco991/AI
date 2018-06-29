@@ -17,13 +17,14 @@ $(function () {
     let dotLines, dotHeader, dotFooter, n_steps;
     const urlParams = new URLSearchParams(window.location.search);
 
+    const resetZoom = () => graphviz.resetZoom(graphviz.transition());
+
     const ftc = target => fetch(target)
         .then(response => response.text())
         .then(text => {
                 //console.info(text);
                 dotLines = text.split('\n');
                 dotHeader = dotLines.slice(0, 3);
-                //dotBody = dotLines.slice(dotHeader.length, step + dotHeader.length);
                 dotFooter = dotLines.slice(-2);
                 n_steps = dotLines.length - dotHeader.length - dotFooter.length;
                 step = dotHeader.length;
@@ -33,22 +34,20 @@ $(function () {
                 $step_value.val(step);
                 //console.log(text);
                 console.log(n_steps);
-                graphviz.dot(text).render()
+                graphviz.dot(text).render();
             }
         ).catch(error => console.error(error));
 
     $target.val(urlParams.has('target') ? urlParams.get('target') : $("#target option:first").val());
-    //$target.change(event => window.location.href = "/?target=" + encodeURI(event.target.value));
-    $target.change(event => {
+    $target.change(event => window.location.href = "/?target=" + encodeURI(event.target.value));
+    /*$target.change(event => {
         timerId = clearTimeout(timerId);
-        ftc(encodeURI(event.target.value))
-    });
+        ftc(encodeURI(event.target.value));
+    });*/
 
     ftc($target.val());
 
-    const resetZoom = () => graphviz.resetZoom(graphviz.transition())
-
-    const render = () => {
+    const renderStep = () => {
         //console.info("render");
         if (step > n_steps + dotFooter.length) {
             timerId = clearTimeout(timerId);
@@ -71,7 +70,7 @@ $(function () {
                 .on("end", function () {
                     resetZoom();
                     if (timerId != null)
-                        timerId = setTimeout(render, gear);
+                        timerId = setTimeout(renderStep, gear);
                 });
         }
     };
@@ -83,20 +82,20 @@ $(function () {
         timerId = clearTimeout(timerId);
         if (step > 1 + dotHeader.length) {
             step -= 2;
-            render();
+            renderStep();
         }
     });
 
     $("#forward").click(function () {
         timerId = clearTimeout(timerId);
-        render();
+        renderStep();
     });
 
     $("#pp").click(function () {
         if (timerId != null) {
             timerId = clearTimeout(timerId);
         } else
-            timerId = setTimeout(render, gear);
+            timerId = setTimeout(renderStep, gear);
     });
 
     $step.get().oninput = function (event) {
@@ -109,14 +108,14 @@ $(function () {
         timerId = clearTimeout(timerId);
         step = Number(event.target.value);
         $step_value.val(step - dotHeader.length);
-        render();
+        renderStep();
     });
 
     $gear.change(function (event) {
         gear = Number(event.target.value);
         if (timerId != null) {
             clearTimeout(timerId);
-            timerId = setTimeout(render, gear);
+            timerId = setTimeout(renderStep, gear);
         }
     });
 
