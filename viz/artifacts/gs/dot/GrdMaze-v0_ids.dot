@@ -1,17 +1,12 @@
 digraph GrdMaze { label="GrdMaze-v0" nodesep=1 ranksep=1 node [shape=circle] edge [arrowsize=0.7] 
 subgraph MAP {label=Map;map [shape=plaintext label=<<table border="1" cellpadding="5" cellspacing="0" cellborder="1"><tr><td bgcolor="0.39803922 0.15947579 0.99679532 1.        ">C:0</td><td bgcolor="0.35098039 0.23194764 0.99315867 1.        ">C:1</td><td bgcolor="0.29607843 0.31486959 0.98720184 1.        ">C:2</td><td bgcolor="0.24901961 0.38410575 0.98063477 1.        ">S:3</td></tr><tr><td bgcolor="0.19411765 0.46220388 0.97128103 1.        ">C:4</td><td bgcolor="0.14705882 0.52643216 0.96182564 1.        ">C:5</td><td bgcolor="0.09215686 0.59770746 0.94913494 1.        ">W:6</td><td bgcolor="0.0372549  0.66454018 0.93467977 1.        ">C:7</td></tr><tr><td bgcolor="0.00980392 0.71791192 0.92090552 1.        ">C:8</td><td bgcolor="0.06470588 0.77520398 0.9032472  1.        ">C:9</td><td bgcolor="0.11176471 0.81974048 0.88677369 1.        ">C:10</td><td bgcolor="0.16666667 0.8660254  0.8660254  1.        ">C:11</td></tr><tr><td bgcolor="0.21372549 0.9005867  0.84695821 1.        ">C:12</td><td bgcolor="0.26862745 0.93467977 0.82325295 1.        ">W:13</td><td bgcolor="0.32352941 0.96182564 0.79801723 1.        ">W:14</td><td bgcolor="0.37058824 0.97940977 0.77520398 1.        ">W:15</td></tr><tr><td bgcolor="0.4254902  0.99315867 0.74725253 1.        ">C:16</td><td bgcolor="0.47254902 0.99907048 0.72218645 1.        ">C:17</td><td bgcolor="0.52745098 0.99907048 0.69169844 1.        ">C:18</td><td bgcolor="0.5745098  0.99315867 0.66454018 1.        ">G:19</td></tr></table>>]} 
-subgraph cluster0 { label="Limit: 0"    
-"0_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
-"#exp 1, #gen 1" [ shape=box ]; }
-subgraph cluster1 { label="Limit: 1"    
-"1_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
+subgraph cluster0 { label="Limit: 0"    "0_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "#exp 1, #gen 1" [ shape=box ]; }
+subgraph cluster1 { label="Limit: 1"    "1_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
 "1_3" [label=" 3 " style=filled color=black fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  "1_3.2-0" [label=2 style=filled color=grey fillcolor="0.29607843 0.31486959 0.98720184 1.        " ];   "1_3" -> "1_3.2-0" [label="(L,1)" headlabel=" 1 " color=grey ]; 
 "1_3.3-1" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "1_3" -> "1_3.3-1" [label="(R,1)" headlabel=" 2 " color=grey ]; 
 "1_3.3-2" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "1_3" -> "1_3.3-2" [label="(U,1)" headlabel=" 3 " color=grey ]; 
-"1_3.7-3" [label=7 style=filled color=grey fillcolor="0.0372549  0.66454018 0.93467977 1.        " ];   "1_3" -> "1_3.7-3" [label="(D,1)" headlabel=" 4 " color=grey ]; 
-"#exp 2, #gen 5" [ shape=box ]; }
-subgraph cluster2 { label="Limit: 2"    
-"2_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
+"1_3.7-3" [label=7 style=filled color=grey fillcolor="0.0372549  0.66454018 0.93467977 1.        " ];   "1_3" -> "1_3.7-3" [label="(D,1)" headlabel=" 4 " color=grey ];  "#exp 2, #gen 5" [ shape=box ]; }
+subgraph cluster2 { label="Limit: 2"    "2_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
 "2_3" [label=" 3 " style=filled color=black fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  "2_3.2-0" [label=2 style=filled color=grey fillcolor="0.29607843 0.31486959 0.98720184 1.        " ];   "2_3" -> "2_3.2-0" [label="(L,1)" headlabel=" 1 " color=grey ]; 
 "2_3.3-1" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "2_3" -> "2_3.3-1" [label="(R,1)" headlabel=" 2 " color=grey ]; 
 "2_3.3-2" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "2_3" -> "2_3.3-2" [label="(U,1)" headlabel=" 3 " color=grey ]; 
@@ -19,10 +14,8 @@ subgraph cluster2 { label="Limit: 2"
 "2_3.7-3" [label=" 7 " style=filled color=black fillcolor="0.0372549  0.66454018 0.93467977 1.        " ];  "2_3.7.7-0" [label=7 style=filled color=grey fillcolor="0.0372549  0.66454018 0.93467977 1.        " ];   "2_3.7-3" -> "2_3.7.7-0" [label="(L,1)" headlabel=" 5 " color=grey ]; 
 "2_3.7.7-1" [label=7 style=filled color=grey fillcolor="0.0372549  0.66454018 0.93467977 1.        " ];   "2_3.7-3" -> "2_3.7.7-1" [label="(R,1)" headlabel=" 6 " color=grey ]; 
 "2_3.7.3-2" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "2_3.7-3" -> "2_3.7.3-2" [label="(U,1)" headlabel=" 7 " color=grey ]; 
-"2_3.7.11-3" [label=11 style=filled color=grey fillcolor="0.16666667 0.8660254  0.8660254  1.        " ];   "2_3.7-3" -> "2_3.7.11-3" [label="(D,1)" headlabel=" 8 " color=grey ]; 
-"#exp 3, #gen 9" [ shape=box ]; }
-subgraph cluster3 { label="Limit: 3"    
-"3_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
+"2_3.7.11-3" [label=11 style=filled color=grey fillcolor="0.16666667 0.8660254  0.8660254  1.        " ];   "2_3.7-3" -> "2_3.7.11-3" [label="(D,1)" headlabel=" 8 " color=grey ];  "#exp 3, #gen 9" [ shape=box ]; }
+subgraph cluster3 { label="Limit: 3"    "3_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
 "3_3" [label=" 3 " style=filled color=black fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  "3_3.2-0" [label=2 style=filled color=grey fillcolor="0.29607843 0.31486959 0.98720184 1.        " ];   "3_3" -> "3_3.2-0" [label="(L,1)" headlabel=" 1 " color=grey ]; 
 "3_3.3-1" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "3_3" -> "3_3.3-1" [label="(R,1)" headlabel=" 2 " color=grey ]; 
 "3_3.3-2" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "3_3" -> "3_3.3-2" [label="(U,1)" headlabel=" 3 " color=grey ]; 
@@ -34,10 +27,8 @@ subgraph cluster3 { label="Limit: 3"
 "3_3.7.11-3" [label=" 11 " style=filled color=black fillcolor="0.16666667 0.8660254  0.8660254  1.        " ];  "3_3.7.11.10-0" [label=10 style=filled color=grey fillcolor="0.11176471 0.81974048 0.88677369 1.        " ];   "3_3.7.11-3" -> "3_3.7.11.10-0" [label="(L,1)" headlabel=" 9 " color=grey ]; 
 "3_3.7.11.11-1" [label=11 style=filled color=grey fillcolor="0.16666667 0.8660254  0.8660254  1.        " ];   "3_3.7.11-3" -> "3_3.7.11.11-1" [label="(R,1)" headlabel=" 10 " color=grey ]; 
 "3_3.7.11.7-2" [label=7 style=filled color=grey fillcolor="0.0372549  0.66454018 0.93467977 1.        " ];   "3_3.7.11-3" -> "3_3.7.11.7-2" [label="(U,1)" headlabel=" 11 " color=grey ]; 
-"3_3.7.11.11-3" [label=11 style=filled color=grey fillcolor="0.16666667 0.8660254  0.8660254  1.        " ];   "3_3.7.11-3" -> "3_3.7.11.11-3" [label="(D,1)" headlabel=" 12 " color=grey ]; 
-"#exp 4, #gen 13" [ shape=box ]; }
-subgraph cluster4 { label="Limit: 4"    
-"4_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
+"3_3.7.11.11-3" [label=11 style=filled color=grey fillcolor="0.16666667 0.8660254  0.8660254  1.        " ];   "3_3.7.11-3" -> "3_3.7.11.11-3" [label="(D,1)" headlabel=" 12 " color=grey ];  "#exp 4, #gen 13" [ shape=box ]; }
+subgraph cluster4 { label="Limit: 4"    "4_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
 "4_3" [label=" 3 " style=filled color=black fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  "4_3.2-0" [label=2 style=filled color=grey fillcolor="0.29607843 0.31486959 0.98720184 1.        " ];   "4_3" -> "4_3.2-0" [label="(L,1)" headlabel=" 1 " color=grey ]; 
 "4_3.3-1" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "4_3" -> "4_3.3-1" [label="(R,1)" headlabel=" 2 " color=grey ]; 
 "4_3.3-2" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "4_3" -> "4_3.3-2" [label="(U,1)" headlabel=" 3 " color=grey ]; 
@@ -53,10 +44,8 @@ subgraph cluster4 { label="Limit: 4"
 "4_3.7.11.10-0" [label=" 10 " style=filled color=black fillcolor="0.11176471 0.81974048 0.88677369 1.        " ];  "4_3.7.11.10.9-0" [label=9 style=filled color=grey fillcolor="0.06470588 0.77520398 0.9032472  1.        " ];   "4_3.7.11.10-0" -> "4_3.7.11.10.9-0" [label="(L,1)" headlabel=" 13 " color=grey ]; 
 "4_3.7.11.10.11-1" [label=11 style=filled color=grey fillcolor="0.16666667 0.8660254  0.8660254  1.        " ];   "4_3.7.11.10-0" -> "4_3.7.11.10.11-1" [label="(R,1)" headlabel=" 14 " color=grey ]; 
 "4_3.7.11.10.10-2" [label=10 style=filled color=grey fillcolor="0.11176471 0.81974048 0.88677369 1.        " ];   "4_3.7.11.10-0" -> "4_3.7.11.10.10-2" [label="(U,1)" headlabel=" 15 " color=grey ]; 
-"4_3.7.11.10.10-3" [label=10 style=filled color=grey fillcolor="0.11176471 0.81974048 0.88677369 1.        " ];   "4_3.7.11.10-0" -> "4_3.7.11.10.10-3" [label="(D,1)" headlabel=" 16 " color=grey ]; 
-"#exp 5, #gen 17" [ shape=box ]; }
-subgraph cluster5 { label="Limit: 5"    
-"5_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
+"4_3.7.11.10.10-3" [label=10 style=filled color=grey fillcolor="0.11176471 0.81974048 0.88677369 1.        " ];   "4_3.7.11.10-0" -> "4_3.7.11.10.10-3" [label="(D,1)" headlabel=" 16 " color=grey ];  "#exp 5, #gen 17" [ shape=box ]; }
+subgraph cluster5 { label="Limit: 5"    "5_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
 "5_3" [label=" 3 " style=filled color=black fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  "5_3.2-0" [label=2 style=filled color=grey fillcolor="0.29607843 0.31486959 0.98720184 1.        " ];   "5_3" -> "5_3.2-0" [label="(L,1)" headlabel=" 1 " color=grey ]; 
 "5_3.3-1" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "5_3" -> "5_3.3-1" [label="(R,1)" headlabel=" 2 " color=grey ]; 
 "5_3.3-2" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "5_3" -> "5_3.3-2" [label="(U,1)" headlabel=" 3 " color=grey ]; 
@@ -76,10 +65,8 @@ subgraph cluster5 { label="Limit: 5"
 "5_3.7.11.10.9-0" [label=" 9 " style=filled color=black fillcolor="0.06470588 0.77520398 0.9032472  1.        " ];  "5_3.7.11.10.9.8-0" [label=8 style=filled color=grey fillcolor="0.00980392 0.71791192 0.92090552 1.        " ];   "5_3.7.11.10.9-0" -> "5_3.7.11.10.9.8-0" [label="(L,1)" headlabel=" 17 " color=grey ]; 
 "5_3.7.11.10.9.10-1" [label=10 style=filled color=grey fillcolor="0.11176471 0.81974048 0.88677369 1.        " ];   "5_3.7.11.10.9-0" -> "5_3.7.11.10.9.10-1" [label="(R,1)" headlabel=" 18 " color=grey ]; 
 "5_3.7.11.10.9.5-2" [label=5 style=filled color=grey fillcolor="0.14705882 0.52643216 0.96182564 1.        " ];   "5_3.7.11.10.9-0" -> "5_3.7.11.10.9.5-2" [label="(U,1)" headlabel=" 19 " color=grey ]; 
-"5_3.7.11.10.9.9-3" [label=9 style=filled color=grey fillcolor="0.06470588 0.77520398 0.9032472  1.        " ];   "5_3.7.11.10.9-0" -> "5_3.7.11.10.9.9-3" [label="(D,1)" headlabel=" 20 " color=grey ]; 
-"#exp 6, #gen 21" [ shape=box ]; }
-subgraph cluster6 { label="Limit: 6"    
-"6_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
+"5_3.7.11.10.9.9-3" [label=9 style=filled color=grey fillcolor="0.06470588 0.77520398 0.9032472  1.        " ];   "5_3.7.11.10.9-0" -> "5_3.7.11.10.9.9-3" [label="(D,1)" headlabel=" 20 " color=grey ];  "#exp 6, #gen 21" [ shape=box ]; }
+subgraph cluster6 { label="Limit: 6"    "6_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
 "6_3" [label=" 3 " style=filled color=black fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  "6_3.2-0" [label=2 style=filled color=grey fillcolor="0.29607843 0.31486959 0.98720184 1.        " ];   "6_3" -> "6_3.2-0" [label="(L,1)" headlabel=" 1 " color=grey ]; 
 "6_3.3-1" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "6_3" -> "6_3.3-1" [label="(R,1)" headlabel=" 2 " color=grey ]; 
 "6_3.3-2" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "6_3" -> "6_3.3-2" [label="(U,1)" headlabel=" 3 " color=grey ]; 
@@ -103,10 +90,8 @@ subgraph cluster6 { label="Limit: 6"
 "6_3.7.11.10.9.5-2" [label=" 5 " style=filled color=black fillcolor="0.14705882 0.52643216 0.96182564 1.        " ];  "6_3.7.11.10.9.5.4-0" [label=4 style=filled color=grey fillcolor="0.19411765 0.46220388 0.97128103 1.        " ];   "6_3.7.11.10.9.5-2" -> "6_3.7.11.10.9.5.4-0" [label="(L,1)" headlabel=" 21 " color=grey ]; 
 "6_3.7.11.10.9.5.5-1" [label=5 style=filled color=grey fillcolor="0.14705882 0.52643216 0.96182564 1.        " ];   "6_3.7.11.10.9.5-2" -> "6_3.7.11.10.9.5.5-1" [label="(R,1)" headlabel=" 22 " color=grey ]; 
 "6_3.7.11.10.9.5.1-2" [label=1 style=filled color=grey fillcolor="0.35098039 0.23194764 0.99315867 1.        " ];   "6_3.7.11.10.9.5-2" -> "6_3.7.11.10.9.5.1-2" [label="(U,1)" headlabel=" 23 " color=grey ]; 
-"6_3.7.11.10.9.5.9-3" [label=9 style=filled color=grey fillcolor="0.06470588 0.77520398 0.9032472  1.        " ];   "6_3.7.11.10.9.5-2" -> "6_3.7.11.10.9.5.9-3" [label="(D,1)" headlabel=" 24 " color=grey ]; 
-"#exp 7, #gen 25" [ shape=box ]; }
-subgraph cluster7 { label="Limit: 7"    
-"7_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
+"6_3.7.11.10.9.5.9-3" [label=9 style=filled color=grey fillcolor="0.06470588 0.77520398 0.9032472  1.        " ];   "6_3.7.11.10.9.5-2" -> "6_3.7.11.10.9.5.9-3" [label="(D,1)" headlabel=" 24 " color=grey ];  "#exp 7, #gen 25" [ shape=box ]; }
+subgraph cluster7 { label="Limit: 7"    "7_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
 "7_3" [label=" 3 " style=filled color=black fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  "7_3.2-0" [label=2 style=filled color=grey fillcolor="0.29607843 0.31486959 0.98720184 1.        " ];   "7_3" -> "7_3.2-0" [label="(L,1)" headlabel=" 1 " color=grey ]; 
 "7_3.3-1" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "7_3" -> "7_3.3-1" [label="(R,1)" headlabel=" 2 " color=grey ]; 
 "7_3.3-2" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "7_3" -> "7_3.3-2" [label="(U,1)" headlabel=" 3 " color=grey ]; 
@@ -134,10 +119,8 @@ subgraph cluster7 { label="Limit: 7"
 "7_3.7.11.10.9.5.1-2" [label=" 1 " style=filled color=black fillcolor="0.35098039 0.23194764 0.99315867 1.        " ];  "7_3.7.11.10.9.5.1.0-0" [label=0 style=filled color=grey fillcolor="0.39803922 0.15947579 0.99679532 1.        " ];   "7_3.7.11.10.9.5.1-2" -> "7_3.7.11.10.9.5.1.0-0" [label="(L,1)" headlabel=" 25 " color=grey ]; 
 "7_3.7.11.10.9.5.1.2-1" [label=2 style=filled color=grey fillcolor="0.29607843 0.31486959 0.98720184 1.        " ];   "7_3.7.11.10.9.5.1-2" -> "7_3.7.11.10.9.5.1.2-1" [label="(R,1)" headlabel=" 26 " color=grey ]; 
 "7_3.7.11.10.9.5.1.1-2" [label=1 style=filled color=grey fillcolor="0.35098039 0.23194764 0.99315867 1.        " ];   "7_3.7.11.10.9.5.1-2" -> "7_3.7.11.10.9.5.1.1-2" [label="(U,1)" headlabel=" 27 " color=grey ]; 
-"7_3.7.11.10.9.5.1.5-3" [label=5 style=filled color=grey fillcolor="0.14705882 0.52643216 0.96182564 1.        " ];   "7_3.7.11.10.9.5.1-2" -> "7_3.7.11.10.9.5.1.5-3" [label="(D,1)" headlabel=" 28 " color=grey ]; 
-"#exp 8, #gen 29" [ shape=box ]; }
-subgraph cluster8 { label="Limit: 8"    
-"8_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
+"7_3.7.11.10.9.5.1.5-3" [label=5 style=filled color=grey fillcolor="0.14705882 0.52643216 0.96182564 1.        " ];   "7_3.7.11.10.9.5.1-2" -> "7_3.7.11.10.9.5.1.5-3" [label="(D,1)" headlabel=" 28 " color=grey ];  "#exp 8, #gen 29" [ shape=box ]; }
+subgraph cluster8 { label="Limit: 8"    "8_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
 "8_3" [label=" 3 " style=filled color=black fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  "8_3.2-0" [label=2 style=filled color=grey fillcolor="0.29607843 0.31486959 0.98720184 1.        " ];   "8_3" -> "8_3.2-0" [label="(L,1)" headlabel=" 1 " color=grey ]; 
 "8_3.3-1" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "8_3" -> "8_3.3-1" [label="(R,1)" headlabel=" 2 " color=grey ]; 
 "8_3.3-2" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "8_3" -> "8_3.3-2" [label="(U,1)" headlabel=" 3 " color=grey ]; 
@@ -169,10 +152,8 @@ subgraph cluster8 { label="Limit: 8"
 "8_3.7.11.10.9.5.1.0-0" [label=" 0 " style=filled color=black fillcolor="0.39803922 0.15947579 0.99679532 1.        " ];  "8_3.7.11.10.9.5.1.0.0-0" [label=0 style=filled color=grey fillcolor="0.39803922 0.15947579 0.99679532 1.        " ];   "8_3.7.11.10.9.5.1.0-0" -> "8_3.7.11.10.9.5.1.0.0-0" [label="(L,1)" headlabel=" 29 " color=grey ]; 
 "8_3.7.11.10.9.5.1.0.1-1" [label=1 style=filled color=grey fillcolor="0.35098039 0.23194764 0.99315867 1.        " ];   "8_3.7.11.10.9.5.1.0-0" -> "8_3.7.11.10.9.5.1.0.1-1" [label="(R,1)" headlabel=" 30 " color=grey ]; 
 "8_3.7.11.10.9.5.1.0.0-2" [label=0 style=filled color=grey fillcolor="0.39803922 0.15947579 0.99679532 1.        " ];   "8_3.7.11.10.9.5.1.0-0" -> "8_3.7.11.10.9.5.1.0.0-2" [label="(U,1)" headlabel=" 31 " color=grey ]; 
-"8_3.7.11.10.9.5.1.0.4-3" [label=4 style=filled color=grey fillcolor="0.19411765 0.46220388 0.97128103 1.        " ];   "8_3.7.11.10.9.5.1.0-0" -> "8_3.7.11.10.9.5.1.0.4-3" [label="(D,1)" headlabel=" 32 " color=grey ]; 
-"#exp 9, #gen 33" [ shape=box ]; }
-subgraph cluster9 { label="Limit: 9"    
-"9_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
+"8_3.7.11.10.9.5.1.0.4-3" [label=4 style=filled color=grey fillcolor="0.19411765 0.46220388 0.97128103 1.        " ];   "8_3.7.11.10.9.5.1.0-0" -> "8_3.7.11.10.9.5.1.0.4-3" [label="(D,1)" headlabel=" 32 " color=grey ];  "#exp 9, #gen 33" [ shape=box ]; }
+subgraph cluster9 { label="Limit: 9"    "9_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
 "9_3" [label=" 3 " style=filled color=black fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  "9_3.2-0" [label=2 style=filled color=grey fillcolor="0.29607843 0.31486959 0.98720184 1.        " ];   "9_3" -> "9_3.2-0" [label="(L,1)" headlabel=" 1 " color=grey ]; 
 "9_3.3-1" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "9_3" -> "9_3.3-1" [label="(R,1)" headlabel=" 2 " color=grey ]; 
 "9_3.3-2" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "9_3" -> "9_3.3-2" [label="(U,1)" headlabel=" 3 " color=grey ]; 
@@ -208,10 +189,8 @@ subgraph cluster9 { label="Limit: 9"
 "9_3.7.11.10.9.5.4-0" [label=" 4 " style=filled color=black fillcolor="0.19411765 0.46220388 0.97128103 1.        " ];  "9_3.7.11.10.9.5.4.4-0" [label=4 style=filled color=grey fillcolor="0.19411765 0.46220388 0.97128103 1.        " ];   "9_3.7.11.10.9.5.4-0" -> "9_3.7.11.10.9.5.4.4-0" [label="(L,1)" headlabel=" 33 " color=grey ]; 
 "9_3.7.11.10.9.5.4.5-1" [label=5 style=filled color=grey fillcolor="0.14705882 0.52643216 0.96182564 1.        " ];   "9_3.7.11.10.9.5.4-0" -> "9_3.7.11.10.9.5.4.5-1" [label="(R,1)" headlabel=" 34 " color=grey ]; 
 "9_3.7.11.10.9.5.4.0-2" [label=0 style=filled color=grey fillcolor="0.39803922 0.15947579 0.99679532 1.        " ];   "9_3.7.11.10.9.5.4-0" -> "9_3.7.11.10.9.5.4.0-2" [label="(U,1)" headlabel=" 35 " color=grey ]; 
-"9_3.7.11.10.9.5.4.8-3" [label=8 style=filled color=grey fillcolor="0.00980392 0.71791192 0.92090552 1.        " ];   "9_3.7.11.10.9.5.4-0" -> "9_3.7.11.10.9.5.4.8-3" [label="(D,1)" headlabel=" 36 " color=grey ]; 
-"#exp 10, #gen 37" [ shape=box ]; }
-subgraph cluster10 { label="Limit: 10"    
-"10_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
+"9_3.7.11.10.9.5.4.8-3" [label=8 style=filled color=grey fillcolor="0.00980392 0.71791192 0.92090552 1.        " ];   "9_3.7.11.10.9.5.4-0" -> "9_3.7.11.10.9.5.4.8-3" [label="(D,1)" headlabel=" 36 " color=grey ];  "#exp 10, #gen 37" [ shape=box ]; }
+subgraph cluster10 { label="Limit: 10"    "10_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
 "10_3" [label=" 3 " style=filled color=black fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  "10_3.2-0" [label=2 style=filled color=grey fillcolor="0.29607843 0.31486959 0.98720184 1.        " ];   "10_3" -> "10_3.2-0" [label="(L,1)" headlabel=" 1 " color=grey ]; 
 "10_3.3-1" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "10_3" -> "10_3.3-1" [label="(R,1)" headlabel=" 2 " color=grey ]; 
 "10_3.3-2" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "10_3" -> "10_3.3-2" [label="(U,1)" headlabel=" 3 " color=grey ]; 
@@ -251,10 +230,8 @@ subgraph cluster10 { label="Limit: 10"
 "10_3.7.11.10.9.8-0" [label=" 8 " style=filled color=black fillcolor="0.00980392 0.71791192 0.92090552 1.        " ];  "10_3.7.11.10.9.8.8-0" [label=8 style=filled color=grey fillcolor="0.00980392 0.71791192 0.92090552 1.        " ];   "10_3.7.11.10.9.8-0" -> "10_3.7.11.10.9.8.8-0" [label="(L,1)" headlabel=" 37 " color=grey ]; 
 "10_3.7.11.10.9.8.9-1" [label=9 style=filled color=grey fillcolor="0.06470588 0.77520398 0.9032472  1.        " ];   "10_3.7.11.10.9.8-0" -> "10_3.7.11.10.9.8.9-1" [label="(R,1)" headlabel=" 38 " color=grey ]; 
 "10_3.7.11.10.9.8.4-2" [label=4 style=filled color=grey fillcolor="0.19411765 0.46220388 0.97128103 1.        " ];   "10_3.7.11.10.9.8-0" -> "10_3.7.11.10.9.8.4-2" [label="(U,1)" headlabel=" 39 " color=grey ]; 
-"10_3.7.11.10.9.8.12-3" [label=12 style=filled color=grey fillcolor="0.21372549 0.9005867  0.84695821 1.        " ];   "10_3.7.11.10.9.8-0" -> "10_3.7.11.10.9.8.12-3" [label="(D,1)" headlabel=" 40 " color=grey ]; 
-"#exp 11, #gen 41" [ shape=box ]; }
-subgraph cluster11 { label="Limit: 11"    
-"11_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
+"10_3.7.11.10.9.8.12-3" [label=12 style=filled color=grey fillcolor="0.21372549 0.9005867  0.84695821 1.        " ];   "10_3.7.11.10.9.8-0" -> "10_3.7.11.10.9.8.12-3" [label="(D,1)" headlabel=" 40 " color=grey ];  "#exp 11, #gen 41" [ shape=box ]; }
+subgraph cluster11 { label="Limit: 11"    "11_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
 "11_3" [label=" 3 " style=filled color=black fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  "11_3.2-0" [label=2 style=filled color=grey fillcolor="0.29607843 0.31486959 0.98720184 1.        " ];   "11_3" -> "11_3.2-0" [label="(L,1)" headlabel=" 1 " color=grey ]; 
 "11_3.3-1" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "11_3" -> "11_3.3-1" [label="(R,1)" headlabel=" 2 " color=grey ]; 
 "11_3.3-2" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "11_3" -> "11_3.3-2" [label="(U,1)" headlabel=" 3 " color=grey ]; 
@@ -298,10 +275,8 @@ subgraph cluster11 { label="Limit: 11"
 "11_3.7.11.10.9.8.12-3" [label=" 12 " style=filled color=black fillcolor="0.21372549 0.9005867  0.84695821 1.        " ];  "11_3.7.11.10.9.8.12.12-0" [label=12 style=filled color=grey fillcolor="0.21372549 0.9005867  0.84695821 1.        " ];   "11_3.7.11.10.9.8.12-3" -> "11_3.7.11.10.9.8.12.12-0" [label="(L,1)" headlabel=" 41 " color=grey ]; 
 "11_3.7.11.10.9.8.12.12-1" [label=12 style=filled color=grey fillcolor="0.21372549 0.9005867  0.84695821 1.        " ];   "11_3.7.11.10.9.8.12-3" -> "11_3.7.11.10.9.8.12.12-1" [label="(R,1)" headlabel=" 42 " color=grey ]; 
 "11_3.7.11.10.9.8.12.8-2" [label=8 style=filled color=grey fillcolor="0.00980392 0.71791192 0.92090552 1.        " ];   "11_3.7.11.10.9.8.12-3" -> "11_3.7.11.10.9.8.12.8-2" [label="(U,1)" headlabel=" 43 " color=grey ]; 
-"11_3.7.11.10.9.8.12.16-3" [label=16 style=filled color=grey fillcolor="0.4254902  0.99315867 0.74725253 1.        " ];   "11_3.7.11.10.9.8.12-3" -> "11_3.7.11.10.9.8.12.16-3" [label="(D,1)" headlabel=" 44 " color=grey ]; 
-"#exp 12, #gen 45" [ shape=box ]; }
-subgraph cluster12 { label="Limit: 12"    
-"12_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
+"11_3.7.11.10.9.8.12.16-3" [label=16 style=filled color=grey fillcolor="0.4254902  0.99315867 0.74725253 1.        " ];   "11_3.7.11.10.9.8.12-3" -> "11_3.7.11.10.9.8.12.16-3" [label="(D,1)" headlabel=" 44 " color=grey ];  "#exp 12, #gen 45" [ shape=box ]; }
+subgraph cluster12 { label="Limit: 12"    "12_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
 "12_3" [label=" 3 " style=filled color=black fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  "12_3.2-0" [label=2 style=filled color=grey fillcolor="0.29607843 0.31486959 0.98720184 1.        " ];   "12_3" -> "12_3.2-0" [label="(L,1)" headlabel=" 1 " color=grey ]; 
 "12_3.3-1" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "12_3" -> "12_3.3-1" [label="(R,1)" headlabel=" 2 " color=grey ]; 
 "12_3.3-2" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "12_3" -> "12_3.3-2" [label="(U,1)" headlabel=" 3 " color=grey ]; 
@@ -349,10 +324,8 @@ subgraph cluster12 { label="Limit: 12"
 "12_3.7.11.10.9.8.12.16-3" [label=" 16 " style=filled color=black fillcolor="0.4254902  0.99315867 0.74725253 1.        " ];  "12_3.7.11.10.9.8.12.16.16-0" [label=16 style=filled color=grey fillcolor="0.4254902  0.99315867 0.74725253 1.        " ];   "12_3.7.11.10.9.8.12.16-3" -> "12_3.7.11.10.9.8.12.16.16-0" [label="(L,1)" headlabel=" 45 " color=grey ]; 
 "12_3.7.11.10.9.8.12.16.17-1" [label=17 style=filled color=grey fillcolor="0.47254902 0.99907048 0.72218645 1.        " ];   "12_3.7.11.10.9.8.12.16-3" -> "12_3.7.11.10.9.8.12.16.17-1" [label="(R,1)" headlabel=" 46 " color=grey ]; 
 "12_3.7.11.10.9.8.12.16.12-2" [label=12 style=filled color=grey fillcolor="0.21372549 0.9005867  0.84695821 1.        " ];   "12_3.7.11.10.9.8.12.16-3" -> "12_3.7.11.10.9.8.12.16.12-2" [label="(U,1)" headlabel=" 47 " color=grey ]; 
-"12_3.7.11.10.9.8.12.16.16-3" [label=16 style=filled color=grey fillcolor="0.4254902  0.99315867 0.74725253 1.        " ];   "12_3.7.11.10.9.8.12.16-3" -> "12_3.7.11.10.9.8.12.16.16-3" [label="(D,1)" headlabel=" 48 " color=grey ]; 
-"#exp 13, #gen 49" [ shape=box ]; }
-subgraph cluster13 { label="Limit: 13"    
-"13_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
+"12_3.7.11.10.9.8.12.16.16-3" [label=16 style=filled color=grey fillcolor="0.4254902  0.99315867 0.74725253 1.        " ];   "12_3.7.11.10.9.8.12.16-3" -> "12_3.7.11.10.9.8.12.16.16-3" [label="(D,1)" headlabel=" 48 " color=grey ];  "#exp 13, #gen 49" [ shape=box ]; }
+subgraph cluster13 { label="Limit: 13"    "13_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
 "13_3" [label=" 3 " style=filled color=black fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  "13_3.2-0" [label=2 style=filled color=grey fillcolor="0.29607843 0.31486959 0.98720184 1.        " ];   "13_3" -> "13_3.2-0" [label="(L,1)" headlabel=" 1 " color=grey ]; 
 "13_3.3-1" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "13_3" -> "13_3.3-1" [label="(R,1)" headlabel=" 2 " color=grey ]; 
 "13_3.3-2" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "13_3" -> "13_3.3-2" [label="(U,1)" headlabel=" 3 " color=grey ]; 
@@ -404,10 +377,8 @@ subgraph cluster13 { label="Limit: 13"
 "13_3.7.11.10.9.8.12.16.17-1" [label=" 17 " style=filled color=black fillcolor="0.47254902 0.99907048 0.72218645 1.        " ];  "13_3.7.11.10.9.8.12.16.17.16-0" [label=16 style=filled color=grey fillcolor="0.4254902  0.99315867 0.74725253 1.        " ];   "13_3.7.11.10.9.8.12.16.17-1" -> "13_3.7.11.10.9.8.12.16.17.16-0" [label="(L,1)" headlabel=" 49 " color=grey ]; 
 "13_3.7.11.10.9.8.12.16.17.18-1" [label=18 style=filled color=grey fillcolor="0.52745098 0.99907048 0.69169844 1.        " ];   "13_3.7.11.10.9.8.12.16.17-1" -> "13_3.7.11.10.9.8.12.16.17.18-1" [label="(R,1)" headlabel=" 50 " color=grey ]; 
 "13_3.7.11.10.9.8.12.16.17.17-2" [label=17 style=filled color=grey fillcolor="0.47254902 0.99907048 0.72218645 1.        " ];   "13_3.7.11.10.9.8.12.16.17-1" -> "13_3.7.11.10.9.8.12.16.17.17-2" [label="(U,1)" headlabel=" 51 " color=grey ]; 
-"13_3.7.11.10.9.8.12.16.17.17-3" [label=17 style=filled color=grey fillcolor="0.47254902 0.99907048 0.72218645 1.        " ];   "13_3.7.11.10.9.8.12.16.17-1" -> "13_3.7.11.10.9.8.12.16.17.17-3" [label="(D,1)" headlabel=" 52 " color=grey ]; 
-"#exp 14, #gen 53" [ shape=box ]; }
-subgraph cluster14 { label="Limit: 14"    
-"14_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
+"13_3.7.11.10.9.8.12.16.17.17-3" [label=17 style=filled color=grey fillcolor="0.47254902 0.99907048 0.72218645 1.        " ];   "13_3.7.11.10.9.8.12.16.17-1" -> "13_3.7.11.10.9.8.12.16.17.17-3" [label="(D,1)" headlabel=" 52 " color=grey ];  "#exp 14, #gen 53" [ shape=box ]; }
+subgraph cluster14 { label="Limit: 14"    "14_3" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  
 "14_3" [label=" 3 " style=filled color=black color=red fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];  "14_3.2-0" [label=2 style=filled color=grey fillcolor="0.29607843 0.31486959 0.98720184 1.        " ];   "14_3" -> "14_3.2-0" [label="(L,1)" headlabel=" 1 " color=grey ]; 
 "14_3.3-1" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "14_3" -> "14_3.3-1" [label="(R,1)" headlabel=" 2 " color=grey ]; 
 "14_3.3-2" [label=3 style=filled color=grey fillcolor="0.24901961 0.38410575 0.98063477 1.        " ];   "14_3" -> "14_3.3-2" [label="(U,1)" headlabel=" 3 " color=grey ]; 
@@ -461,8 +432,7 @@ subgraph cluster14 { label="Limit: 14"
 "14_3.7.11.10.9.8.12.16.17.17-2" [label=17 style=filled color=grey fillcolor="0.47254902 0.99907048 0.72218645 1.        " ];   "14_3.7.11.10.9.8.12.16.17-1" -> "14_3.7.11.10.9.8.12.16.17.17-2" [label="(U,1)" headlabel=" 51 " color=grey ]; 
 "14_3.7.11.10.9.8.12.16.17.17-3" [label=17 style=filled color=grey fillcolor="0.47254902 0.99907048 0.72218645 1.        " ];   "14_3.7.11.10.9.8.12.16.17-1" -> "14_3.7.11.10.9.8.12.16.17.17-3" [label="(D,1)" headlabel=" 52 " color=grey ]; 
 "14_3.7.11.10.9.8.12.16.17.18-1" [label=" 18 " style=filled color=black color=red fillcolor="0.52745098 0.99907048 0.69169844 1.        " ];  "14_3.7.11.10.9.8.12.16.17.18.17-0" [label=17 style=filled color=grey fillcolor="0.47254902 0.99907048 0.72218645 1.        " ];   "14_3.7.11.10.9.8.12.16.17.18-1" -> "14_3.7.11.10.9.8.12.16.17.18.17-0" [label="(L,1)" headlabel=" 53 " color=grey ]; 
-"14_3.7.11.10.9.8.12.16.17.18.19-1" [label=" 19 " style=filled color=black color=red fillcolor="0.5745098  0.99315867 0.66454018 1.        " peripheries="2"]; /*GOALSTATE*/  "14_3.7.11.10.9.8.12.16.17.18-1" -> "14_3.7.11.10.9.8.12.16.17.18.19-1" [label="(R,1)" headlabel=" 54 " color=grey color=red ]; 
+"14_3.7.11.10.9.8.12.16.17.18.19-1" [label=" 19 " style=filled color=black color=red fillcolor="0.5745098  0.99315867 0.66454018 1.        " peripheries=2]; /*GOALSTATE*/  "14_3.7.11.10.9.8.12.16.17.18-1" -> "14_3.7.11.10.9.8.12.16.17.18.19-1" [label="(R,1)" headlabel=" 54 " color=grey color=red ]; 
 "14_3.7.11.10.9.8.12.16.17.18.18-2" [label=18 style=filled color=grey fillcolor="0.52745098 0.99907048 0.69169844 1.        " ];   "14_3.7.11.10.9.8.12.16.17.18-1" -> "14_3.7.11.10.9.8.12.16.17.18.18-2" [label="(U,1)" headlabel=" 55 " color=grey ]; 
-"14_3.7.11.10.9.8.12.16.17.18.18-3" [label=18 style=filled color=grey fillcolor="0.52745098 0.99907048 0.69169844 1.        " ];   "14_3.7.11.10.9.8.12.16.17.18-1" -> "14_3.7.11.10.9.8.12.16.17.18.18-3" [label="(D,1)" headlabel=" 56 " color=grey ];
-"#exp 15, #gen 57, cost:10" [ shape=box ]; }
-"#exp 120, #gen 57" [ shape=box ]; }
+"14_3.7.11.10.9.8.12.16.17.18.18-3" [label=18 style=filled color=grey fillcolor="0.52745098 0.99907048 0.69169844 1.        " ];   "14_3.7.11.10.9.8.12.16.17.18-1" -> "14_3.7.11.10.9.8.12.16.17.18.18-3" [label="(D,1)" headlabel=" 56 " color=grey ]; "#exp 15, #gen 57, cost:10" [ shape=box ]; }
+}

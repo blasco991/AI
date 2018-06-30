@@ -2,7 +2,8 @@ $(function () {
 
     let step = 0, gear = 100, timerId = null;
     const $gear = $("#gear"), $step = $("#step"), $target = $("#target"), $step_value = $("#step_value");
-    const selection = d3.select("#graph"), graphviz = selection.graphviz() //{scaleExtent: [1, 10]}
+    const selection = d3.select("#graph");
+    const graphviz = selection.graphviz() //{scaleExtent: [1, 10]}
         .transition(function () {
             return d3.transition("main")
             //.ease(d3.easeLinear)
@@ -15,7 +16,7 @@ $(function () {
     $gear.val(gear);
 
     let dotLines, dotHeader, dotFooter, n_steps;
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(location.search);
 
     const resetZoom = () => graphviz.resetZoom(graphviz.transition());
 
@@ -23,13 +24,13 @@ $(function () {
         .then(response => response.text())
         .then(text => {
                 //console.info(text);
-                dotLines = text.split('\n');
-                dotHeader = dotLines.slice(0, 2);
-                dotFooter = dotLines.slice(-2);
+                dotLines = text.trim().split('\n');
+                dotHeader = dotLines.slice(0, 3);
+                dotFooter = dotLines.slice(-1);
                 n_steps = dotLines.length - dotHeader.length - dotFooter.length;
-                step = dotHeader.length;
-                $step.attr("min", dotHeader.length);
-                $step.attr("max", n_steps + dotFooter.length);
+                step = 0;
+                $step.attr("min", step);
+                $step.attr("max", n_steps);
                 $step.val(step);
                 $step_value.val(step);
                 //console.log(text);
@@ -38,31 +39,37 @@ $(function () {
             }
         ).catch(error => console.error(error));
 
-    $target.val(urlParams.has('target') ? urlParams.get('target') : $("#target option:first").val());
-    $target.change(event => window.location.href = "/?target=" + encodeURI(event.target.value));
-    /*$target.change(event => {
+    $target.val(urlParams.has('target') ? urlParams.get('target') : $("#target option:first").val())
+        .change(event => {
+            timerId = clearTimeout(timerId);
+            history.pushState({target: event.target.value}, document.title, "?target=" + event.target.value);
+            ftc(encodeURI(event.target.value));
+        });
+    window.onpopstate = function (event) {
         timerId = clearTimeout(timerId);
-        ftc(encodeURI(event.target.value));
-    });*/
+        ftc(encodeURI(event.state.target));
+        $target.val(new URLSearchParams(location.search).get('target'));
+    };
 
     ftc($target.val());
 
     const renderStep = () => {
         //console.info("render");
-        if (step > n_steps + dotFooter.length) {
+        if (step >= n_steps + dotFooter.length) {
             timerId = clearTimeout(timerId);
         } else {
             $step.val(step);
-            $step_value.val(step - dotHeader.length);
-            let dotBody = String(dotLines.slice(dotHeader.length, step).join('\n'));
-            if (dotBody.includes('subgraph cluster') && ((dotBody.match(/{/g) || []).length > (dotBody.match(/}/g) || []).length))
-                dotBody = dotBody.concat('}');
-
-            if (!dotBody.includes('GOALSTATE'))
-                dotBody = dotBody.replace(new RegExp('color=red', 'g'), '');
-
+            $step_value.val(step);
+            let dotBody = String(dotLines.slice(dotHeader.length, step + dotHeader.length).join('\n'));
             step++;
             let dot = dotHeader.join(' ') + dotBody + dotFooter.join(' ');
+
+            if (dot.includes('subgraph cluster') && ((dot.match(/{/g) || []).length > (dot.match(/}/g) || []).length))
+                dot = dot.concat('}');
+
+            if (!dot.includes('GOALSTATE'))
+                dot = dot.replace(new RegExp('color=red', 'g'), '');
+
             //console.log(dot);
             graphviz.dot(dot).render()
                 .on("end", function () {
@@ -78,7 +85,7 @@ $(function () {
 
     $("#back").click(function () {
         timerId = clearTimeout(timerId);
-        if (step > 1 + dotHeader.length) {
+        if (step >= 2) {
             step -= 2;
             renderStep();
         }

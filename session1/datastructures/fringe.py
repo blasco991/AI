@@ -38,9 +38,9 @@ class FringeNode:
         if parent is None:
             gen = 1
             if limit != -1:
-                dot = dot_init(problem, shape, sub=True, cluster=limit) + "\n" + gl(self, problem)
+                dot = dot_init(problem, shape, sub=True, cluster=limit)+ gl(self, problem)
             else:
-                dot = dot_init(problem, shape)
+                dot = dot_init(problem, shape) + "\n" + gl(self, problem)
         else:
             dot += gen_trans(parent, self, problem, gl, dot, gen)
             gen += 1

@@ -148,7 +148,7 @@ def dfs(problem, stype, opt=False, avd=True, limit=-1):
     """
     t = timer()
     path, stats, nodes, _ = stype(problem, StackFringe(), lambda n, c: 0, gen_label, opt, avd, limit)
-    graph, gen = cs(stats[0], nodes)
+    gen, graph = cs(stats[0], nodes)
     return path, (timer() - t, stats[0], gen, stats[1]), graph
 
 
@@ -166,14 +166,14 @@ def ids(problem, stype, opt=False, avd=False):
     graph = dot_init(problem)
     while cutoff:
         path, temp_stats, nodes, cutoff = stype(problem, StackFringe(), opt=opt, avd=avd, limit=depth)
-        temp_graph, gen = cs(temp_stats[0], nodes)
+        gen, temp_graph = cs(temp_stats[0], nodes, sub=True)
         depth += 1
         graph += temp_graph
         stats[:-1] = [x + y for x, y in zip(stats[:-1], temp_stats[:-1])]
         stats[-1] = max(stats[-1], temp_stats[-1])
         if path is not None or not cutoff:
             nodes = (nodes[0], None)
-            graph, gen = cs(stats[0], nodes, graph)
+            gen, graph = cs(stats[0], nodes, graph)
             return path, (timer() - t, stats[0], gen, stats[1]), graph
 
 
@@ -189,7 +189,7 @@ def bfs(problem, stype, opt=False, avd=False):
     """
     t = timer()
     path, stats, node, _ = stype(problem, QueueFringe(), lambda n, c: 0, gen_label, opt, avd)
-    graph, gen = cs(stats[0], node)
+    gen, graph = cs(stats[0], node)
     return path, (timer() - t, stats[0], gen, stats[1]), graph
 
 
@@ -215,7 +215,7 @@ def ucs(problem, stype, opt=False, avd=False):
 
     t = timer()
     path, stats, nodes, _ = stype(problem, PriorityFringe(), g, gen_label, opt=opt, avd=avd)
-    graph, gen = cs(stats[0], nodes)
+    gen, graph = cs(stats[0], nodes)
     return path, (timer() - t, stats[0], gen, stats[1]), graph
 
 
@@ -248,7 +248,7 @@ def greedy(problem, stype, opt=False, avd=False):
 
     t = timer()
     path, stats, nodes, _ = stype(problem, PriorityFringe(), g, gl, opt=opt, avd=avd, shape='record')
-    graph, gen = cs(stats[0], nodes)
+    gen, graph = cs(stats[0], nodes)
     return path, (timer() - t, stats[0], gen, stats[1]), graph
 
 
@@ -284,7 +284,7 @@ def astar(problem, stype, opt=False, avd=False):
 
     t = timer()
     path, stats, nodes, _ = stype(problem, PriorityFringe(), f, gl, opt=opt, avd=avd, shape='record')
-    graph, gen = cs(stats[0], nodes)
+    gen, graph = cs(stats[0], nodes)
     return path, (timer() - t, stats[0], gen, stats[1]), graph
 
 

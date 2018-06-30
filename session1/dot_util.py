@@ -44,7 +44,7 @@ def get_color(state):
     return '"{}"'.format(str(colors[state + 2])[1:-1])
 
 
-def close_dot(expanded, nodes=None, dot=None):
+def close_dot(expanded, nodes=None, dot=None, sub=False):
     root, s_node = nodes[0], nodes[1]
     dot_string = root.dot() if dot is None else dot
     if s_node is not None and dot is None:
@@ -58,8 +58,11 @@ def close_dot(expanded, nodes=None, dot=None):
             temp += line + "\n"
         dot_string = temp[:-2]
 
-    return dot_string + '\n"#exp {}, #gen {}{}" [ shape=box ]; }}' \
-        .format(expanded, root.gen(), ', cost:{}'.format(s_node.pathcost) if s_node is not None else ''), root.gen()
+    return root.gen(), dot_string \
+           + ('{}"#exp {}, #gen {}{}" [ shape=box ]; }}'
+              .format(' ' if sub else '\n', expanded, root.gen(),
+                      ', cost:{}'.format(s_node.pathcost) if s_node is not None else '')
+              if dot is None else '\n}')
 
 
 def gen_code(node):
@@ -73,7 +76,7 @@ def gen_label(n, p, exp=False, j=None):
     return '{} [label={} style=filled color={} fillcolor={} {}]; {} ' \
         .format(gen_code(n), '" ' + str(n.state) + ' "' if exp or p.goalstate == n.state else n.state,
                 'black' if exp or n.state == p.goalstate else 'grey', color,
-                'peripheries="2"' if p.goalstate == n.state else '',
+                'peripheries=2' if p.goalstate == n.state else '',
                 '/*GOALSTATE*/' if p.goalstate == n.state else '')
 
 
