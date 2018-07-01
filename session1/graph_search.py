@@ -1,20 +1,25 @@
 import gym
+import shutil
 import pathlib
 import gym_ai_lab
 import search.algorithms as search
 from dot_util import compile_dot_files, close_dot
 
 path = "../viz/artifacts/gs"
-for folder in ["dot", "md", "png"]:
+for folder in ["dot", "png"]:
+    shutil.rmtree(path + "/" + folder, ignore_errors=True)
     pathlib.Path(path + "/" + folder).mkdir(parents=True, exist_ok=True)
 
 envs = ["XSMaze-v0", "SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", "CompMaze-v0", "BigMaze-v0"]
-# envs = ["SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", ]
 
-algs = {"dfs": search.graph_search, "ids": search.graph_search, "bfs": search.graph_search, "ucs": search.graph_search,
-        "greedy": search.graph_search, "astar": search.graph_search}
+algs = {"r_dfs": search.dls_gs, "dfs": search.graph_search,
+        "r_ids": search.dls_gs, "ids": search.graph_search,
+        "bfs": search.graph_search,
+        "ucs": search.graph_search,
+        "greedy": search.graph_search,
+        "astar": search.graph_search}
 
-for env_name in envs:
+for i, env_name in enumerate(envs):
     print("\n----------------------------------------------------------------")
     print("\tGRAPH SEARCH")
     print("\tEnvironment: ", env_name)
@@ -23,7 +28,7 @@ for env_name in envs:
     env = gym.make(env_name)
     env.render()
 
-    for (alg, method) in algs.items():
+    for j, (alg, method) in enumerate(algs.items()):
 
         solution, stats, graph = getattr(search, alg)(env, method)
         if solution is not None:
@@ -32,12 +37,12 @@ for env_name in envs:
         print("\n\n{0}:\n----------------------------------------------------------------"
               "\nExecution time: {1}s"
               "\nN° of states expanded: {2}"
-              # "\nN° of states generated: {3}"
+              "\nN° of states generated: {3}"
               "\nMax n° of states in memory: {4}"
               "\nSolution: {5}"
               .format(alg.upper(), round(stats[0], 4), stats[1], stats[2], stats[3], solution))
 
-        with open("{}/dot/{}_{}.dot".format(path, env_name, alg), "w") as text_file:
+        with open("{}/dot/{}-{}_{}-{}.dot".format(path, i, env_name, j, alg), "w") as text_file:
             print(graph, file=text_file)
 
 compile_dot_files(path)

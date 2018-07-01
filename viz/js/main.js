@@ -23,16 +23,16 @@ $(function () {
     const ftc = target => fetch(target)
         .then(response => response.text())
         .then(text => {
+                step = 0;
                 //console.info(text);
                 dotLines = text.trim().split('\n');
-                dotHeader = dotLines.slice(0, 3);
                 dotFooter = dotLines.slice(-1);
+                dotHeader = dotLines.slice(0, 3);
                 n_steps = dotLines.length - dotHeader.length - dotFooter.length;
-                step = 0;
-                $step.attr("min", step);
-                $step.attr("max", n_steps);
                 $step.val(step);
                 $step_value.val(step);
+                $step.attr("min", step);
+                $step.attr("max", n_steps);
                 //console.log(text);
                 console.log(n_steps);
                 graphviz.dot(text).render();
@@ -42,8 +42,8 @@ $(function () {
     $target.val(urlParams.has('target') ? urlParams.get('target') : $("#target option:first").val())
         .change(event => {
             timerId = clearTimeout(timerId);
-            history.pushState({target: event.target.value}, document.title, "?target=" + event.target.value);
             ftc(encodeURI(event.target.value));
+            history.pushState({target: event.target.value}, document.title, "?target=" + event.target.value);
         });
     window.onpopstate = function (event) {
         timerId = clearTimeout(timerId);

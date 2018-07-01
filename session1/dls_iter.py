@@ -9,7 +9,7 @@ envs = ["SmallMaze-v0", "GrdMaze-v0"]  # , "BlockedMaze-v0"]
 
 algs = {"r_ids": search.dls_ts, "ids": search.tree_search}
 
-for env_name in envs:
+for i, env_name in enumerate(envs):
     print("\n----------------------------------------------------------------")
     print("\tTREE SEARCH")
     print("\tEnvironment: ", env_name)
@@ -27,7 +27,7 @@ for env_name in envs:
         print("\n\n{0}:\n----------------------------------------------------------------"
               "\nExecution time: {1}s"
               "\nN° of states expanded: {2}"
-              # "\nN° of states generated: {3}"
+              "\nN° of states generated: {3}"
               "\nMax n° of states in memory: {4}"
               "\nSolution: {5}"
               .format(alg.upper(), round(stats[0], 4), stats[1], stats[2], stats[3], solution))
@@ -35,7 +35,7 @@ for env_name in envs:
 
 algs = {"r_ids": search.dls_gs, "ids": search.graph_search}
 
-for env_name in envs:
+for i, env_name in enumerate(envs):
     print("\n----------------------------------------------------------------")
     print("\tTREE SEARCH")
     print("\tEnvironment: ", env_name)
@@ -53,7 +53,7 @@ for env_name in envs:
         print("\n\n{0}:\n----------------------------------------------------------------"
               "\nExecution time: {1}s"
               "\nN° of states expanded: {2}"
-              # "\nN° of states generated: {3}"
+              "\nN° of states generated: {3}"
               "\nMax n° of states in memory: {4}"
               "\nSolution: {5}"
               .format(alg.upper(), round(stats[0], 4), stats[1], stats[2], stats[3], solution))

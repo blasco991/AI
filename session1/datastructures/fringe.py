@@ -17,7 +17,7 @@ class FringeNode:
     Fringe state representation
     """
 
-    def __init__(self, state, pathcost, value, parent, cause, problem, gl, shape='circle', limit=None, sub=False):
+    def __init__(self, state, pathcost, value, parent, cause, problem, gl, shape='circle', limit=None):
         """
         Creates a representation of a node in the fringe
         :param state: the state embedded in the node
@@ -38,7 +38,7 @@ class FringeNode:
         if parent is None:
             gen = 1
             if limit != -1:
-                dot = dot_init(problem, shape, sub=True, cluster=limit)+ gl(self, problem)
+                dot = dot_init(problem, shape, sub=True, cluster=limit) + gl(self, problem)
             else:
                 dot = dot_init(problem, shape) + "\n" + gl(self, problem)
         else:

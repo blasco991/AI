@@ -1,11 +1,10 @@
 """
 Search algorithms: DFS, IDS, BFS, UCS, GREEDY, A*
 """
-from dot_util import dot_init, close_dot as cs, gen_label, gen_trans, gen_code, get_color
+from dot_util import close_dot, gen_label, gl_astar, gl_greedy
 from timeit import default_timer as timer
 from datastructures.fringe import *
 from search import heuristics
-import gym.spaces
 
 
 def r_dfs(problem, stype, opt=False, avd=False):
@@ -19,8 +18,9 @@ def r_dfs(problem, stype, opt=False, avd=False):
     The stats are a tuple of (time, expc, max_states): elapsed time, number of expansions, max states in memory
     """
     t = timer()
-    path, stats, graph, node, _ = stype(problem, dot_init(problem), opt=True, avd=avd, limit=-1)
-    return path, (timer() - t + stats[0], stats[1], stats[2], stats[3]), cs(graph, stats[1], stats[2], node)
+    path, stats, nodes, _ = stype(problem, opt=True, avd=avd, limit=-1)
+    gen, graph = close_dot(stats[1], nodes)
+    return path, (timer() - t, stats[1], gen, stats[2]), graph
 
 
 def r_ids(problem, stype, opt=False, avd=False):
@@ -34,105 +34,97 @@ def r_ids(problem, stype, opt=False, avd=False):
     The stats are a tuple of (time, npexp, max_depth): elapsed time, number of expansions, max depth reached
     """
     t, depth, stats, cutoff = timer(), 0, [0, 0, 0, 0], True
-    graph = dot_init(problem, strict=True)
+    graph = dot_init(problem)
     while cutoff:
-        path, temp_stats, temp_graph, node, cutoff = stype(problem, '', opt=opt, avd=avd, limit=depth)
+        path, temp_stats, nodes, cutoff = stype(problem, opt=opt, avd=avd, limit=depth)
+        gen, temp_graph = close_dot(temp_stats[1], nodes, sub=True)
         depth += 1
         graph += temp_graph
         stats[:-1] = [x + y for x, y in zip(stats[:-1], temp_stats[:-1])]
         stats[-1] = max(stats[-1], temp_stats[-1])
         if path is not None or not cutoff:
-            return path, (timer() - t, stats[1], stats[2], stats[3]), cs(graph, stats[1], stats[2], node)
+            nodes = (nodes[0], None)
+            gen, graph = close_dot(stats[0], nodes, graph)
+            return path, (timer() - t, stats[1], gen, stats[2]), graph
 
 
-def dls_ts(problem, dot='', opt=True, avd=True, limit=-1):
+def dls_ts(problem, opt=False, avd=False, limit=-1):
     """
     Depth-limited search (tree search)
     :param avd:
     :param opt:
-    :param dot:
     :param problem: problem
     :param limit: depth limit budget
     :return: (path, cutoff, stats): solution as a path, cutoff flag and stats
     The stats are a tuple of (time, npexp, gen, max_depth): elapsed time, number of expansions, max depth reached
     """
-    return _dls(problem, dot, frozenset(), graph=False, opt=opt, avd=avd, limit=limit)
+    return _dls(problem, frozenset(), graph=False, opt=opt, avd=avd, limit=limit)
 
 
-def dls_gs(problem, dot='', opt=False, avd=False, limit=-1):
+def dls_gs(problem, opt=False, avd=False, limit=-1):
     """
     Depth-limited search (graph search)
     :param avd:
     :param opt:
-    :param dot:
     :param problem: problem
     :param limit: depth limit budget
     :return: (path, stats): solution as a path, cutoff flag and stats
     The stats are a tuple of (time, npexp, gen, max_depth): elapsed time, number node from expansions, max depth reached
     """
-    return _dls(problem, dot, set(), graph=True, opt=opt, avd=avd, limit=limit)
+    return _dls(problem, set(), graph=True, opt=opt, avd=avd, limit=limit)
 
 
-def _dls(problem, dot='', closed=None, graph=False, opt=False, avd=False, limit=-1):
-    def _rdls(_problem, _node, _limit, _closed, _dot='', _graph=False, _gl=gen_label, _opt=False, _avd=False):
+def _dls(problem, closed=None, graph=False, opt=False, avd=False, limit=-1):
+    def _rdls(_problem, _node, _limit, _closed, _graph=False, _gl=gen_label, _opt=False, _avd=False):
         """
         Recursive depth-limited search (graph search version)
-        :param _dot:
         :param _problem: problem
         :param _node: node to expand
         :param _limit: depth limit budget
         :param _closed: completely explored nodes
         :return: (path, cutoff, expc, gen, max_depth): path, cutoff flag, expanded nodes, max depth reached
         """
-        _dot += _gl(_node, _problem)
-        _exp_nodes, _gen, _cutoff, _depth_max = 0, 0, False, _node.pathcost
+        _exp_nodes, _cutoff, _depth_max = 0, False, _node.pathcost
 
         if _problem.goalstate == _node.state:
-            return build_path(_node), _exp_nodes, _gen, _node.pathcost + 1, _dot, _node, False
+            return build_path(_node), _exp_nodes, _node.pathcost + 1, _node, False
 
         if _graph:
             if _node.state not in _closed:
                 _closed.add(_node.state)
             else:
-                return None, _exp_nodes, _gen, _depth_max, _dot, None, _cutoff
+                return None, _exp_nodes, _depth_max, None, _cutoff
 
         if _limit == 0:
-            return None, _exp_nodes, _gen, _node.pathcost, _dot, None, True
+            return None, _exp_nodes, _node.pathcost, None, True
 
         for action in range(_problem.action_space.n):
-            child_node = FringeNode(_problem.sample(_node.state, action), _node.pathcost + 1, 0, _node)
-            _dot += gen_trans(_node, child_node, action, _problem, _dot, _gl)
-            _gen += 1
+            child_node = \
+                FringeNode(_problem.sample(_node.state, action), _node.pathcost + 1, 0, _node, action, problem, _gl)
+            # _dot += gen_trans(_node, child_node, action, _problem, _gl)
 
             if _graph and child_node.state in _closed:
                 continue
 
             if not _avd or child_node.state not in build_path(_node):  # Flag on avoid branch tree repetition (avd)
-                _dot += _gl(_node, _problem, True)
+                # _dot += _gl(_node, _problem, True)
 
-                result, temp_expc, temp_gen, temp_depth, temp_dot, temp_node, temp_cutoff = \
-                    _rdls(_problem, child_node, _limit - 1, _closed, '', _graph, _gl, _opt, _avd)
+                result, temp_expc, temp_depth, temp_node, temp_cutoff = \
+                    _rdls(_problem, child_node, _limit - 1, _closed, _graph, _gl, _opt, _avd)
 
-                _gen += temp_gen
                 _exp_nodes += temp_expc + 1
-                _dot += temp_dot
                 _cutoff = _cutoff or temp_cutoff
                 _depth_max = max(temp_depth, _depth_max)
 
                 if result is not None:
-                    return result, _exp_nodes, _gen, _depth_max, _dot, temp_node, _cutoff
+                    return result, _exp_nodes, _depth_max, temp_node, _cutoff
 
-        return None, _exp_nodes, _gen, _depth_max, _dot, None, _cutoff
+        return None, _exp_nodes, _depth_max, None, _cutoff
 
-    t, dot = timer(), dot if len(dot) > 0 else dot_init(problem, sub=True, cluster=limit)
-
-    path, expc, gen, max_depth, dot, node, cutoff = \
-        _rdls(problem, FringeNode(problem.startstate, 0, 0, None), limit, closed, dot, graph, _opt=opt, _avd=avd)
-
-    if len(dot) > 0:
-        dot = cs(dot, expc, gen, node if not cutoff else None)
-
-    return path, (timer() - t, expc + 1, gen + 1, max_depth + len(closed)), dot, node, cutoff
+    t = timer()
+    root = FringeNode(problem.startstate, 0, 0, None, None, problem, gen_label, 'circle', limit)
+    path, expc, max_depth, node, cutoff = _rdls(problem, root, limit, closed, graph, _opt=opt, _avd=avd)
+    return path, (timer() - t, expc + 1, max_depth + len(closed)), (root, node), cutoff
 
 
 def dfs(problem, stype, opt=False, avd=True, limit=-1):
@@ -148,7 +140,7 @@ def dfs(problem, stype, opt=False, avd=True, limit=-1):
     """
     t = timer()
     path, stats, nodes, _ = stype(problem, StackFringe(), lambda n, c: 0, gen_label, opt, avd, limit)
-    gen, graph = cs(stats[0], nodes)
+    gen, graph = close_dot(stats[0], nodes)
     return path, (timer() - t, stats[0], gen, stats[1]), graph
 
 
@@ -166,14 +158,14 @@ def ids(problem, stype, opt=False, avd=False):
     graph = dot_init(problem)
     while cutoff:
         path, temp_stats, nodes, cutoff = stype(problem, StackFringe(), opt=opt, avd=avd, limit=depth)
-        gen, temp_graph = cs(temp_stats[0], nodes, sub=True)
+        gen, temp_graph = close_dot(temp_stats[0], nodes, sub=True)
         depth += 1
         graph += temp_graph
         stats[:-1] = [x + y for x, y in zip(stats[:-1], temp_stats[:-1])]
         stats[-1] = max(stats[-1], temp_stats[-1])
         if path is not None or not cutoff:
             nodes = (nodes[0], None)
-            gen, graph = cs(stats[0], nodes, graph)
+            gen, graph = close_dot(stats[0], nodes, graph)
             return path, (timer() - t, stats[0], gen, stats[1]), graph
 
 
@@ -189,7 +181,7 @@ def bfs(problem, stype, opt=False, avd=False):
     """
     t = timer()
     path, stats, node, _ = stype(problem, QueueFringe(), lambda n, c: 0, gen_label, opt, avd)
-    gen, graph = cs(stats[0], node)
+    gen, graph = close_dot(stats[0], node)
     return path, (timer() - t, stats[0], gen, stats[1]), graph
 
 
@@ -215,7 +207,7 @@ def ucs(problem, stype, opt=False, avd=False):
 
     t = timer()
     path, stats, nodes, _ = stype(problem, PriorityFringe(), g, gen_label, opt=opt, avd=avd)
-    gen, graph = cs(stats[0], nodes)
+    gen, graph = close_dot(stats[0], nodes)
     return path, (timer() - t, stats[0], gen, stats[1]), graph
 
 
@@ -239,16 +231,9 @@ def greedy(problem, stype, opt=False, avd=False):
         """
         return heuristics.l1_norm(problem.state_to_pos(c), problem.state_to_pos(problem.goalstate))
 
-    def gl(n, p, exp=False, j=None):
-        label = '{}'.format(n.state) if j is None else '{}  [{}]'.format(n.state, j)
-        return '{} [label="<f0>{} |<f1> cost: {}" style=filled color={} fillcolor={}]; {} ' \
-            .format(gen_code(n), label, n.pathcost,
-                    'black' if exp or p.goalstate == n.state else 'grey', get_color(n.state),
-                    '/*GOALSTATE*/' if p.goalstate == n.state else '')
-
     t = timer()
-    path, stats, nodes, _ = stype(problem, PriorityFringe(), g, gl, opt=opt, avd=avd, shape='record')
-    gen, graph = cs(stats[0], nodes)
+    path, stats, nodes, _ = stype(problem, PriorityFringe(), g, gl_greedy, opt=opt, avd=avd, shape='record')
+    gen, graph = close_dot(stats[0], nodes)
     return path, (timer() - t, stats[0], gen, stats[1]), graph
 
 
@@ -273,18 +258,9 @@ def astar(problem, stype, opt=False, avd=False):
         return heuristics.l1_norm(problem.state_to_pos(c), problem.state_to_pos(int(problem.goalstate))) \
                + n.pathcost + 1 if n is not None else 0
 
-    def gl(n, p, exp=False, j=None):
-        label = '{}'.format(n.state) if j is None else '{}  [{}]'.format(n.state, j)
-        return '{} [label="<f0>{} |<f1> cost: {} |<f2> f: {} ({}+{})", style=filled color={} fillcolor={}]; {} ' \
-            .format(gen_code(n), label, n.pathcost, f(n.parent, n.state),
-                    n.parent.pathcost if n.parent is not None else 0,
-                    heuristics.l1_norm(p.state_to_pos(n.state), p.state_to_pos(p.goalstate)),
-                    'black' if exp or p.goalstate == n.state else 'grey', get_color(n.state),
-                    '/*GOALSTATE*/' if p.goalstate == n.state else '')
-
     t = timer()
-    path, stats, nodes, _ = stype(problem, PriorityFringe(), f, gl, opt=opt, avd=avd, shape='record')
-    gen, graph = cs(stats[0], nodes)
+    path, stats, nodes, _ = stype(problem, PriorityFringe(), f, gl_astar, opt=opt, avd=avd, shape='record')
+    gen, graph = close_dot(stats[0], nodes)
     return path, (timer() - t, stats[0], gen, stats[1]), graph
 
 
@@ -296,7 +272,7 @@ def graph_search(problem, fringe, f=lambda n, c: 0, gl=gen_label, opt=False, avd
     return _search(problem, fringe, f, shape, gl, graph=True, opt=opt, avd=avd, limit=limit)
 
 
-def _search(problem, fringe, f, shape, gl=gen_label, graph=True, opt=False, avd=False, limit=-1):
+def _search(problem, fringe, f, shape, gl=gen_label, graph=False, opt=False, avd=False, limit=-1):
     """
     Search (avoid branch repetition)
     :param graph: enable graph search
@@ -329,7 +305,7 @@ def _search(problem, fringe, f, shape, gl=gen_label, graph=True, opt=False, avd=
 
             if not avd or child_state not in build_path(node):  # Flag on avoid branch tree repetition (avd)
                 child_node = FringeNode(
-                    child_state, node.pathcost + 1, f(node, child_state), node, action, problem, gl, shape, limit)
+                    child_state, node.pathcost + 1, f(node, child_state), node, action, problem, gl)
 
                 if not graph and not opt:  # TREE SEARCH not opt
                     fringe.add(child_node)
