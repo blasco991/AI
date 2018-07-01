@@ -17,7 +17,7 @@ class FringeNode:
     Fringe state representation
     """
 
-    def __init__(self, state, pathcost, value, parent, cause, problem, gl, shape='circle', limit=None):
+    def __init__(self, state, pathcost, value, parent, cause, problem, gl, shape='circle', limit=-1):
         """
         Creates a representation of a node in the fringe
         :param state: the state embedded in the node
