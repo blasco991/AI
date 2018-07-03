@@ -1,9 +1,8 @@
 import gym
 import shutil
 import pathlib
-import gym_ai_lab
 import search.algorithms as search
-from dot_util import compile_dot_files, close_dot
+from dot_util import compile_dot_files
 
 path = "../viz/artifacts/tspd"
 for folder in ["dot", "png"]:
@@ -45,4 +44,4 @@ for i, env_name in enumerate(envs):
         with open("{}/dot/{}-{}_{}-{}.dot".format(path, i, env_name, j, alg), "w") as text_file:
             print(graph, file=text_file)
 
-compile_dot_files(path)
+#compile_dot_files(path)

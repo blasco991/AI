@@ -1,7 +1,5 @@
 import gym
-import gym_ai_lab
 import search.algorithms as search
-from dot_util import compile_dot_files, close_dot
 
 # path = "artifacts/ts"
 # envs = ["XSMaze-v0", "SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", "CompMaze-v0", "BigMaze-v0"]

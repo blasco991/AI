@@ -3,13 +3,24 @@ Data structures representing the fringe for search methods
 """
 
 import heapq
-from dot_util import dot_init, gen_trans
 from collections import deque
 
 from abc import ABC, abstractmethod
 
-dot = ''
-gen = 0
+import dot_util
+
+_dot = ''
+_gen = 0
+_closed = None
+_fringe = None
+
+
+def dot():
+    return _dot
+
+
+def gen():
+    return _gen
 
 
 class FringeNode:
@@ -17,7 +28,8 @@ class FringeNode:
     Fringe state representation
     """
 
-    def __init__(self, state, pathcost, value, parent, cause, problem, gl, shape='circle', limit=-1):
+    def __init__(self, state, pathcost, value, parent,
+                 cause=None, p=None, gl=None, shape='circle', limit=-1, cl=None, fr=None):
         """
         Creates a representation of a node in the fringe
         :param state: the state embedded in the node
@@ -33,17 +45,31 @@ class FringeNode:
         self.removed = False
         self.pathcost = pathcost
 
-        global dot
-        global gen
+        global _dot
+        global _gen
+        global _closed
+        global _fringe
         if parent is None:
-            gen = 1
+            _closed = cl
+            _fringe = fr
+            _gen = 1
             if limit != -1:
-                dot = dot_init(problem, shape, sub=True, cluster=limit) + gl(self, problem)
+                _dot = dot_util.dot_init(p, shape, sub=True, cluster=limit) + gl(self, p)
             else:
-                dot = dot_init(problem, shape) + "\n" + gl(self, problem)
+                _dot = dot_util.dot_init(p, shape) + "\n" + gl(self, p)
         else:
-            dot += gen_trans(parent, self, problem, gl, dot, gen)
-            gen += 1
+            _dot += dot_util.gen_trans(parent, self, p, gl, _dot, _gen, _fringe, _closed)
+            _gen += 1
+
+    def close_node(self, problem, gl, fringe, closed):
+        global _dot
+        temp = str()
+        for line in _dot.splitlines():
+            label = dot_util.gen_code(self)
+            if (dot_util.gen_code(self.parent) + " -> " + label) in line:
+                line = dot_util.gen_trans(self.parent, self, problem, gl, _dot, _gen, fringe, closed, 'dashed')
+            temp += line + "\n"
+        _dot = temp.replace("\n\n", "\n").replace("\n\n", "\n")
 
     def __lt__(self, other):
         """
@@ -59,12 +85,6 @@ class FringeNode:
         :return: unique integer identifier of the embedded state
         """
         return self.state
-
-    def dot(self):
-        return dot
-
-    def gen(self):
-        return gen
 
 
 class Fringe(ABC):
