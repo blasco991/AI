@@ -2,6 +2,7 @@ $(function () {
 
     let step = 0, gear = 100, timerId = null;
     const $gear = $("#gear"), $step = $("#step"), $target = $("#target"), $step_value = $("#step_value");
+    const $graph = $('#graph'), $spinner = $('#spinner');
     const selection = d3.select("#graph");
     const graphviz = selection.graphviz() //{scaleExtent: [1, 10]}
         .transition(function () {
@@ -20,24 +21,29 @@ $(function () {
 
     const resetZoom = () => graphviz.resetZoom(graphviz.transition());
 
-    const ftc = target => fetch(target)
-        .then(response => response.text())
-        .then(text => {
-                step = 0;
-                //console.info(text);
-                dotLines = text.trim().split('\n');
-                dotFooter = dotLines.slice(-1);
-                dotHeader = dotLines.slice(0, 3);
-                n_steps = dotLines.length - dotHeader.length - dotFooter.length;
-                $step.val(step);
-                $step_value.val(step);
-                $step.attr("min", step);
-                $step.attr("max", n_steps);
-                //console.log(text);
-                console.log(n_steps);
-                graphviz.dot(text).render();
-            }
-        ).catch(error => console.error(error));
+    const ftc = target => {
+        fetch(target)
+            .then(response => response.text())
+            .then(text => {
+                    step = 0;
+                    //console.info(text);
+                    dotLines = text.trim().split('\n');
+                    dotFooter = dotLines.slice(-1);
+                    dotHeader = dotLines.slice(0, 3);
+                    n_steps = dotLines.length - dotHeader.length - dotFooter.length;
+                    $step.val(step);
+                    $step_value.val(step);
+                    $step.attr("min", step);
+                    $step.attr("max", n_steps);
+                    //console.log(text);
+                    console.log(n_steps);
+                    graphviz.dot(text).render().on("end", function () {
+                        $spinner.fadeToggle("slow");
+                        $graph.fadeToggle("slow");
+                    });
+                }
+            ).catch(error => console.error(error))
+    };
 
     $target.val(urlParams.has('target') ? urlParams.get('target') : $("#target option:first").val())
         .change(event => window.location.href = "/?target=" + encodeURI(event.target.value)).focus();

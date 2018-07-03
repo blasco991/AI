@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>viz.blasco991.com</title>
     <link rel="stylesheet" href="/css/style.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
             crossorigin="anonymous">
     </script>
     <script>
-        window.$ || document.write('<script src="javascripts/jquery-3.3.1.slim.min.js" type="text/javascript">\x3C/script>')
+        window.$ || document.write('<script src="javascripts/jquery-3.3.1.min.js" type="text/javascript">\x3C/script>')
     </script>
     <script src="https://d3js.org/d3.v4.min.js" type="text/javascript"></script>
     <script>
@@ -39,7 +39,8 @@
         % end
     </select>
 </header>
-<div id="graph"></div>
+<div id="spinner" class="spinner"></div>
+<div id="graph" style="display: none"></div>
 <footer>
     <button id="reset">Center</button>
     <button id="back">Back</button>
