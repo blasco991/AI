@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from datastructures import fringe
-from datastructures.fringe import gen
+from datastructures.fringe import gen, enable_graph
 from search import heuristics as h
 
 sys.setrecursionlimit(10000)
@@ -82,13 +82,12 @@ def gen_code(node):
         .format('-' + str(node.cause) if node.cause is not None else '')
 
 
-def gen_label(n, p, exp=False, j=None):
+def gen_label(n, p, exp=False):
     color = _get_color(n.state)
 
-    return '{} [label={} style=filled color={} fillcolor={} {}]; {} ' \
+    return '{} [label="{}" style=filled color={} fillcolor={} {}];' \
         .format(gen_code(n), n.state, 'black' if exp or n.state == p.goalstate else 'grey', color,
-                'peripheries=2' if p.goalstate == n.state else '',
-                '/*GOALSTATE*/' if p.goalstate == n.state else '')
+                'peripheries=2 /*GOALSTATE*/' if p.goalstate == n.state else '')
 
 
 def gl_greedy(n, p, exp=False, j=None):
@@ -100,13 +99,12 @@ def gl_greedy(n, p, exp=False, j=None):
 
 
 def gl_astar(n, p, exp=False, j=None):
-    def f(c=None):
-        return h.l1_norm(p.state_to_pos(c), p.state_to_pos(int(p.goalstate))) + n.pathcost + 1
+    def f(_n):
+        return h.l1_norm(p.state_to_pos(_n.state), p.state_to_pos(p.goalstate)) + _n.pathcost
 
     label = '{}'.format(n.state) if j is None else '{}  [{}]'.format(n.state, j)
     return '{} [label="<f0>{} |<f1> cost: {} |<f2> f: {} ({}+{})", style=filled color={} fillcolor={}]; {} ' \
-        .format(gen_code(n), label, n.pathcost, f(n.state),
-                n.parent.pathcost if n.parent is not None else 0,
+        .format(gen_code(n), label, n.pathcost, f(n), n.pathcost,
                 h.l1_norm(p.state_to_pos(n.state), p.state_to_pos(p.goalstate)),
                 'black' if exp or p.goalstate == n.state else 'grey', _get_color(n.state),
                 '/*GOALSTATE*/' if p.goalstate == n.state else '')
@@ -120,8 +118,8 @@ def gen_trans(node, child_node, problem, gl, accumulator, j=None, fringe=None, c
                 child_state_label,
                 gen_code(node), gen_code(child_node), problem.actions[child_node.cause],
                 child_node.pathcost - node.pathcost, j if j is not None else '', style,
-                '{}'.format(
-                    '"{}c" [label="Closed: {}" shape=box];'.format(sub_c, closed) if closed is not None else ''),
+                '{}'.format('"{}c" [label="Closed: {}" shape=box];'.format(sub_c, closed)
+                            if not isinstance(closed, frozenset) else ''),
                 '{}'.format('"{}fr" [label="Fringe: {}" shape=box];'
                             .format(sub_c, list(map(lambda n: str(n), fringe.frdict))) if fringe is not None else '')
                 )
@@ -141,8 +139,9 @@ def _build_path_n(node):
 
 
 def compile_dot_files(path):
-    print('\nCompiling DOT file to PNG')
-    for filename in os.listdir('{}/dot'.format(path)):
-        subprocess.run(
-            ["dot", "{}/dot/{}".format(path, filename), "-Tpng", "-o{}/png/{}.png".format(path, filename)])
-    print("\nGenerated dot files in:\t{}".format(path))
+    if enable_graph:
+        print('\nCompiling DOT file to PNG')
+        for filename in os.listdir('{}/dot'.format(path)):
+            subprocess.run(
+                ["dot", "{}/dot/{}".format(path, filename), "-Tpng", "-o{}/png/{}.png".format(path, filename)])
+        print("\nGenerated dot files in:\t{}".format(path))

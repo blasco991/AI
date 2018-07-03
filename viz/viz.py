@@ -30,5 +30,7 @@ def app():
     return dict(folders=folders, fmap=f_map)
 
 
-if __name__ == '__main__':
-    run(host='localhost', port=8080, debug=True, reloader=True)
+try:
+    run(host='localhost', port=8080)  # , quiet=True)
+except OSError as e:
+    pass

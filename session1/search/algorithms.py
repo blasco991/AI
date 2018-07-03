@@ -75,10 +75,10 @@ def dls_gs(problem, opt=False, avd=False, limit=-1):
 
 
 def _dls(problem, closed=None, graph=False, opt=False, avd=False, limit=-1):
-    def _rdls(_problem, _node, _limit, _closed, _graph=False, _gl=gen_label, _opt=False, _avd=False):
+    def _rdls(_p, _node, _limit, _closed, _graph=False, _gl=gen_label, _opt=False, _avd=False):
         """
         Recursive depth-limited search (graph search version)
-        :param _problem: problem
+        :param _p: problem
         :param _node: node to expand
         :param _limit: depth limit budget
         :param _closed: completely explored nodes
@@ -86,41 +86,39 @@ def _dls(problem, closed=None, graph=False, opt=False, avd=False, limit=-1):
         """
         _exp_nodes, _cutoff, _depth_max = 0, False, _node.pathcost
 
-        if _problem.goalstate == _node.state:
+        if _p.goalstate == _node.state:
             return build_path(_node), _exp_nodes, _node.pathcost + 1, _node, False
 
         if _graph:
             if _node.state not in _closed:
                 _closed.add(_node.state)
             else:
-                node.close_node(_problem, _gl, None, _closed)  # OPTIONAL
+                node.close_node(_p, _gl, None, _closed)  # OPTIONAL
                 return None, _exp_nodes, _depth_max, None, _cutoff
 
         if _limit == 0:
             return None, _exp_nodes, _node.pathcost, None, True
 
-        for action in range(_problem.action_space.n):
-            child_node = \
-                FringeNode(_problem.sample(_node.state, action), _node.pathcost + 1, 0, _node, action, problem, _gl)
+        for action in range(_p.action_space.n):
+            child = FringeNode(_p.sample(_node.state, action), _node.pathcost + 1, 0, _node, action, problem, _gl)
 
-            if _graph and child_node.state in _closed:
-                child_node.close_node(_problem, _gl, None, _closed)  # OPTIONAL
+            if _graph and child.state in _closed:
+                child.close_node(_p, _gl, None, _closed)  # OPTIONAL
                 continue
 
-            if not _avd or child_node.state not in build_path(_node):  # Flag on avoid branch tree repetition (avd)
+            if not _avd or child.state not in build_path(_node):  # Flag on avoid branch tree repetition (avd)
 
-                result, temp_expc, temp_depth, temp_node, temp_cutoff = \
-                    _rdls(_problem, child_node, _limit - 1, _closed, _graph, _gl, _opt, _avd)
+                result, t_expc, t_depth, t_node, t_cut = _rdls(_p, child, _limit - 1, _closed, _graph, _gl, _opt, _avd)
 
-                _exp_nodes += temp_expc + 1
-                _cutoff = _cutoff or temp_cutoff
-                _depth_max = max(temp_depth, _depth_max)
+                _exp_nodes += t_expc + 1
+                _cutoff = _cutoff or t_cut
+                _depth_max = max(t_depth, _depth_max)
 
                 if result is not None:
-                    return result, _exp_nodes, _depth_max, temp_node, _cutoff
+                    return result, _exp_nodes, _depth_max, t_node, _cutoff
 
             else:  # OPTIONAL
-                child_node.close_node(_problem, _gl, None, _closed)
+                child.close_node(_p, _gl, None, _closed)
 
         return None, _exp_nodes, _depth_max, None, _cutoff
 
@@ -254,8 +252,8 @@ def astar(problem, stype, opt=False, avd=False):
         :param c: child state of 'n'
         :return: L1 norm distance value
         """
-        return heuristics.l1_norm(problem.state_to_pos(c), problem.state_to_pos(int(problem.goalstate))) \
-               + n.pathcost + 1 if n is not None else 0
+        return 0 if n is None else \
+            heuristics.l1_norm(problem.state_to_pos(c), problem.state_to_pos(int(problem.goalstate))) + n.pathcost + 1
 
     t = timer()
     path, stats, node, _ = stype(problem, PriorityFringe(), f, gl_astar, opt=opt, avd=avd, shape='record')
@@ -270,27 +268,26 @@ def graph_search(problem, fringe, f=lambda n, c: 0, gl=gen_label, opt=False, avd
     return _search(problem, fringe, f, shape, gl, graph=True, opt=opt, avd=avd, limit=limit)
 
 
-def _search(problem, fringe, f, shape, gl=gen_label, graph=False, opt=False, avd=False, limit=-1):
+def _search(p, fringe, f, shape, gl=gen_label, graph=False, opt=False, avd=False, limit=-1):
     """
     Search (avoid branch repetition)
     :param graph: enable graph search
     :param gl:
-    :param problem: problem
+    :param p: problem
     :param fringe: fringe data structure
     :param f: node evaluation function
     :return: (path, stats): solution as a path and stats
     The stats are a tuple of (expc, max_states): number of expansions, generated states, max states in memory
     """
-    closed = {problem.startstate}
+    closed = {p.startstate} if graph else frozenset()
     expc, i, max_states, = 0, 0, 0
-    fringe.add(FringeNode(
-        problem.startstate, 0, f(None, problem.startstate), None, None, problem, gl, shape, limit, closed, fringe))
+    fringe.add(FringeNode(p.startstate, 0, f(None, p.startstate), None, None, p, gl, shape, limit, closed, fringe))
 
     while not fringe.is_empty():
         expc += 1
         max_states, node = max(max_states, len(fringe) + len(closed)), fringe.remove()
 
-        if node.state == problem.goalstate:
+        if node.state == p.goalstate:
             return build_path(node), [expc, max_states], node, False
 
         if graph and node.state not in closed:
@@ -299,11 +296,10 @@ def _search(problem, fringe, f, shape, gl=gen_label, graph=False, opt=False, avd
         if limit == i:
             return None, [expc, max_states], None, True
 
-        for action in range(problem.action_space.n):
-            child_state = problem.sample(node.state, action)
+        for action in range(p.action_space.n):
+            child_state = p.sample(node.state, action)
 
-            child_node = FringeNode(
-                child_state, node.pathcost + 1, f(node, child_state), node, action, problem, gl)
+            child_node = FringeNode(child_state, node.pathcost + 1, f(node, child_state), node, action, p, gl)
 
             if not avd or child_state not in build_path(node):  # Flag on avoid branch tree repetition (avd)
 
@@ -320,13 +316,13 @@ def _search(problem, fringe, f, shape, gl=gen_label, graph=False, opt=False, avd
                             # if child_state IN fringe -> check pathcost
                             fringe.replace(child_node)
                         else:  # OPTIONAL
-                            child_node.close_node(problem, gl, fringe, closed)
+                            child_node.close_node(p, gl, fringe, closed)
                     else:  # OPTIONAL
-                        child_node.close_node(problem, gl, fringe, closed)
+                        child_node.close_node(p, gl, fringe, closed)
                 else:  # OPTIONAL
-                    child_node.close_node(problem, gl, fringe, closed)
+                    child_node.close_node(p, gl, fringe, closed)
             else:  # OPTIONAL
-                child_node.close_node(problem, gl, fringe, closed)
+                child_node.close_node(p, gl, fringe, closed)
 
         i += 1
 

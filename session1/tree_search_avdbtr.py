@@ -9,7 +9,6 @@ handle_path(path)
 
 envs = ["XSMaze-v0", "SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", "CompMaze-v0", "BigMaze-v0"]
 
-
 algs = {"dfs": search.tree_search, "r_dfs": search.dls_ts,
         # "r_ids": search.dls_ts, "ids": search.tree_search,
         # "bfs": search.tree_search,
