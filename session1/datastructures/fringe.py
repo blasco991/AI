@@ -13,6 +13,7 @@ _dot = ''
 _gen = 0
 _closed = None
 _fringe = None
+enable_graph = True
 
 
 def dot():
@@ -49,17 +50,19 @@ class FringeNode:
         global _gen
         global _closed
         global _fringe
-        if parent is None:
-            _closed = cl
-            _fringe = fr
-            _gen = 1
-            if limit != -1:
-                _dot = dot_util.dot_init(p, shape, sub=True, cluster=limit) + gl(self, p)
+        global enable_graph
+        if enable_graph:
+            if parent is None:
+                _closed = cl
+                _fringe = fr
+                _gen = 1
+                if limit != -1:
+                    _dot = dot_util.dot_init(p, shape, sub=True, cluster=limit) + gl(self, p)
+                else:
+                    _dot = dot_util.dot_init(p, shape) + "\n" + gl(self, p)
             else:
-                _dot = dot_util.dot_init(p, shape) + "\n" + gl(self, p)
-        else:
-            _dot += dot_util.gen_trans(parent, self, p, gl, _dot, _gen, _fringe, _closed)
-            _gen += 1
+                _dot += dot_util.gen_trans(parent, self, p, gl, _dot, _gen, _fringe, _closed)
+                _gen += 1
 
     def close_node(self, problem, gl, fringe, closed):
         global _dot

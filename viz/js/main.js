@@ -40,16 +40,18 @@ $(function () {
         ).catch(error => console.error(error));
 
     $target.val(urlParams.has('target') ? urlParams.get('target') : $("#target option:first").val())
-        .change(event => {
-            timerId = clearTimeout(timerId);
-            ftc(encodeURI(event.target.value));
-            history.pushState({target: event.target.value}, document.title, "?target=" + event.target.value);
-        });
-    window.onpopstate = function (event) {
-        timerId = clearTimeout(timerId);
-        ftc(encodeURI(event.state.target));
-        $target.val(new URLSearchParams(location.search).get('target'));
-    };
+        .change(event => window.location.href = "/?target=" + encodeURI(event.target.value)).focus();
+    /*event =>
+    timerId = clearTimeout(timerId);
+    ftc(encodeURI(event.target.value));
+    history.pushState({target: event.target.value}, document.title, "?target=" + event.target.value);*/
+
+    window.onpopstate = event => window.location.href = "/?target=" + encodeURI(event.target.value);
+    /*function (event) {
+    timerId = clearTimeout(timerId);
+    ftc(encodeURI(event.state.target));
+    $target.val(new URLSearchParams(location.search).get('target'));
+    };*/
 
     ftc($target.val());
 

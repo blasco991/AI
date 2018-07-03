@@ -1,4 +1,6 @@
 import os
+import pathlib
+import shutil
 import sys
 import subprocess
 import numpy as np
@@ -12,6 +14,12 @@ sys.setrecursionlimit(10000)
 color_map = plt.get_cmap('rainbow')
 colors = None
 sub_c = 0
+
+
+def handle_path(path):
+    for folder in ["dot", "png"]:
+        shutil.rmtree(path + "/" + folder, ignore_errors=True)
+        pathlib.Path(path + "/" + folder).mkdir(parents=True, exist_ok=True)
 
 
 def _env_to_str(problem):
@@ -65,7 +73,8 @@ def close_dot(expanded, s_node=None, dot=None, sub=False):
     return dot_string \
            + ('{}"#exp {}, #gen {}{}" [ shape=box ]; }}'
               .format(' ' if sub else '\n', expanded, gen(),
-                      ', cost:{}'.format(s_node.pathcost) if s_node is not None else '') if dot is None else '\n}')
+                      ', cost:{}'.format(s_node.pathcost) if s_node is not None else '') if dot is None else '\n}') \
+        if fringe.enable_graph else ''
 
 
 def gen_code(node):

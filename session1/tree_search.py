@@ -2,14 +2,13 @@ import gym
 import shutil
 import pathlib
 import search.algorithms as search
-from dot_util import compile_dot_files
+from dot_util import compile_dot_files, handle_path
 
 path = "../viz/artifacts/ts"
-for folder in ["dot", "png"]:
-    shutil.rmtree(path + "/" + folder, ignore_errors=True)
-    pathlib.Path(path + "/" + folder).mkdir(parents=True, exist_ok=True)
+handle_path(path)
 
 envs = ["XSMaze-v0"]
+
 
 algs = {"dfs": search.tree_search,  # "r_dfs": search.dls_ts,
         # "r_ids": search.dls_ts, "ids": search.tree_search,
@@ -29,7 +28,7 @@ for i, env_name in enumerate(envs):
 
     for j, (alg, method) in enumerate(algs.items()):
 
-        solution, stats, graph = getattr(search, alg)(env, method, False)
+        solution, stats, graph = getattr(search, alg)(env, method)
         if solution is not None:
             solution = [env.state_to_pos(s) for s in solution]
 
@@ -44,4 +43,4 @@ for i, env_name in enumerate(envs):
         with open("{}/dot/{}-{}_{}-{}.dot".format(path, i, env_name, j, alg), "w") as text_file:
             print(graph, file=text_file)
 
-#compile_dot_files(path)
+# compile_dot_files(path)

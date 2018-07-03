@@ -1,12 +1,11 @@
 import gym
 import shutil
 import pathlib
+from dot_util import handle_path
 import search.algorithms as search
 
 path = "../viz/artifacts/gs"
-for folder in ["dot", "png"]:
-    shutil.rmtree(path + "/" + folder, ignore_errors=True)
-    pathlib.Path(path + "/" + folder).mkdir(parents=True, exist_ok=True)
+handle_path(path)
 
 envs = ["XSMaze-v0", "SmallMaze-v0", "GrdMaze-v0", "BlockedMaze-v0", "CompMaze-v0", "BigMaze-v0"]
 

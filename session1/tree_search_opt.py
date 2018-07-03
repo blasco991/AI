@@ -2,12 +2,10 @@ import gym
 import shutil
 import pathlib
 import search.algorithms as search
-from dot_util import compile_dot_files
+from dot_util import compile_dot_files, handle_path
 
 path = "../viz/artifacts/tsp"
-for folder in ["dot", "png"]:
-    shutil.rmtree(path + "/" + folder, ignore_errors=True)
-    pathlib.Path(path + "/" + folder).mkdir(parents=True, exist_ok=True)
+handle_path(path)
 
 envs = ["XSMaze-v0", "SmallMaze-v0", "GrdMaze-v0", "CompMaze-v0", "BigMaze-v0"]
 
@@ -20,7 +18,7 @@ algs = {"dfs": search.tree_search,  # "r_dfs": search.dls_ts,
 
 for i, env_name in enumerate(envs):
     print("\n----------------------------------------------------------------")
-    print("\tTREE SEARCH")
+    print("\tTREE SEARCH OPTIMIZED")
     print("\tEnvironment: ", env_name)
     print("----------------------------------------------------------------\n")
 
@@ -44,4 +42,4 @@ for i, env_name in enumerate(envs):
         with open("{}/dot/{}-{}_{}-{}.dot".format(path, i, env_name, j, alg), "w") as text_file:
             print(graph, file=text_file)
 
-#compile_dot_files(path)
+# compile_dot_files(path)
