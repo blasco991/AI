@@ -272,7 +272,7 @@ def _search(p, fringe, f, shape, gl=gen_label, graph=False, opt=False, avd=False
     """
     Search (avoid branch repetition)
     :param graph: enable graph search
-    :param gl:
+    :param gl: function that generate DOT label for a given node
     :param p: problem
     :param fringe: fringe data structure
     :param f: node evaluation function
