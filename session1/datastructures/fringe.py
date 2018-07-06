@@ -3,17 +3,15 @@ Data structures representing the fringe for search methods
 """
 
 import heapq
-from collections import deque
-
-from abc import ABC, abstractmethod
-
 import dot_util
+from collections import deque
+from abc import ABC, abstractmethod
 
 _dot = ''
 _gen = 0
 _closed = None
 _fringe = None
-enable_graph = True
+enable_graph = False
 
 
 def dot():
@@ -30,7 +28,7 @@ class FringeNode:
     """
 
     def __init__(self, state, pathcost, value, parent,
-                 cause=None, p=None, gl=None, shape='circle', limit=-1, cl=None, fr=None):
+                 cause=None, problem=None, gen_label=None, shape='circle', limit=-1, closed=None, fringe=None):
         """
         Creates a representation of a node in the fringe
         :param state: the state embedded in the node
@@ -51,17 +49,19 @@ class FringeNode:
         global _closed
         global _fringe
         global enable_graph
+        if problem is not None and cause is None:
+            enable_graph = True
         if enable_graph:
             if parent is None:
-                _closed = cl
-                _fringe = fr
+                _closed = closed
+                _fringe = fringe
                 _gen = 1
                 if limit != -1:
-                    _dot = dot_util.dot_init(p, shape, sub=True, cluster=limit) + gl(self, p)
+                    _dot = dot_util.dot_init(problem, shape, sub=True, cluster=limit) + gen_label(self, problem)
                 else:
-                    _dot = dot_util.dot_init(p, shape) + "\n" + gl(self, p)
+                    _dot = dot_util.dot_init(problem, shape) + "\n" + gen_label(self, problem)
             else:
-                _dot += dot_util.gen_trans(parent, self, p, gl, _dot, _gen, _fringe, _closed)
+                _dot += dot_util.gen_trans(parent, self, problem, gen_label, _dot, _gen, _fringe, _closed)
                 _gen += 1
 
     def close_node(self, problem, gl, fringe, closed):
