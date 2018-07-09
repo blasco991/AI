@@ -1,7 +1,7 @@
 # Algo Visualizer by blasco991
 
 ## Installation
-Install the latest stable release with ```pip install bottle``` or download bottle.py (unstable) into your project directory. There are no hard [1] dependencies other than the Python standard library.
+Install the latest stable release with ```pip install bottle``` or download bottle.py (unstable) into your project directory. There are no hard dependencies other than the Python standard library.
 
 ## Usage
 
