@@ -1,3 +1,10 @@
+# Algo Visualizer by blasco991
+
+## Installation
+Install the latest stable release with ```pip install bottle``` or download bottle.py (unstable) into your project directory. There are no hard [1] dependencies other than the Python standard library.
+
+## Usage
+
 #### FringeNode constructor takes 4 parameters, plus 7 optional parameter to generate the dot GRAPH:
 1. the state embedded in the node
 2. path cost (from the root node to the current one)
