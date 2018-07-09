@@ -139,6 +139,10 @@ def _build_path_n(node):
 
 
 def compile_dot_files(path):
+    """
+    Compile the dot files in the "path/dot" directory to png
+    :param: path to the directory that contains the 'dot' folder and 'png' folder
+    """
     if enable_graph:
         print('\nCompiling DOT file to PNG')
         for filename in os.listdir('{}/dot'.format(path)):
